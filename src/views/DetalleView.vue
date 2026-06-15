@@ -84,18 +84,26 @@
           </div>
         </div>
 
-        <div v-if="store.currentManga.volumes?.length > 0" class="tomos-list">
-          <TomoRow
-            v-for="(tomo, index) in store.currentManga.volumes"
-            :key="tomo.id"
-            :tomo="tomo"
-            :index="index"
-            class="tomo-item-animate"
-            :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-            @toggle-status="cycleVolumeStatus(tomo)"
-            @toggle-acquired="toggleVolumeAcquired(tomo)"
-            @context-menu="(e) => openTomoContextMenu(e, tomo)"
-          />
+        <div v-if="store.currentManga.volumes?.length > 0 || missingVolumeNumbers.length > 0" class="tomos-list">
+          <template v-for="(tomo, index) in volumesWithGaps" :key="tomo.id">
+            <VolumePlaceholder
+              v-if="tomo.placeholder"
+              :volume-number="tomo.volume_number"
+              class="tomo-item-animate"
+              :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
+              @click="openAddMissingVolume(tomo.volume_number)"
+            />
+            <TomoRow
+              v-else
+              :tomo="tomo"
+              :index="index"
+              class="tomo-item-animate"
+              :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
+              @toggle-status="cycleVolumeStatus(tomo)"
+              @toggle-acquired="toggleVolumeAcquired(tomo)"
+              @context-menu="(e) => openTomoContextMenu(e, tomo)"
+            />
+          </template>
         </div>
 
         <div v-else class="empty-tomos">
@@ -237,6 +245,7 @@ import { addVolume as apiAddVolume, updateVolume, deleteVolume as apiDeleteVolum
 import { getCoverByISBN } from '../api/covers.js'
 import { useSeo } from '../composables/useSeo.js'
 import TomoRow from '../components/TomoRow.vue'
+import VolumePlaceholder from '../components/VolumePlaceholder.vue'
 import Modal from '../components/Modal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContextMenu from '../components/ContextMenu.vue'
@@ -302,6 +311,41 @@ const progressPercent = computed(() => {
   return Math.round((tomosRead.value / tomosTotal.value) * 100)
 })
 
+const missingVolumeNumbers = computed(() => {
+  const volumes = store.currentManga?.volumes || []
+  const numbers = volumes
+    .map(v => v.volume_number)
+    .filter(n => n != null)
+    .sort((a, b) => a - b)
+
+  if (numbers.length < 2) return []
+
+  const gaps = []
+  for (let i = 0; i < numbers.length - 1; i++) {
+    const current = numbers[i]
+    const next = numbers[i + 1]
+    for (let n = current + 1; n < next; n++) {
+      gaps.push(n)
+    }
+  }
+  return gaps
+})
+
+const volumesWithGaps = computed(() => {
+  const placeholders = missingVolumeNumbers.value.map(num => ({
+    id: `placeholder-${num}`,
+    volume_number: num,
+    placeholder: true
+  }))
+
+  return [...store.currentManga.volumes, ...placeholders]
+    .sort((a, b) => {
+      const aNum = a.volume_number ?? 999999
+      const bNum = b.volume_number ?? 999999
+      return aNum - bNum
+    })
+})
+
 const seoTitle = computed(() => store.currentManga?.title || '')
 const seoDescription = computed(() => {
   if (!store.currentManga) return ''
@@ -356,6 +400,16 @@ function populateEditForm() {
 async function saveEdit() {
   await store.editManga(route.params.id, editForm.value)
   showEditModal.value = false
+}
+
+function openAddMissingVolume(volumeNumber) {
+  volumeForm.value = {
+    isbn: '',
+    volume_number: volumeNumber,
+    status: 'unread',
+    acquired: false
+  }
+  showAddVolumeModal.value = true
 }
 
 async function addVolume() {

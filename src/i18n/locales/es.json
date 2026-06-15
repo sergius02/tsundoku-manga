@@ -88,7 +88,9 @@
     "deleteConfirm": "¿Eliminar este tomo? Esta acción no se puede deshacer.",
     "addVolume": "Añadir tomo",
     "editVolume": "Editar tomo",
-    "addTo": "Añadir a"
+    "addTo": "Añadir a",
+    "notRegistered": "Sin registrar",
+    "addMissing": "Añadir faltante"
   },
   "status": {
     "unread": "Sin leer",

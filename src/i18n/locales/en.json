@@ -88,7 +88,9 @@
     "deleteConfirm": "Delete this volume? This cannot be undone.",
     "addVolume": "Add volume",
     "editVolume": "Edit volume",
-    "addTo": "Add to"
+    "addTo": "Add to",
+    "notRegistered": "Not registered",
+    "addMissing": "Add missing"
   },
   "status": {
     "unread": "Unread",
