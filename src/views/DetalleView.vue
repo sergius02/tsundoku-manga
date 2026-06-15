@@ -407,7 +407,7 @@ function openAddMissingVolume(volumeNumber) {
     isbn: '',
     volume_number: volumeNumber,
     status: 'unread',
-    acquired: false
+    acquired: true
   }
   showAddVolumeModal.value = true
 }
