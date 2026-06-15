@@ -70,6 +70,26 @@
         <div class="tomos-header">
           <h2>{{ $t('manga.volumes') }}</h2>
           <div class="tomos-controls">
+            <button
+              class="btn btn-ghost view-toggle"
+              @click="toggleViewMode"
+              :title="viewMode === 'list' ? $t('view.grid') : $t('view.list')"
+            >
+              <svg v-if="viewMode === 'list'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+              </svg>
+              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            </button>
             <button class="btn btn-primary" @click="showAddVolumeModal = true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -80,32 +100,38 @@
           </div>
         </div>
 
-        <div v-if="store.currentManga.volumes?.length > 0 || missingVolumeNumbers.length > 0" class="tomos-list">
-          <template v-for="(tomo, index) in volumesWithGaps" :key="tomo.id">
-            <VolumePlaceholder
-              v-if="tomo.placeholder"
-              :volume-number="tomo.volume_number"
-              class="tomo-item-animate"
-              :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-              @click="openAddMissingVolume(tomo.volume_number)"
-            />
-            <TomoRow
-              v-else
-              :tomo="tomo"
-              :index="index"
-              class="tomo-item-animate"
-              :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-              @toggle-status="cycleVolumeStatus(tomo)"
-              @toggle-acquired="toggleVolumeAcquired(tomo)"
-              @context-menu="(e) => openTomoContextMenu(e, tomo)"
-            />
-          </template>
-        </div>
-
-        <div v-else class="empty-tomos">
-          <p>{{ $t('manga.noVolumes') }}</p>
-          <button class="btn btn-secondary" @click="showAddVolumeModal = true">{{ $t('manga.addFirstVolume') }}</button>
-        </div>
+        <Transition name="view-switch" mode="out-in">
+          <div
+            v-if="store.currentManga.volumes?.length > 0 || missingVolumeNumbers.length > 0"
+            :key="viewMode"
+            class="tomos-list"
+            :class="{ 'grid-view': viewMode === 'grid' }"
+          >
+            <template v-for="(tomo, index) in volumesWithGaps" :key="tomo.id">
+              <VolumePlaceholder
+                v-if="tomo.placeholder"
+                :volume-number="tomo.volume_number"
+                class="tomo-item-animate"
+                :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
+                @click="openAddMissingVolume(tomo.volume_number)"
+              />
+              <TomoRow
+                v-else
+                :tomo="tomo"
+                :index="index"
+                class="tomo-item-animate"
+                :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
+                @toggle-status="cycleVolumeStatus(tomo)"
+                @toggle-acquired="toggleVolumeAcquired(tomo)"
+                @context-menu="(e) => openTomoContextMenu(e, tomo)"
+              />
+            </template>
+          </div>
+          <div v-else key="empty" class="empty-tomos">
+            <p>{{ $t('manga.noVolumes') }}</p>
+            <button class="btn btn-secondary" @click="showAddVolumeModal = true">{{ $t('manga.addFirstVolume') }}</button>
+          </div>
+        </Transition>
       </div>
 
       <ContextMenu
@@ -269,6 +295,7 @@ const imageLoaded = ref(false)
 const selectedVolume = ref(null)
 const selectedTomo = ref(null)
 const tomoContextMenu = ref(null)
+const viewMode = ref('list')
 const confirmConfig = ref({
   title: '',
   message: '',
@@ -504,6 +531,10 @@ async function confirmDelete() {
       router.push('/')
     }
   )
+}
+
+function toggleViewMode() {
+  viewMode.value = viewMode.value === 'list' ? 'grid' : 'list'
 }
 
 watch(() => route.params.id, async () => {
@@ -777,10 +808,80 @@ onMounted(async () => {
   gap: 12px;
 }
 
+.view-toggle {
+  padding: 8px;
+}
+
 .tomos-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.tomos-list.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.tomos-list.grid-view :deep(.tomo-row) {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+}
+
+.tomos-list.grid-view :deep(.tomo-row .tomo-info) {
+  align-items: center;
+}
+
+.tomos-list.grid-view :deep(.tomo-row .tomo-title),
+.tomos-list.grid-view :deep(.tomo-row .tomo-author) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.tomos-list.grid-view :deep(.tomo-row .tomo-actions) {
+  margin-top: 8px;
+}
+
+.tomos-list.grid-view :deep(.volume-placeholder) {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+}
+
+.tomos-list.grid-view :deep(.volume-placeholder .info) {
+  align-items: center;
+}
+
+.tomos-list.grid-view :deep(.volume-placeholder .title),
+.tomos-list.grid-view :deep(.volume-placeholder .warning) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.tomos-list.grid-view :deep(.volume-placeholder .actions) {
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.view-switch-enter-active,
+.view-switch-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.view-switch-enter-from {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.view-switch-leave-to {
+  opacity: 0;
+  transform: scale(1.05);
 }
 
 .tomo-item-animate {

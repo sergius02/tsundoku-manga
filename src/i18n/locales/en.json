@@ -63,6 +63,10 @@
       "volumes": "volumes"
     }
   },
+  "view": {
+    "list": "List view",
+    "grid": "Grid view"
+  },
   "manga": {
     "title": "Title",
     "author": "Author",
