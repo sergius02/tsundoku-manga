@@ -70,10 +70,6 @@
         <div class="tomos-header">
           <h2>{{ $t('manga.volumes') }}</h2>
           <div class="tomos-controls">
-            <select v-model="volumeSort" @change="changeVolumeSort" class="sort-select">
-              <option value="numero">{{ $t('library.sort.byNumber') }}</option>
-              <option value="alfabetico">{{ $t('library.sort.alphabetical') }}</option>
-            </select>
             <button class="btn btn-primary" @click="showAddVolumeModal = true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -270,7 +266,6 @@ const showConfirm = ref(false)
 const coverUrl = ref(null)
 const coverLoading = ref(false)
 const imageLoaded = ref(false)
-const volumeSort = ref('number')
 const selectedVolume = ref(null)
 const selectedTomo = ref(null)
 const tomoContextMenu = ref(null)
@@ -447,7 +442,7 @@ async function toggleVolumeAcquired(volume) {
 
 async function deleteVolume(volume) {
   await apiDeleteVolume(route.params.id, volume.id)
-  await store.fetchManga(route.params.id, volumeSort.value)
+  await store.fetchManga(route.params.id)
 }
 
 function openEditVolumeModal(volume) {
@@ -495,7 +490,7 @@ async function confirmDeleteVolume(volume) {
     t('volume.deleteConfirm'),
     async () => {
       await apiDeleteVolume(route.params.id, volume.id)
-      await store.fetchManga(route.params.id, volumeSort.value)
+      await store.fetchManga(route.params.id)
     }
   )
 }
@@ -512,7 +507,7 @@ async function confirmDelete() {
 }
 
 watch(() => route.params.id, async () => {
-  await store.fetchManga(route.params.id, volumeSort.value)
+  await store.fetchManga(route.params.id)
   await fetchCover()
 })
 
@@ -524,13 +519,8 @@ watch(() => store.currentManga, () => {
   fetchCover()
 })
 
-async function changeVolumeSort() {
-  store.setVolumeSort(volumeSort.value)
-  await store.fetchManga(route.params.id, volumeSort.value)
-}
-
 onMounted(async () => {
-  await store.fetchManga(route.params.id, volumeSort.value)
+  await store.fetchManga(route.params.id)
   await fetchCover()
 })
 </script>
@@ -785,15 +775,6 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.sort-select {
-  padding: 8px 32px 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: var(--bg-card);
-  cursor: pointer;
 }
 
 .tomos-list {
