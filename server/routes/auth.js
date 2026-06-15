@@ -36,6 +36,7 @@ router.post('/login', (req, res) => {
   cleanupExpiredSessions();
 
   res.json({
+    token: session.id,
     expires_at: session.expires_at
   });
 });
