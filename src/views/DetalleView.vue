@@ -186,6 +186,10 @@
             {{ $t('volume.acquired') }}
           </label>
         </div>
+        <div class="form-group">
+          <label>{{ $t('volume.coverUrl') }}</label>
+          <input type="text" v-model="volumeForm.cover_url" />
+        </div>
       </form>
       <template #footer>
         <button type="button" class="btn btn-ghost" @click="showAddVolumeModal = false">{{ $t('common.cancel') }}</button>
@@ -216,6 +220,10 @@
             <input type="checkbox" v-model="editVolumeForm.acquired" />
             {{ $t('volume.acquired') }}
           </label>
+        </div>
+        <div class="form-group">
+          <label>{{ $t('volume.coverUrl') }}</label>
+          <input type="text" v-model="editVolumeForm.cover_url" />
         </div>
       </form>
       <template #footer>
@@ -289,14 +297,16 @@ const volumeForm = ref({
   isbn: '',
   volume_number: null,
   status: 'unread',
-  acquired: false
+  acquired: false,
+  cover_url: ''
 })
 
 const editVolumeForm = ref({
   isbn: '',
   volume_number: null,
   status: 'unread',
-  acquired: false
+  acquired: false,
+  cover_url: ''
 })
 
 const initials = computed(() => {
@@ -407,7 +417,8 @@ function openAddMissingVolume(volumeNumber) {
     isbn: '',
     volume_number: volumeNumber,
     status: 'unread',
-    acquired: true
+    acquired: true,
+    cover_url: ''
   }
   showAddVolumeModal.value = true
 }
@@ -418,7 +429,7 @@ async function addVolume() {
     store.currentManga.volumes.push(newVolume)
   }
   showAddVolumeModal.value = false
-  volumeForm.value = { isbn: '', status: 'unread', acquired: false }
+  volumeForm.value = { isbn: '', status: 'unread', acquired: false, cover_url: '' }
 }
 
 async function cycleVolumeStatus(volume) {
@@ -445,7 +456,8 @@ function openEditVolumeModal(volume) {
     isbn: volume.isbn || '',
     volume_number: volume.volume_number !== undefined ? volume.volume_number : null,
     status: volume.status || 'unread',
-    acquired: volume.acquired === true || volume.acquired === 1
+    acquired: volume.acquired === true || volume.acquired === 1,
+    cover_url: volume.cover_url || ''
   }
   showEditVolumeModal.value = true
 }
@@ -470,6 +482,7 @@ async function saveEditVolume() {
   if (editVolumeForm.value.volume_number !== null) data.volume_number = editVolumeForm.value.volume_number
   data.status = editVolumeForm.value.status
   data.acquired = editVolumeForm.value.acquired
+  if (editVolumeForm.value.cover_url !== '') data.cover_url = editVolumeForm.value.cover_url || null
 
   await updateVolume(route.params.id, selectedVolume.value.id, data)
   store.updateVolumeState(selectedVolume.value.id, data)

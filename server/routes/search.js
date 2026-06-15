@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
         return res.status(404).json({ error: 'No se encontraron resultados para este ISBN' });
       }
 
-      return res.json(result.data);
+      return res.json({ ...result.data, source: result.source });
     } catch (err) {
       console.error('Search error:', err);
       return res.status(500).json({ error: 'Error al buscar en las APIs externas' });
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
         return res.status(404).json({ error: 'No se encontraron resultados para este título' });
       }
 
-      return res.json(result.data);
+      return res.json(result.data.map(item => ({ ...item, source: result.source })));
     } catch (err) {
       console.error('Search error:', err);
       return res.status(500).json({ error: 'Error al buscar en las APIs externas' });

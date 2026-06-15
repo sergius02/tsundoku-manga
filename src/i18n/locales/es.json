@@ -81,6 +81,7 @@
   "volume": {
     "isbn": "ISBN",
     "volumeNumber": "Número de tomo",
+    "coverUrl": "URL de portada",
     "status": "Estado",
     "acquired": "En mi posesión",
     "notAcquired": "Falta",
@@ -122,7 +123,10 @@
     "addAnother": "Añadir otro tomo",
     "autoMatch": "Coincidencia",
     "titleResults": "Resultados de búsqueda",
-    "titlePlaceholder": "Buscar por título..."
+    "titlePlaceholder": "Buscar por título...",
+    "sourcePrefix": "Metadatos extraídos de: ",
+    "sourceOpenLibrary": "OpenLibrary",
+    "sourceGoogle": "Google Books"
   },
   "theme": {
     "light": "Claro",

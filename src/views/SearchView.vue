@@ -45,6 +45,12 @@
           <span v-if="result.publisher">{{ result.publisher }}</span>
           <span v-if="result.isbn" class="mono">ISBN: {{ result.isbn }}</span>
           <span v-if="result.volumeNumber" class="volume-badge">Vol. {{ result.volumeNumber }}</span>
+          <span v-if="result.source" class="source-info">
+            {{ $t('search.sourcePrefix') }}
+            <span class="source-badge" :class="result.source">
+              {{ result.source === 'openlibrary' ? $t('search.sourceOpenLibrary') : $t('search.sourceGoogle') }}
+            </span>
+          </span>
         </div>
         <p v-if="result.seriesName !== result.title" class="series-hint">
           {{ $t('search.detectedSeries') }}: <strong>{{ result.seriesName }}</strong>
@@ -493,6 +499,35 @@ onMounted(() => {
   font-weight: 500;
   width: fit-content;
   margin-top: 4px;
+}
+
+.source-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.source-badge.openlibrary {
+  background: rgba(230, 57, 70, 0.15);
+  color: var(--accent);
+}
+
+.source-badge.google {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
 }
 
 .series-hint {

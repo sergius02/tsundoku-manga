@@ -81,6 +81,7 @@
   "volume": {
     "isbn": "ISBN",
     "volumeNumber": "Volume number",
+    "coverUrl": "Cover URL",
     "status": "Status",
     "acquired": "In my possession",
     "notAcquired": "Missing",
@@ -122,7 +123,10 @@
     "addAnother": "Add another volume",
     "autoMatch": "Auto-match",
     "titleResults": "Search results",
-    "titlePlaceholder": "Search by title..."
+    "titlePlaceholder": "Search by title...",
+    "sourcePrefix": "Metadata from: ",
+    "sourceOpenLibrary": "OpenLibrary",
+    "sourceGoogle": "Google Books"
   },
   "theme": {
     "light": "Light",
