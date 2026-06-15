@@ -1,0 +1,164 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Añadir",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "back": "Volver",
+    "view": "Ver",
+    "retry": "Reintentar",
+    "loading": "Cargando..."
+  },
+  "contextMenu": {
+    "markAllRead": "Marcar todos como leídos",
+    "markAllUnread": "Marcar como no leídos",
+    "markAsRead": "Marcar como leído"
+  },
+  "nav": {
+    "library": "Biblioteca",
+    "search": "Buscar",
+    "add": "Añadir Manga"
+  },
+  "add": {
+    "title": "Añadir manga manualmente",
+    "subtitle": "Rellena los datos del manga para añadirlo a tu biblioteca",
+    "notesPlaceholder": "Ej: Serie completa...",
+    "addManga": "Añadir manga",
+    "titleRequired": "El título es obligatorio",
+    "addError": "Error al añadir el manga"
+  },
+  "library": {
+    "title": "Mi Biblioteca",
+    "empty": "Tu biblioteca está vacía",
+    "emptyHint": "Empieza añadiendo mangas desde la búsqueda o manualmente.",
+    "addFirst": "Añade tu primer manga",
+    "search": {
+      "placeholder": "Buscar por título o autor..."
+    },
+    "searchManga": "Buscar manga",
+    "filter": {
+      "label": "Estado",
+      "all": "Todos",
+      "reading": "Leyendo",
+      "completed": "Completados",
+      "pending": "Pendientes"
+    },
+    "sort": {
+      "label": "Ordenar",
+      "date": "Fecha añadida",
+      "title": "Título",
+      "progress": "Progreso",
+      "byNumber": "Por número",
+      "alphabetical": "Alfabético"
+    },
+    "stats": {
+      "total": "Total",
+      "reading": "Leyendo",
+      "completed": "Completados",
+      "volumes": "tomos"
+    }
+  },
+  "manga": {
+    "title": "Título",
+    "author": "Autor",
+    "publisher": "Editorial",
+    "coverUrl": "URL de portada",
+    "notes": "Notas",
+    "volumes": "Tomos",
+    "progress": "Progreso",
+    "noVolumes": "No hay tomos registrados",
+    "addFirstVolume": "Añadir primer tomo",
+    "deleteManga": "Eliminar manga",
+    "deleteConfirm": "¿Eliminar este manga de tu biblioteca? Esta acción no se puede deshacer.",
+    "deleteConfirmText": "¿Eliminar \"{title}\" y todos sus tomos? Esta acción no se puede deshacer.",
+    "editManga": "Editar manga"
+  },
+  "volume": {
+    "isbn": "ISBN",
+    "volumeNumber": "Número de tomo",
+    "status": "Estado",
+    "acquired": "En mi posesión",
+    "notAcquired": "Falta",
+    "delete": "Eliminar tomo",
+    "deleteConfirm": "¿Eliminar este tomo? Esta acción no se puede deshacer.",
+    "addVolume": "Añadir tomo",
+    "editVolume": "Editar tomo",
+    "addTo": "Añadir a"
+  },
+  "status": {
+    "unread": "Sin leer",
+    "reading": "Leyendo",
+    "read": "Leído",
+    "noVolumes": "Sin tomos"
+  },
+  "search": {
+    "title": "Buscar por ISBN",
+    "addVolumeTitle": "Añadir tomo",
+    "subtitle": "Busca por ISBN y asígnalo a un manga de tu biblioteca",
+    "isbnPlaceholder": "Introduce ISBN del tomo...",
+    "placeholder": "Introduce ISBN...",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados",
+    "noResultsHint": "Prueba con otro ISBN o añade el tomo manualmente desde el detalle de un manga.",
+    "addToLibrary": "Añadir a la biblioteca",
+    "detectedTitle": "Título detectado",
+    "detectedAuthor": "Autor detectado",
+    "detectedSeries": "Serie detectada",
+    "whichManga": "¿A qué manga pertenece este tomo?",
+    "noMatch": "Ningún manga coincide con",
+    "createNew": "Crea uno nuevo",
+    "createNewManga": "Crear nuevo manga",
+    "mangaNamePlaceholder": "Nombre del manga (ej:",
+    "createAndAdd": "Crear y añadir tomo",
+    "addTo": "Añadir tomo a",
+    "volumeAdded": "¡Tomo añadido!",
+    "addAnother": "Añadir otro tomo",
+    "autoMatch": "Coincidencia",
+    "titleResults": "Resultados de búsqueda",
+    "titlePlaceholder": "Buscar por título..."
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "toggle": "Cambiar tema"
+  },
+  "menu": {
+    "open": "Abrir menú",
+    "close": "Cerrar menú"
+  },
+  "language": {
+    "select": "Idioma",
+    "en": "Inglés",
+    "es": "Español"
+  },
+  "accessibility": {
+    "skipToContent": "Saltar al contenido principal"
+  },
+  "footer": {
+    "sourceCode": "Código fuente",
+    "license": "Licenciado bajo AGPL v3",
+    "copyright": "© {year} Sergio Fernández Celorio"
+  },
+  "settings": {
+    "title": "Configuración",
+    "apis": "APIs",
+    "apisDescription": "Configura las APIs externas usadas para buscar información de mangas por ISBN.",
+    "openlibrary": "Open Library",
+    "googlebooks": "Google Books",
+    "mandatory": "Obligatoria",
+    "enabled": "Activada",
+    "disabled": "Desactivada",
+    "apiKeyNeeded": "Requiere configurar GOOGLE_BOOKS_API_KEY en el servidor"
+  },
+  "auth": {
+    "loginRequired": "Inicia sesión para continuar",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "login": "Iniciar sesión"
+  }
+}
