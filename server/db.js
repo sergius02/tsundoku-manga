@@ -55,4 +55,9 @@ db.exec(`
   );
 `);
 
+db.exec(`
+  INSERT OR IGNORE INTO api_config (api_name, enabled) VALUES ('openlibrary', 1);
+  INSERT OR IGNORE INTO api_config (api_name, enabled) VALUES ('googlebooks', 1);
+`);
+
 export default db;
