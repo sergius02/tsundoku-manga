@@ -234,6 +234,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { searchByISBN, createManga, getMangas, addVolume as apiAddVolume } from '../api/index.js'
+import { cacheBookData } from '../api/covers.js'
 import SearchInput from '../components/SearchInput.vue'
 import Modal from '../components/Modal.vue'
 
@@ -315,7 +316,8 @@ async function search() {
 
   try {
     const data = await searchByISBN(searchQuery.value.trim())
-    if (data) {
+    if (data && !data.notFound) {
+      cacheBookData(data.isbn || searchQuery.value.trim(), data)
       result.value = data
       await loadMangas()
       tryAutoSelectManga()
