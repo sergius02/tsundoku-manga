@@ -902,48 +902,82 @@ onMounted(async () => {
 }
 
 .tomos-list.grid-view :deep(.tomo-row) {
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 0;
+}
+
+.tomos-list.grid-view :deep(.tomo-cover) {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+}
+
+.tomos-list.grid-view :deep(.tomo-cover img),
+.tomos-list.grid-view :deep(.tomo-cover .cover-placeholder),
+.tomos-list.grid-view :deep(.tomo-cover .cover-loading) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tomos-list.grid-view :deep(.tomo-info) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 8px 8px;
+}
+
+.tomos-list.grid-view :deep(.tomo-title) {
+  width: 100%;
   text-align: center;
-  padding: 16px 12px;
-}
-
-.tomos-list.grid-view :deep(.tomo-row .tomo-info) {
-  align-items: center;
-}
-
-.tomos-list.grid-view :deep(.tomo-row .tomo-title),
-.tomos-list.grid-view :deep(.tomo-row .tomo-author) {
+  font-size: 13px;
   white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.tomos-list.grid-view :deep(.tomo-row .tomo-actions) {
-  margin-top: 8px;
+.tomos-list.grid-view :deep(.tomo-author) {
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+}
+
+.tomos-list.grid-view :deep(.tomo-actions) {
+  justify-content: center;
+  padding-bottom: 8px;
 }
 
 .tomos-list.grid-view :deep(.volume-placeholder) {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 16px 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 0;
+}
+
+.tomos-list.grid-view :deep(.volume-placeholder .cover-placeholder) {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 2 / 3;
 }
 
 .tomos-list.grid-view :deep(.volume-placeholder .info) {
-  align-items: center;
+  padding: 12px 8px 8px;
 }
 
 .tomos-list.grid-view :deep(.volume-placeholder .title),
 .tomos-list.grid-view :deep(.volume-placeholder .warning) {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+  font-size: 13px;
+  text-align: center;
 }
 
 .tomos-list.grid-view :deep(.volume-placeholder .actions) {
-  margin-top: 8px;
   justify-content: center;
+  padding-bottom: 8px;
 }
 
 .view-switch-enter-active,
