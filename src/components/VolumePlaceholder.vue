@@ -47,8 +47,8 @@ defineEmits(['click'])
 }
 
 .cover-placeholder {
-  width: 45px;
-  height: 64px;
+  width: 80px;
+  height: 113px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,7 +57,7 @@ defineEmits(['click'])
   font-weight: 700;
   color: var(--text-secondary);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 16px;
+  font-size: 20px;
   flex-shrink: 0;
 }
 

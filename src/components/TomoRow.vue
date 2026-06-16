@@ -147,15 +147,15 @@ onUnmounted(() => {
 }
 
 .tomo-cover img {
-  width: 45px;
-  height: 64px;
+  width: 80px;
+  height: 113px;
   object-fit: cover;
   border-radius: 4px;
 }
 
 .cover-loading {
-  width: 45px;
-  height: 64px;
+  width: 80px;
+  height: 113px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,8 +164,8 @@ onUnmounted(() => {
 }
 
 .cover-placeholder {
-  width: 45px;
-  height: 64px;
+  width: 80px;
+  height: 113px;
   display: flex;
   align-items: center;
   justify-content: center;
