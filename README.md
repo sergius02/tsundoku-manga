@@ -36,7 +36,7 @@
 | Database     | SQLite (via `better-sqlite3`)                |
 | Packaging    | Multi-stage Docker                           |
 
-No TypeScript, no tests, no linter — it's a small, straightforward project.
+No TypeScript, no linter — it's a small, straightforward project. Tests: 126 passing.
 
 ---
 
@@ -145,6 +145,26 @@ See [server/API.md](server/API.md) for the full API documentation.
 
 ---
 
+## 🧪 Testing
+
+```bash
+npm test          # Run all tests (Vitest)
+npm test:watch    # Watch mode
+npm test -- --coverage  # With coverage report
+```
+
+**Test coverage:**
+
+| Layer | Framework | Tests |
+|-------|-----------|-------|
+| Backend API | Vitest + Supertest | 54 |
+| Frontend stores | Vitest + Pinia | 31 |
+| Frontend views | Vitest (logic) | 41 |
+
+See [vitest.config.js](vitest.config.js) for configuration.
+
+---
+
 ## ⚠️ About this project and Vibe Coding
 
 This project has been built entirely through **Vibe Coding**: the practice of building software by guiding a large language model (LLM) through descriptions, iterations, and refinements in natural language, rather than writing every line of code by hand.
@@ -152,7 +172,7 @@ This project has been built entirely through **Vibe Coding**: the practice of bu
 What does this mean for you?
 
 - 🤖 **The code may contain bugs, inconsistencies, questionable design decisions, or "bad practices"** that slipped past both the author and the model. If something looks weird, it probably *is* weird.
-- 🧪 **There is no test suite** (yet). If you touch something critical, test thoroughly before deploying.
+- 🧪 **Test suite included** (126 tests). Run with `npm test`.
 - 🧹 **There are areas an experienced developer would probably do differently**: naming, structure, validation, accessibility, etc. Polite suggestions are welcome in the form of a PR.
 - ❤️ **But it works** — and it was built with care.
 
@@ -162,7 +182,7 @@ What does this mean for you?
 
 - Fix a bug,
 - Refactor something that hurts to look at,
-- Add tests (they're missing),
+- Improve test coverage,
 - Improve accessibility, i18n, performance, anything,
 
 …open a PR without fear. There's no strict style guide, so just be reasonable and briefly explain the *why* behind your change.

@@ -3,7 +3,8 @@
 ## Stack
 - **Frontend**: Vue 3 + Vite + Vue Router + Pinia + vue-i18n
 - **Backend**: Express (Node.js) + better-sqlite3 (SQLite)
-- **No tests, no TypeScript, no linting**
+- **Testing**: Vitest (unit + integration tests)
+- **No TypeScript, no linting**
 
 ## Dev Commands
 ```bash
@@ -12,7 +13,17 @@ npm run build    # Builds Vue app → dist/
 npm run client   # Vite dev server only (port 5173)
 npm run server   # Express server only (port 3000)
 npm run preview # Preview production build from dist/
+npm run test    # Run all tests (Vitest)
+npm run test:watch  # Watch mode for development
 ```
+
+## Testing
+Tests use Vitest + Supertest (backend) y @vue/test-utils + happy-dom (frontend).
+
+Test files:
+- `server/routes/*.test.js` - Backend API tests (54 tests)
+- `src/stores/*.test.js` - Pinia store tests (31 tests)
+- `src/views/*.test.js` - View computed logic tests (41 tests)
 
 ## Key Quirks
 
