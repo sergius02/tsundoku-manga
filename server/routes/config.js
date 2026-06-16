@@ -6,11 +6,15 @@ const router = express.Router();
 router.get('/apis', (req, res) => {
   try {
     const apis = db.prepare('SELECT api_name, enabled FROM api_config').all();
-    const result = apis.map(api => ({
-      name: api.api_name,
-      enabled: api.enabled === 1,
-      hasKey: api.api_name === 'googlebooks' ? !!process.env.GOOGLE_BOOKS_API_KEY : true
-    }));
+    const result = apis.map(api => {
+      const hasKey = api.api_name === 'googlebooks' ? !!process.env.GOOGLE_BOOKS_API_KEY : true;
+      const enabled = api.enabled === 1 && hasKey;
+      return {
+        name: api.api_name,
+        enabled,
+        hasKey
+      };
+    });
     res.json(result);
   } catch (err) {
     console.error('Error fetching API config:', err);
@@ -28,6 +32,10 @@ router.put('/apis/:name', (req, res) => {
 
   if (name === 'openlibrary') {
     return res.status(400).json({ error: 'OpenLibrary no puede desactivarse' });
+  }
+
+  if (name === 'googlebooks' && enabled && !process.env.GOOGLE_BOOKS_API_KEY) {
+    return res.status(400).json({ error: 'Google Books API no puede activarse sin API Key' });
   }
 
   try {

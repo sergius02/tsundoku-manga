@@ -19,7 +19,7 @@
               <span v-if="api.name === 'openlibrary'" class="api-badge mandatory">{{ $t('settings.mandatory') }}</span>
             </div>
             <p class="api-status">
-              <span v-if="api.name === 'googlebooks' && api.enabled && !api.hasKey" class="warning-text">
+              <span v-if="api.name === 'googlebooks' && !api.hasKey" class="warning-text">
                 {{ $t('settings.apiKeyNeeded') }}
               </span>
               <span v-else-if="api.enabled" class="enabled-text">{{ $t('settings.enabled') }}</span>
@@ -30,7 +30,7 @@
             <input
               type="checkbox"
               :checked="api.enabled"
-              :disabled="api.name === 'openlibrary'"
+              :disabled="api.name === 'openlibrary' || (api.name === 'googlebooks' && !api.hasKey)"
               @change="handleToggle(api.name, $event.target.checked)"
             />
             <span class="toggle-slider"></span>
