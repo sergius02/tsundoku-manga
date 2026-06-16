@@ -98,6 +98,15 @@ export async function markAllVolumesUnread(mangaId) {
 
 export async function searchByISBN(isbn) {
   const res = await fetch(`${BASE_URL}/search?isbn=${encodeURIComponent(isbn)}`)
+  if (res.status === 404) {
+    const data = await res.json()
+    return {
+      notFound: true,
+      openLibraryMissing: data.openLibraryMissing || false,
+      isbn: data.isbn || isbn,
+      error: data.error
+    }
+  }
   if (!res.ok) {
     const err = await res.json()
     throw new Error(err.error || 'Error searching')

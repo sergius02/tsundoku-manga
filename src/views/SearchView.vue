@@ -33,7 +33,7 @@
       {{ error }}
     </div>
 
-    <div v-if="result" class="result-card">
+    <div v-if="result && !(result.notFound && result.openLibraryMissing)" class="result-card">
       <div class="result-cover">
         <img v-if="result.cover_url" :src="result.cover_url" :alt="result.title" />
         <div v-else class="cover-placeholder">{{ result.title?.[0] || '?' }}</div>
@@ -58,7 +58,44 @@
       </div>
     </div>
 
-    <div v-if="result && !addedSuccess" class="manga-selector">
+    <div v-if="result?.openLibraryMissing && result?.notFound" class="openlibrary-contribution">
+      <div class="contribution-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div class="contribution-content">
+        <p class="contribution-title">{{ $t('search.openLibraryMissingTitle') }}</p>
+        <p class="contribution-subtitle">{{ $t('search.openLibraryContributeSubtitle') }}</p>
+        <p class="contribution-text">{{ $t('search.openLibraryMissingText') }}</p>
+        <p class="contribution-warning">{{ $t('search.openLibraryContributeWarning') }}</p>
+        <p class="contribution-isbn">
+          ISBN: <code>{{ result?.isbn }}</code>
+          <button class="copy-isbn-btn" @click="copyIsbn" :title="$t('search.copyIsbn')">
+            <svg v-if="!isbnCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </p>
+        <a href="https://openlibrary.org/books/add" target="_blank" rel="noopener noreferrer" class="contribution-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          {{ $t('search.openLibraryContributeLink') }}
+        </a>
+        <p class="contribution-credit">{{ $t('search.openLibraryCredit') }}</p>
+      </div>
+    </div>
+
+    <div v-if="result && !result.notFound && !addedSuccess" class="manga-selector">
       <h3>{{ $t('search.whichManga') }}</h3>
 
       <div v-if="filteredMangas.length > 0" class="manga-list">
@@ -138,7 +175,7 @@
       </div>
     </div>
 
-    <div v-if="notFound && !result" class="not-found">
+    <div v-if="(notFound && !result) || (result?.notFound && !result?.openLibraryMissing)" class="not-found">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="11" cy="11" r="8"/>
         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -220,6 +257,7 @@ const editTomoForm = ref({
   status: 'unread',
   acquired: true
 })
+const isbnCopied = ref(false)
 
 const filteredMangas = computed(() => {
   if (!result.value) return mangas.value
@@ -356,6 +394,20 @@ async function addTomoToSelected() {
   }
 }
 
+async function copyIsbn() {
+  if (result.value?.isbn) {
+    try {
+      await navigator.clipboard.writeText(result.value.isbn)
+      isbnCopied.value = true
+      setTimeout(() => {
+        isbnCopied.value = false
+      }, 2000)
+    } catch (err) {
+      console.warn('Failed to copy ISBN:', err)
+    }
+  }
+}
+
 function reset() {
   searchQuery.value = ''
   result.value = null
@@ -366,6 +418,7 @@ function reset() {
   showNewMangaForm.value = false
   showEditTomoModal.value = false
   newMangaTitle.value = ''
+  isbnCopied.value = false
   editTomoForm.value = {
     isbn: '',
     title: '',
@@ -538,6 +591,110 @@ onMounted(() => {
 
 .series-hint strong {
   color: var(--text-primary);
+}
+
+.openlibrary-contribution {
+  max-width: 600px;
+  margin: 0 auto 32px;
+  padding: 20px;
+  background: rgba(230, 57, 70, 0.08);
+  border: 1px solid rgba(230, 57, 70, 0.2);
+  border-radius: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.contribution-icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.contribution-content {
+  flex: 1;
+}
+
+.contribution-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.contribution-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.contribution-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.contribution-warning {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.contribution-isbn {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.contribution-isbn code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(0,0,0,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.copy-isbn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px;
+  margin-left: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  vertical-align: middle;
+}
+
+.copy-isbn-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.contribution-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.contribution-link:hover {
+  text-decoration: underline;
+}
+
+.contribution-credit {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .manga-selector {

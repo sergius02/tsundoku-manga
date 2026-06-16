@@ -1,5 +1,6 @@
 import express from 'express';
-import { searchByISBN, searchByTitle } from '../services/openlibrary.js';
+import { searchByISBN, searchByTitle, searchOpenLibraryISBNOnly } from '../services/openlibrary.js';
+import { fetchGoogleBooksISBN } from '../services/googlebooks.js';
 import db from '../db.js';
 
 const router = express.Router();
@@ -24,13 +25,34 @@ router.get('/', async (req, res) => {
     const cleanISBN = isbn.replace(/[-\s]/g, '');
 
     try {
-      const result = await searchByISBN(cleanISBN, getGoogleBooksEnabled());
+      const openLibraryResult = await searchOpenLibraryISBNOnly(cleanISBN);
 
-      if (!result) {
-        return res.status(404).json({ error: 'No se encontraron resultados para este ISBN' });
+      if (openLibraryResult) {
+        return res.json({ ...openLibraryResult, source: 'openlibrary' });
       }
 
-      return res.json({ ...result.data, source: result.source });
+      const openLibraryMissing = true;
+
+      if (getGoogleBooksEnabled()) {
+        try {
+          const googleBooksResult = await fetchGoogleBooksISBN(cleanISBN);
+          if (googleBooksResult) {
+            return res.json({
+              ...googleBooksResult,
+              source: 'google',
+              openLibraryMissing
+            });
+          }
+        } catch (err) {
+          console.warn('Google Books failed:', err.message);
+        }
+      }
+
+      return res.status(404).json({
+        error: 'No se encontraron resultados para este ISBN',
+        openLibraryMissing,
+        isbn: cleanISBN
+      });
     } catch (err) {
       console.error('Search error:', err);
       return res.status(500).json({ error: 'Error al buscar en las APIs externas' });

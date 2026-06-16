@@ -37,6 +37,16 @@ export async function searchByISBN(isbn, googleBooksEnabled = true) {
   return null;
 }
 
+export async function searchOpenLibraryISBNOnly(isbn) {
+  try {
+    const data = await fetchOpenLibraryISBN(isbn);
+    if (data) return data;
+  } catch (err) {
+    console.warn('OpenLibrary ISBN search failed:', err.message);
+  }
+  return null;
+}
+
 export async function searchByTitle(title, googleBooksEnabled = true) {
   try {
     const data = await searchOpenLibraryByTitle(title);

@@ -130,7 +130,14 @@
     "titlePlaceholder": "Buscar por título...",
     "sourcePrefix": "Metadatos extraídos de: ",
     "sourceOpenLibrary": "OpenLibrary",
-    "sourceGoogle": "Google Books"
+    "sourceGoogle": "Google Books",
+    "openLibraryContributeSubtitle": "¿Quieres contribuir?",
+    "openLibraryMissingTitle": "Este ISBN no se ha encontrado en ninguna API configurada",
+    "openLibraryMissingText": "OpenLibrary es un proyecto de Internet Archive que cataloga libros en todo el mundo. Puedes ayudar añadiendo este libro a su base de datos.",
+    "openLibraryContributeWarning": "Al agregar datos nuevos a OpenLibrary, por favor sé lo más preciso posible. Busca otros volúmenes primero para hacer coincidir bien los metadatos.",
+    "openLibraryContributeLink": "Añadir este libro a OpenLibrary",
+    "openLibraryCredit": "OpenLibrary es una organización sin fines de lucro 501(c)(3).",
+    "copyIsbn": "Copiar ISBN"
   },
   "theme": {
     "light": "Claro",
