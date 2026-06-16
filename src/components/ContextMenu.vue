@@ -12,7 +12,7 @@
         <div class="context-menu-header">
           <span class="context-menu-title">{{ displayTitle }}</span>
         </div>
-        <template v-if="isTomo">
+        <template v-if="isVolume">
           <button class="menu-item" role="menuitem" @click="handleAction('edit')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -92,7 +92,7 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  isTomo: {
+  isVolume: {
     type: Boolean,
     default: false
   }
@@ -105,7 +105,7 @@ const x = ref(0)
 const y = ref(0)
 
 const displayTitle = computed(() => {
-  if (props.isTomo) {
+  if (props.isVolume) {
     if (props.manga.title) return props.manga.title
     if (props.manga.volume_number) return `Volume ${props.manga.volume_number}`
     return 'Volume'

@@ -38,9 +38,6 @@ Vite config proxies `/api/*` to `http://localhost:3000`. Don't prefix API calls 
 - `/add` → AddView (manual manga entry)
 - `/settings` → SettingsView (API config and preferences) [planned]
 
-### Volume vs Tomo
-Schema uses `volumes` table, but code and API refer to "tomos". The DB schema has a `volume_number` column and a `title` column that may be unused.
-
 ### i18n
 - Auto-detects browser locale (prefers `es`)
 - Persists choice in `localStorage` key `tsundoku-locale`

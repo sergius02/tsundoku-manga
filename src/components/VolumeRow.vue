@@ -1,10 +1,10 @@
 <template>
   <div
-    :class="['tomo-row', `status-${tomo.status}`]"
+    :class="['volume-row', `status-${tomo.status}`]"
     @click="$emit('toggle-status')"
     @contextmenu.prevent.stop="openContextMenu"
   >
-    <div class="tomo-cover" @click.stop="$emit('toggle-status')">
+    <div class="volume-cover" @click.stop="$emit('toggle-status')">
       <div v-if="!imageLoaded && !hasDirectCover && hasCoverUrl" class="cover-loading">
         <div class="spinner-sm"></div>
       </div>
@@ -19,12 +19,12 @@
         {{ tomo.volume_number || '?' }}
       </div>
     </div>
-    <div class="tomo-info">
-      <span class="tomo-title">{{ displayTitle }}</span>
-      <span v-if="displayAuthor" class="tomo-author">{{ displayAuthor }}</span>
+    <div class="volume-info">
+      <span class="volume-title">{{ displayTitle }}</span>
+      <span v-if="displayAuthor" class="volume-author">{{ displayAuthor }}</span>
       <StatusBadge :status="tomo.status" />
     </div>
-    <div class="tomo-actions" @click.stop>
+    <div class="volume-actions" @click.stop>
       <button
         class="acquired-toggle"
         :class="{ acquired: tomo.acquired }"
@@ -126,7 +126,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.tomo-row {
+.volume-row {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -138,15 +138,15 @@ onUnmounted(() => {
   position: relative;
 }
 
-.tomo-row:hover {
+.volume-row:hover {
   background-color: var(--bg-secondary);
 }
 
-.tomo-cover {
+.volume-cover {
   flex-shrink: 0;
 }
 
-.tomo-cover img {
+.volume-cover img {
   width: 80px;
   height: 113px;
   object-fit: cover;
@@ -177,7 +177,7 @@ onUnmounted(() => {
   font-size: 14px;
 }
 
-.tomo-info {
+.volume-info {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -185,7 +185,7 @@ onUnmounted(() => {
   min-width: 0;
 }
 
-.tomo-title {
+.volume-title {
   font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
@@ -193,7 +193,7 @@ onUnmounted(() => {
   text-overflow: ellipsis;
 }
 
-.tomo-author {
+.volume-author {
   font-size: 12px;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -201,7 +201,7 @@ onUnmounted(() => {
   text-overflow: ellipsis;
 }
 
-.tomo-actions {
+.volume-actions {
   display: flex;
   align-items: center;
   gap: 12px;

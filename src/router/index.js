@@ -3,17 +3,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'biblioteca',
-    component: () => import('../views/BibliotecaView.vue')
+    name: 'library',
+    component: () => import('../views/LibraryView.vue')
   },
   {
     path: '/manga/:id',
-    name: 'detalle',
-    component: () => import('../views/DetalleView.vue')
+    name: 'detail',
+    component: () => import('../views/DetailView.vue')
   },
   {
     path: '/search',
-    name: 'buscar',
+    name: 'search',
     component: () => import('../views/SearchView.vue')
   },
   {

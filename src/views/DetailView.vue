@@ -72,7 +72,7 @@
             <div class="progress-bar">
               <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
             </div>
-            <span class="progress-text">{{ tomosRead }} / {{ tomosTotal }} {{ $t('library.stats.volumes') }}</span>
+            <span class="progress-text">{{ volumesRead }} / {{ volumesTotal }} {{ $t('library.stats.volumes') }}</span>
           </div>
 
           <div v-if="store.currentManga.notes" class="notes">
@@ -82,10 +82,10 @@
         </div>
       </div>
 
-      <div class="tomos-section animate-in" style="animation-delay: 0.2s">
-        <div class="tomos-header">
+      <div class="volumes-section animate-in" style="animation-delay: 0.2s">
+        <div class="volumes-header">
           <h2>{{ $t('manga.volumes') }}</h2>
-          <div class="tomos-controls">
+          <div class="volumes-controls">
             <button
               class="btn btn-ghost view-toggle"
               @click="toggleViewMode"
@@ -120,30 +120,30 @@
           <div
             v-if="store.currentManga.volumes?.length > 0 || missingVolumeNumbers.length > 0"
             :key="viewMode"
-            class="tomos-list"
+            class="volumes-list"
             :class="{ 'grid-view': viewMode === 'grid' }"
           >
-            <template v-for="(tomo, index) in volumesWithGaps" :key="tomo.id">
+            <template v-for="(volume, index) in volumesWithGaps" :key="volume.id">
               <VolumePlaceholder
-                v-if="tomo.placeholder"
-                :volume-number="tomo.volume_number"
-                class="tomo-item-animate"
+                v-if="volume.placeholder"
+                :volume-number="volume.volume_number"
+                class="volume-item-animate"
                 :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-                @click="openAddMissingVolume(tomo.volume_number)"
+                @click="openAddMissingVolume(volume.volume_number)"
               />
-              <TomoRow
+              <VolumeRow
                 v-else
-                :tomo="tomo"
+                :tomo="volume"
                 :index="index"
-                class="tomo-item-animate"
+                class="volume-item-animate"
                 :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-                @toggle-status="cycleVolumeStatus(tomo)"
-                @toggle-acquired="toggleVolumeAcquired(tomo)"
-                @context-menu="(e) => openTomoContextMenu(e, tomo)"
+                @toggle-status="cycleVolumeStatus(volume)"
+                @toggle-acquired="toggleVolumeAcquired(volume)"
+                @context-menu="(e) => openVolumeContextMenu(e, volume)"
               />
             </template>
           </div>
-          <div v-else key="empty" class="empty-tomos">
+          <div v-else key="empty" class="empty-volumes">
             <p>{{ $t('manga.noVolumes') }}</p>
             <button class="btn btn-secondary" @click="showAddVolumeModal = true">{{ $t('manga.addFirstVolume') }}</button>
           </div>
@@ -151,13 +151,13 @@
       </div>
 
       <ContextMenu
-        ref="tomoContextMenu"
-        :manga="selectedTomo"
-        :is-tomo="true"
-        @edit="editTomo"
-        @delete="confirmDeleteVolume(selectedTomo)"
-        @toggle-status="cycleVolumeStatus(selectedTomo)"
-        @toggle-acquired="toggleVolumeAcquired(selectedTomo)"
+        ref="volumeContextMenu"
+        :manga="selectedVolume"
+        :is-volume="true"
+        @edit="editVolume"
+        @delete="confirmDeleteVolume(selectedVolume)"
+        @toggle-status="cycleVolumeStatus(selectedVolume)"
+        @toggle-acquired="toggleVolumeAcquired(selectedVolume)"
       />
 
       <div class="danger-zone">
@@ -297,7 +297,7 @@ import { useMangaStore } from '../stores/mangas.js'
 import { addVolume as apiAddVolume, updateVolume, deleteVolume as apiDeleteVolume } from '../api/index.js'
 import { getCoverByISBN } from '../api/covers.js'
 import { useSeo } from '../composables/useSeo.js'
-import TomoRow from '../components/TomoRow.vue'
+import VolumeRow from '../components/VolumeRow.vue'
 import VolumePlaceholder from '../components/VolumePlaceholder.vue'
 import Modal from '../components/Modal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
@@ -319,8 +319,7 @@ const coverUrl = ref(null)
 const coverLoading = ref(false)
 const imageLoaded = ref(false)
 const selectedVolume = ref(null)
-const selectedTomo = ref(null)
-const tomoContextMenu = ref(null)
+const volumeContextMenu = ref(null)
 const viewMode = ref('list')
 const confirmConfig = ref({
   title: '',
@@ -362,11 +361,11 @@ const initials = computed(() => {
   return store.currentManga.title.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
 })
 
-const tomosTotal = computed(() => store.currentManga?.volumes?.length || 0)
-const tomosRead = computed(() => store.currentManga?.volumes?.filter(t => t.status === 'read').length || 0)
+const volumesTotal = computed(() => store.currentManga?.volumes?.length || 0)
+const volumesRead = computed(() => store.currentManga?.volumes?.filter(t => t.status === 'read').length || 0)
 const progressPercent = computed(() => {
-  if (tomosTotal.value === 0) return 0
-  return Math.round((tomosRead.value / tomosTotal.value) * 100)
+  if (volumesTotal.value === 0) return 0
+  return Math.round((volumesRead.value / volumesTotal.value) * 100)
 })
 
 const missingVolumeNumbers = computed(() => {
@@ -510,16 +509,16 @@ function openEditVolumeModal(volume) {
   showEditVolumeModal.value = true
 }
 
-function openTomoContextMenu(event, tomo) {
-  selectedTomo.value = tomo
-  tomoContextMenu.value?.show(event, tomo)
+function openVolumeContextMenu(event, volume) {
+  selectedVolume.value = volume
+  volumeContextMenu.value?.show(event, volume)
 }
 
-function editTomo() {
-  if (selectedTomo.value) {
-    openEditVolumeModal(selectedTomo.value)
+function editVolume() {
+  if (selectedVolume.value) {
+    openEditVolumeModal(selectedVolume.value)
   }
-  tomoContextMenu.value?.close()
+  volumeContextMenu.value?.close()
 }
 
 async function saveEditVolume() {
@@ -862,11 +861,11 @@ onMounted(async () => {
   color: var(--text-secondary);
 }
 
-.tomos-section {
+.volumes-section {
   margin-bottom: 48px;
 }
 
-.tomos-header {
+.volumes-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -875,11 +874,11 @@ onMounted(async () => {
   gap: 12px;
 }
 
-.tomos-header h2 {
+.volumes-header h2 {
   font-size: 20px;
 }
 
-.tomos-controls {
+.volumes-controls {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -889,38 +888,38 @@ onMounted(async () => {
   padding: 8px;
 }
 
-.tomos-list {
+.volumes-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.tomos-list.grid-view {
+.volumes-list.grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
 }
 
-.tomos-list.grid-view :deep(.tomo-row) {
+.volumes-list.grid-view :deep(.volume-row) {
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: 0;
 }
 
-.tomos-list.grid-view :deep(.tomo-cover) {
+.volumes-list.grid-view :deep(.volume-cover) {
   width: 100%;
   aspect-ratio: 2 / 3;
 }
 
-.tomos-list.grid-view :deep(.tomo-cover img),
-.tomos-list.grid-view :deep(.tomo-cover .cover-placeholder),
-.tomos-list.grid-view :deep(.tomo-cover .cover-loading) {
+.volumes-list.grid-view :deep(.volume-cover img),
+.volumes-list.grid-view :deep(.volume-cover .cover-placeholder),
+.volumes-list.grid-view :deep(.volume-cover .cover-loading) {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.tomos-list.grid-view :deep(.tomo-info) {
+.volumes-list.grid-view :deep(.volume-info) {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -930,7 +929,7 @@ onMounted(async () => {
   padding: 12px 8px 8px;
 }
 
-.tomos-list.grid-view :deep(.tomo-title) {
+.volumes-list.grid-view :deep(.volume-title) {
   width: 100%;
   text-align: center;
   font-size: 13px;
@@ -942,40 +941,40 @@ onMounted(async () => {
   -webkit-box-orient: vertical;
 }
 
-.tomos-list.grid-view :deep(.tomo-author) {
+.volumes-list.grid-view :deep(.volume-author) {
   width: 100%;
   text-align: center;
   font-size: 11px;
 }
 
-.tomos-list.grid-view :deep(.tomo-actions) {
+.volumes-list.grid-view :deep(.volume-actions) {
   justify-content: center;
   padding-bottom: 8px;
 }
 
-.tomos-list.grid-view :deep(.volume-placeholder) {
+.volumes-list.grid-view :deep(.volume-placeholder) {
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: 0;
 }
 
-.tomos-list.grid-view :deep(.volume-placeholder .cover-placeholder) {
+.volumes-list.grid-view :deep(.volume-placeholder .cover-placeholder) {
   width: 100%;
   height: 100%;
   aspect-ratio: 2 / 3;
 }
 
-.tomos-list.grid-view :deep(.volume-placeholder .info) {
+.volumes-list.grid-view :deep(.volume-placeholder .info) {
   padding: 12px 8px 8px;
 }
 
-.tomos-list.grid-view :deep(.volume-placeholder .title),
-.tomos-list.grid-view :deep(.volume-placeholder .warning) {
+.volumes-list.grid-view :deep(.volume-placeholder .title),
+.volumes-list.grid-view :deep(.volume-placeholder .warning) {
   font-size: 13px;
   text-align: center;
 }
 
-.tomos-list.grid-view :deep(.volume-placeholder .actions) {
+.volumes-list.grid-view :deep(.volume-placeholder .actions) {
   justify-content: center;
   padding-bottom: 8px;
 }
@@ -1005,19 +1004,19 @@ onMounted(async () => {
   transform: scale(1.05);
 }
 
-.tomo-item-animate {
+.volume-item-animate {
   opacity: 0;
   animation: slide-up 0.4s ease-out forwards;
 }
 
-.empty-tomos {
+.empty-volumes {
   text-align: center;
   padding: 48px 24px;
   background: var(--bg-secondary);
   border-radius: 8px;
 }
 
-.empty-tomos p {
+.empty-volumes p {
   color: var(--text-secondary);
   margin-bottom: 16px;
 }

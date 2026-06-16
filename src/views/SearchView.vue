@@ -148,7 +148,7 @@
 
       <div v-if="selectedMangaId && !showNewMangaForm" class="add-tomo-actions">
         <div v-if="autoMatchedId === selectedMangaId" class="auto-match-actions">
-          <button class="btn btn-primary btn-lg" @click="addTomoToSelected" :disabled="adding">
+          <button class="btn btn-primary btn-lg" @click="addVolumeToSelected" :disabled="adding">
             <span v-if="adding" class="spinner-sm"></span>
             <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
               <line x1="12" y1="5" x2="12" y2="19"/>
@@ -156,7 +156,7 @@
             </svg>
             {{ $t('volume.addTo') }} {{ selectedMangaTitle }}
           </button>
-          <button class="btn btn-secondary btn-lg" @click="openEditTomoModal" :disabled="adding">
+          <button class="btn btn-secondary btn-lg" @click="openEditVolumeModal" :disabled="adding">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -164,7 +164,7 @@
             {{ $t('common.edit') }}
           </button>
         </div>
-        <button v-else class="btn btn-primary btn-lg" @click="addTomoToSelected" :disabled="adding">
+        <button v-else class="btn btn-primary btn-lg" @click="addVolumeToSelected" :disabled="adding">
           <span v-if="adding" class="spinner-sm"></span>
           <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
             <line x1="12" y1="5" x2="12" y2="19"/>
@@ -194,23 +194,23 @@
       <button class="btn btn-secondary" @click="reset">{{ $t('search.addAnother') }}</button>
     </div>
 
-    <Modal v-model="showEditTomoModal" :title="$t('volume.editVolume')">
-      <form @submit.prevent="addTomoToSelected" class="edit-tomo-form">
+    <Modal v-model="showEditVolumeModal" :title="$t('volume.editVolume')">
+      <form @submit.prevent="addVolumeToSelected" class="edit-tomo-form">
         <div class="form-group">
           <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="editTomoForm.isbn" />
+          <input type="text" v-model="editVolumeForm.isbn" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
-          <input type="number" v-model.number="editTomoForm.volume_number" min="1" />
+          <input type="number" v-model.number="editVolumeForm.volume_number" min="1" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.title') }}</label>
-          <input type="text" v-model="editTomoForm.title" />
+          <input type="text" v-model="editVolumeForm.title" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
-          <select v-model="editTomoForm.status">
+          <select v-model="editVolumeForm.status">
             <option value="unread">{{ $t('status.unread') }}</option>
             <option value="reading">{{ $t('status.reading') }}</option>
             <option value="read">{{ $t('status.read') }}</option>
@@ -218,14 +218,14 @@
         </div>
         <div class="form-group checkbox-group">
           <label>
-            <input type="checkbox" v-model="editTomoForm.acquired" />
+            <input type="checkbox" v-model="editVolumeForm.acquired" />
             {{ $t('volume.acquired') }}
           </label>
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showEditTomoModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="addTomoToSelected">{{ $t('common.add') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showEditVolumeModal = false">{{ $t('common.cancel') }}</button>
+        <button type="submit" class="btn btn-primary" @click="addVolumeToSelected">{{ $t('common.add') }}</button>
       </template>
     </Modal>
   </div>
@@ -249,8 +249,8 @@ const autoMatchedId = ref(null)
 const showNewMangaForm = ref(false)
 const newMangaTitle = ref('')
 const addedSuccess = ref(false)
-const showEditTomoModal = ref(false)
-const editTomoForm = ref({
+const showEditVolumeModal = ref(false)
+const editVolumeForm = ref({
   isbn: '',
   title: '',
   volume_number: null,
@@ -310,7 +310,7 @@ async function search() {
   selectedMangaId.value = null
   autoMatchedId.value = null
   showNewMangaForm.value = false
-  showEditTomoModal.value = false
+  showEditVolumeModal.value = false
   newMangaTitle.value = ''
 
   try {
@@ -348,33 +348,33 @@ async function createAndSelect() {
     selectedMangaId.value = manga.id
     autoMatchedId.value = manga.id
     showNewMangaForm.value = false
-    await addTomoToSelected()
+    await addVolumeToSelected()
   } catch (err) {
     error.value = err.message || 'Error creating manga'
   }
 }
 
-function openEditTomoModal() {
+function openEditVolumeModal() {
   if (!result.value) return
-  editTomoForm.value = {
+  editVolumeForm.value = {
     isbn: result.value.isbn || '',
     title: result.value.title || '',
     volume_number: result.value.volumeNumber || null,
     status: 'unread',
     acquired: true
   }
-  showEditTomoModal.value = true
+  showEditVolumeModal.value = true
 }
 
-async function addTomoToSelected() {
+async function addVolumeToSelected() {
   if (!selectedMangaId.value || !result.value) return
 
   adding.value = true
   error.value = ''
 
   try {
-    const data = showEditTomoModal.value
-      ? { ...editTomoForm.value, cover_url: result.value.cover_url || null }
+    const data = showEditVolumeModal.value
+      ? { ...editVolumeForm.value, cover_url: result.value.cover_url || null }
       : {
           isbn: result.value.isbn,
           title: result.value.title,
@@ -385,7 +385,7 @@ async function addTomoToSelected() {
         }
 
     await apiAddVolume(selectedMangaId.value, data)
-    showEditTomoModal.value = false
+    showEditVolumeModal.value = false
     addedSuccess.value = true
   } catch (err) {
     error.value = err.message || 'Error adding volume'
@@ -416,10 +416,10 @@ function reset() {
   selectedMangaId.value = null
   autoMatchedId.value = null
   showNewMangaForm.value = false
-  showEditTomoModal.value = false
+  showEditVolumeModal.value = false
   newMangaTitle.value = ''
   isbnCopied.value = false
-  editTomoForm.value = {
+  editVolumeForm.value = {
     isbn: '',
     title: '',
     volume_number: null,
@@ -844,7 +844,7 @@ onMounted(() => {
   flex: 1;
 }
 
-.add-tomo-actions {
+.add-volume-actions {
   display: flex;
   justify-content: center;
 }
@@ -856,7 +856,7 @@ onMounted(() => {
   justify-content: center;
 }
 
-.edit-tomo-form {
+.edit-volume-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
