@@ -23,21 +23,37 @@
 
       <div class="detail-content animate-in-cover">
         <div class="cover-section">
-          <div v-if="coverLoading" class="cover-loading">
-            <div class="spinner-sm"></div>
-          </div>
-          <img
-            v-else-if="coverUrl"
-            :src="coverUrl"
-            :alt="store.currentManga.title"
-            class="cover animate-slide-left"
-            loading="lazy"
-            decoding="async"
-            @load="imageLoaded = true"
-            @error="imageLoaded = true"
-          />
-          <div v-else class="cover-placeholder">
-            {{ initials }}
+          <div class="cover-wrapper" @mouseenter="showCoverEdit = true" @mouseleave="showCoverEdit = false">
+            <div class="cover-container">
+              <Transition name="cover-fade">
+                <img
+                  v-if="coverUrl && !coverLoading"
+                  :key="coverUrl"
+                  :src="coverUrl"
+                  :alt="store.currentManga.title"
+                  class="cover"
+                  loading="lazy"
+                  decoding="async"
+                  @load="imageLoaded = true"
+                  @error="imageLoaded = true"
+                />
+                <div v-else-if="!coverLoading" class="cover-placeholder" :key="'placeholder'">
+                  {{ initials }}
+                </div>
+                <div v-else class="cover-loading">
+                  <div class="spinner-sm"></div>
+                </div>
+              </Transition>
+            </div>
+            <Transition name="fade">
+              <button v-if="showCoverEdit" class="cover-edit-btn" @click="openCoverModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21,15 16,10 5,21"/>
+                </svg>
+              </button>
+            </Transition>
           </div>
         </div>
 
@@ -263,6 +279,13 @@
       type="danger"
       @confirm="confirmConfig.onConfirm"
     />
+
+    <CoverModal
+      v-model="showCoverModal"
+      :volumes="store.currentManga?.volumes || []"
+      :current-cover-url="store.currentManga?.cover_url || ''"
+      @save="saveCover"
+    />
   </div>
 </template>
 
@@ -279,6 +302,7 @@ import VolumePlaceholder from '../components/VolumePlaceholder.vue'
 import Modal from '../components/Modal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContextMenu from '../components/ContextMenu.vue'
+import CoverModal from '../components/CoverModal.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -289,6 +313,8 @@ const showEditModal = ref(false)
 const showAddVolumeModal = ref(false)
 const showEditVolumeModal = ref(false)
 const showConfirm = ref(false)
+const showCoverModal = ref(false)
+const showCoverEdit = ref(false)
 const coverUrl = ref(null)
 const coverLoading = ref(false)
 const imageLoaded = ref(false)
@@ -394,11 +420,10 @@ useSeo({
 })
 
 async function fetchCover() {
-  imageLoaded.value = false
-
   if (store.currentManga?.cover_url) {
     coverUrl.value = store.currentManga.cover_url
     coverLoading.value = false
+    imageLoaded.value = true
     return
   }
 
@@ -409,6 +434,7 @@ async function fetchCover() {
     return
   }
 
+  imageLoaded.value = false
   coverLoading.value = true
   try {
     coverUrl.value = await getCoverByISBN(isbn)
@@ -537,6 +563,17 @@ function toggleViewMode() {
   viewMode.value = viewMode.value === 'list' ? 'grid' : 'list'
 }
 
+function openCoverModal() {
+  showCoverModal.value = true
+}
+
+async function saveCover(url) {
+  if (!url) return
+  await store.editManga(route.params.id, { cover_url: url })
+  coverUrl.value = url
+  showCoverModal.value = false
+}
+
 watch(() => route.params.id, async () => {
   await store.fetchManga(route.params.id)
   await fetchCover()
@@ -662,43 +699,83 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 
-.cover {
+.cover-wrapper {
+  position: relative;
   width: 280px;
+  aspect-ratio: 2/3;
+}
+
+.cover-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-container img,
+.cover-container .cover-placeholder,
+.cover-container .cover-loading {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 4px 20px var(--shadow);
 }
 
-.cover-placeholder {
-  width: 280px;
-  aspect-ratio: 2/3;
+.cover-container .cover-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border) 100%);
-  border-radius: 8px;
   font-family: 'Noto Serif JP', serif;
   font-size: 64px;
   font-weight: 700;
   color: var(--text-secondary);
 }
 
-.cover-loading {
-  width: 280px;
-  aspect-ratio: 2/3;
+.cover-container .cover-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border) 100%);
-  border-radius: 8px;
 }
 
-.spinner-sm {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
+.cover-edit-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.cover-edit-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.cover-edit-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.cover-fade-enter-active,
+.cover-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.cover-fade-enter-from,
+.cover-fade-leave-to {
+  opacity: 0;
 }
 
 .info-section {
@@ -874,6 +951,16 @@ onMounted(async () => {
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .view-switch-enter-from {
   opacity: 0;
   transform: scale(0.95);
@@ -944,7 +1031,7 @@ onMounted(async () => {
     align-items: center;
   }
 
-  .cover, .cover-placeholder {
+  .cover-wrapper {
     width: 200px;
   }
 

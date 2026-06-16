@@ -90,15 +90,41 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  const { title, author, publisher, cover_url, notes } = req.body;
-
   const existing = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Manga not found' });
 
-  db.prepare(`
-    UPDATE mangas SET title = ?, author = ?, publisher = ?, cover_url = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
-  `).run(title, author, publisher, cover_url, notes, req.params.id);
+  const fields = [];
+  const values = [];
+
+  if (req.body.title !== undefined) {
+    fields.push('title = ?');
+    values.push(req.body.title);
+  }
+  if (req.body.author !== undefined) {
+    fields.push('author = ?');
+    values.push(req.body.author);
+  }
+  if (req.body.publisher !== undefined) {
+    fields.push('publisher = ?');
+    values.push(req.body.publisher);
+  }
+  if (req.body.cover_url !== undefined) {
+    fields.push('cover_url = ?');
+    values.push(req.body.cover_url);
+  }
+  if (req.body.notes !== undefined) {
+    fields.push('notes = ?');
+    values.push(req.body.notes);
+  }
+
+  if (fields.length === 0) {
+    return res.status(400).json({ error: 'No fields to update' });
+  }
+
+  fields.push('updated_at = CURRENT_TIMESTAMP');
+  values.push(req.params.id);
+
+  db.prepare(`UPDATE mangas SET ${fields.join(', ')} WHERE id = ?`).run(...values);
 
   const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id);
   res.json(manga);
