@@ -38,16 +38,89 @@
         </div>
       </div>
     </section>
+
+    <section class="settings-section backup-section">
+      <h2>{{ $t('settings.backup') }}</h2>
+      <p class="section-description">{{ $t('settings.backupDescription') }}</p>
+
+      <div class="backup-warning">
+        <p>{{ $t('settings.backupWarning') }}</p>
+      </div>
+
+      <div class="backup-actions">
+        <button class="btn btn-secondary" @click="handleExport" :disabled="exporting">
+          {{ exporting ? $t('common.loading') : $t('settings.export') }}
+        </button>
+        <button class="btn btn-primary" @click="openImportModal" :disabled="importing">
+          {{ $t('settings.import') }}
+        </button>
+      </div>
+    </section>
+
+    <div v-if="showFileModal" class="modal-overlay" @click.self="closeFileModal">
+      <div class="modal">
+        <h3>{{ $t('settings.import') }}</h3>
+        <div class="file-input-wrapper">
+          <label for="backup-file">{{ $t('settings.backupFile') }}</label>
+          <input type="file" id="backup-file" accept=".json" @change="handleFileSelect" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeFileModal">{{ $t('common.cancel') }}</button>
+          <button class="btn btn-primary" @click="openConfirmModal" :disabled="!selectedFile">{{ $t('common.next') }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showConfirmModal" class="modal-overlay" @click.self="closeConfirmModal">
+      <div class="modal">
+        <h3>{{ $t('settings.restoreConfirmTitle') }}</h3>
+        <p class="confirm-text">{{ $t('settings.restoreConfirmText') }}</p>
+        <div v-if="pendingBackup" class="backup-info">
+          <p><strong>{{ $t('settings.backupDate') }}:</strong> {{ formatDate(pendingBackup.exported_at) }}</p>
+          <p><strong>{{ pendingBackup.data.mangas.length }}</strong> {{ $t('settings.backupMangas') }}</p>
+          <p><strong>{{ pendingBackup.data.volumes.length }}</strong> {{ $t('settings.backupVolumes') }}</p>
+        </div>
+        <div class="restore-input-wrapper">
+          <label for="restore-confirm">{{ $t('settings.restoreConfirmInput') }}</label>
+          <input
+            type="text"
+            id="restore-confirm"
+            v-model="restoreConfirmation"
+            :placeholder="$t('settings.restoreConfirmInput')"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeConfirmModal">{{ $t('common.cancel') }}</button>
+          <button
+            class="btn btn-danger"
+            @click="handleRestore"
+            :disabled="restoreConfirmation !== 'Tsundoku'"
+          >
+            {{ $t('settings.restore') }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '../stores/settings.js'
+import { useRouter } from 'vue-router'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+const router = useRouter()
+
+const exporting = ref(false)
+const importing = ref(false)
+const showFileModal = ref(false)
+const showConfirmModal = ref(false)
+const selectedFile = ref(null)
+const pendingBackup = ref(null)
+const restoreConfirmation = ref('')
 
 onMounted(() => {
   settingsStore.fetchApiConfig()
@@ -59,6 +132,83 @@ async function handleToggle(name, enabled) {
   } catch (err) {
     console.error('Failed to toggle API:', err)
   }
+}
+
+async function handleExport() {
+  exporting.value = true
+  try {
+    await settingsStore.performExport()
+  } catch (err) {
+    console.error('Failed to export:', err)
+  } finally {
+    exporting.value = false
+  }
+}
+
+function openImportModal() {
+  showFileModal.value = true
+  selectedFile.value = null
+  pendingBackup.value = null
+}
+
+function closeFileModal() {
+  showFileModal.value = false
+  selectedFile.value = null
+}
+
+function handleFileSelect(event) {
+  const file = event.target.files[0]
+  if (file) {
+    selectedFile.value = file
+  }
+}
+
+async function openConfirmModal() {
+  if (!selectedFile.value) return
+
+  importing.value = true
+  try {
+    const text = await selectedFile.value.text()
+    const data = JSON.parse(text)
+    pendingBackup.value = data
+    showFileModal.value = false
+    showConfirmModal.value = true
+    restoreConfirmation.value = ''
+  } catch (err) {
+    console.error('Failed to read file:', err)
+    alert(t('settings.restoreError'))
+  } finally {
+    importing.value = false
+  }
+}
+
+function closeConfirmModal() {
+  showConfirmModal.value = false
+  pendingBackup.value = null
+  restoreConfirmation.value = ''
+}
+
+async function handleRestore() {
+  if (restoreConfirmation.value !== 'Tsundoku') return
+
+  importing.value = true
+  try {
+    await settingsStore.performImport(selectedFile.value)
+    router.push('/')
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
+  } catch (err) {
+    console.error('Failed to restore:', err)
+    alert(t('settings.restoreError'))
+  } finally {
+    importing.value = false
+  }
+}
+
+function formatDate(isoString) {
+  if (!isoString) return ''
+  return new Date(isoString).toLocaleString()
 }
 </script>
 
@@ -76,6 +226,10 @@ async function handleToggle(name, enabled) {
 .settings-section {
   max-width: 600px;
   margin: 0 auto;
+}
+
+.backup-section {
+  margin-top: 48px;
 }
 
 .settings-section h2 {
@@ -214,5 +368,151 @@ async function handleToggle(name, enabled) {
 
 .toggle-switch input:checked + .toggle-slider:before {
   transform: translateX(22px);
+}
+
+.backup-warning {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.backup-warning p {
+  margin: 0;
+  color: #f59e0b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background: #e63946;
+  color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  border: 1px solid var(--border);
+}
+
+.modal h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.file-input-wrapper {
+  margin-bottom: 20px;
+}
+
+.file-input-wrapper label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.file-input-wrapper input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.backup-info {
+  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.backup-info p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.restore-input-wrapper {
+  margin-bottom: 20px;
+}
+
+.restore-input-wrapper label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.restore-input-wrapper input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 </style>

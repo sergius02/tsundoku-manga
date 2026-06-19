@@ -141,3 +141,25 @@ export async function updateApiConfig(name, enabled) {
   }
   return res.json()
 }
+
+export async function exportBackup() {
+  const res = await fetch(`${BASE_URL}/backup`, { credentials: 'include' })
+  if (!res.ok) throw new Error('Error exporting backup')
+  return res.json()
+}
+
+export async function importBackup(file) {
+  const text = await file.text()
+  const data = JSON.parse(text)
+  const res = await fetch(`${BASE_URL}/backup/restore`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.error || 'Error restoring backup')
+  }
+  return res.json()
+}

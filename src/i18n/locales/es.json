@@ -12,7 +12,8 @@
     "back": "Volver",
     "view": "Ver",
     "retry": "Reintentar",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "next": "Siguiente"
   },
   "contextMenu": {
     "markAllRead": "Marcar todos como leídos",
@@ -171,7 +172,22 @@
     "mandatory": "Obligatoria",
     "enabled": "Activada",
     "disabled": "Desactivada",
-    "apiKeyNeeded": "Requiere configurar GOOGLE_BOOKS_API_KEY en el servidor"
+    "apiKeyNeeded": "Requiere configurar GOOGLE_BOOKS_API_KEY en el servidor",
+    "backup": "Backup",
+    "backupDescription": "Exporta o importa los datos de tu biblioteca.",
+    "backupWarning": "⚠️ Funcionalidad experimental: Importar un backup borrará TODOS los datos actuales y los reemplazará con los datos del backup. Esta acción no se puede deshacer.",
+    "export": "Exportar",
+    "import": "Importar",
+    "restoreConfirmTitle": "Confirmar restauración",
+    "restoreConfirmText": "Esto borrará TODOS los datos actuales y los reemplazará con los del backup. Esta acción no se puede deshacer.",
+    "restoreConfirmInput": "Escribe Tsundoku para confirmar",
+    "restore": "Restaurar",
+    "restoreSuccess": "Backup restaurado correctamente",
+    "restoreError": "Error al restaurar el backup",
+    "backupFile": "Archivo de backup",
+    "backupDate": "Exportado el",
+    "backupMangas": "mangas",
+    "backupVolumes": "volúmenes"
   },
   "auth": {
     "loginRequired": "Inicia sesión para continuar",

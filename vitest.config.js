@@ -7,7 +7,7 @@ export default defineConfig({
       script: 'happy-dom',
       inverse: false
     },
-    include: ['src/**/*.test.js'],
+    include: ['src/**/*.test.js', 'server/**/*.test.js'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -8,6 +8,7 @@ import { dirname, join } from 'path';
 import mangasRouter from './routes/mangas.js';
 import searchRouter from './routes/search.js';
 import configRouter from './routes/config.js';
+import backupRouter from './routes/backup.js';
 import authRouter, { authMiddleware } from './routes/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +26,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/mangas', authMiddleware, mangasRouter);
 app.use('/api/search', authMiddleware, searchRouter);
 app.use('/api/config', authMiddleware, configRouter);
+app.use('/api/backup', authMiddleware, backupRouter);
 
 app.use(express.static(join(__dirname, '../public')));
 
