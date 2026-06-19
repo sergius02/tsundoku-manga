@@ -28,21 +28,6 @@ defineEmits(['click'])
 </script>
 
 <style scoped>
-.volume-placeholder {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  background: var(--bg-card);
-  border-radius: 8px;
-  border: 2px dashed var(--accent);
-  transition: background-color 0.2s;
-}
-
-.volume-placeholder:hover {
-  background-color: var(--bg-secondary);
-}
-
 .cover-placeholder {
   position: relative;
   width: 80px;
@@ -69,11 +54,6 @@ defineEmits(['click'])
   color: var(--accent);
   text-align: center;
   line-height: 1.2;
-}
-
-.actions {
-  display: flex;
-  width: 100%;
 }
 
 .add-btn {

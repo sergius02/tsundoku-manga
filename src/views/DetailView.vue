@@ -86,26 +86,6 @@
         <div class="volumes-header">
           <h2>{{ $t('manga.volumes') }}</h2>
           <div class="volumes-controls">
-            <button
-              class="btn btn-ghost view-toggle"
-              @click="toggleViewMode"
-              :title="viewMode === 'list' ? $t('view.grid') : $t('view.list')"
-            >
-              <svg v-if="viewMode === 'list'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                <rect x="3" y="3" width="7" height="7"/>
-                <rect x="14" y="3" width="7" height="7"/>
-                <rect x="3" y="14" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/>
-              </svg>
-              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                <line x1="8" y1="6" x2="21" y2="6"/>
-                <line x1="8" y1="12" x2="21" y2="12"/>
-                <line x1="8" y1="18" x2="21" y2="18"/>
-                <line x1="3" y1="6" x2="3.01" y2="6"/>
-                <line x1="3" y1="12" x2="3.01" y2="12"/>
-                <line x1="3" y1="18" x2="3.01" y2="18"/>
-              </svg>
-            </button>
             <button class="btn btn-primary" @click="showAddVolumeModal = true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -119,9 +99,8 @@
         <Transition name="view-switch" mode="out-in">
           <div
             v-if="store.currentManga.volumes?.length > 0 || missingVolumeNumbers.length > 0"
-            :key="viewMode"
-            class="volumes-list"
-            :class="{ 'grid-view': viewMode === 'grid' }"
+            :key="'volumes'"
+            class="volumes-list grid-view"
           >
             <template v-for="(volume, index) in volumesWithGaps" :key="volume.id">
               <VolumePlaceholder
@@ -320,7 +299,6 @@ const coverLoading = ref(false)
 const imageLoaded = ref(false)
 const selectedVolume = ref(null)
 const volumeContextMenu = ref(null)
-const viewMode = ref('grid')
 const confirmConfig = ref({
   title: '',
   message: '',
@@ -556,10 +534,6 @@ async function confirmDelete() {
       router.push('/')
     }
   )
-}
-
-function toggleViewMode() {
-  viewMode.value = viewMode.value === 'list' ? 'grid' : 'list'
 }
 
 function openCoverModal() {
@@ -884,16 +858,6 @@ onMounted(async () => {
   gap: 12px;
 }
 
-.view-toggle {
-  padding: 8px;
-}
-
-.volumes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .volumes-list.grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -912,6 +876,8 @@ onMounted(async () => {
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .volumes-list.grid-view :deep(.volume-cover) {
@@ -964,6 +930,8 @@ onMounted(async () => {
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px dashed var(--accent);
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .cover-placeholder) {

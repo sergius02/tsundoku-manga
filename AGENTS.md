@@ -25,6 +25,8 @@ Test files:
 - `src/stores/*.test.js` - Pinia store tests (31 tests)
 - `src/views/*.test.js` - View computed logic tests (41 tests)
 
+**Important**: After implementing changes, ALWAYS run `npm run test` before testing with `npm run build` or `npm run dev`. All tests must pass before committing.
+
 ## Key Quirks
 
 ### API Proxy

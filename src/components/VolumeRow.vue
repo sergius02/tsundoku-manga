@@ -133,65 +133,8 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.volume-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  background: var(--bg-card);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  position: relative;
-}
-
-.volume-row:hover {
-  background-color: var(--bg-secondary);
-}
-
-.volume-cover {
-  flex-shrink: 0;
-}
-
 .volume-cover :deep(.status-overlay) {
   display: none;
-}
-
-.volume-cover img {
-  width: 80px;
-  height: 113px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.cover-loading {
-  width: 80px;
-  height: 113px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-secondary);
-  border-radius: 4px;
-}
-
-.cover-placeholder {
-  width: 80px;
-  height: 113px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-secondary);
-  border-radius: 4px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-}
-
-.volume-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .acquired-toggle {
