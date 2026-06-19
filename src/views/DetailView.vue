@@ -320,7 +320,7 @@ const coverLoading = ref(false)
 const imageLoaded = ref(false)
 const selectedVolume = ref(null)
 const volumeContextMenu = ref(null)
-const viewMode = ref('list')
+const viewMode = ref('grid')
 const confirmConfig = ref({
   title: '',
   message: '',
@@ -925,14 +925,14 @@ onMounted(async () => {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 8px 8px;
+  gap: 2px;
+  padding: 0 6px 2px;
 }
 
 .volumes-list.grid-view :deep(.volume-title) {
   width: 100%;
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -944,12 +944,12 @@ onMounted(async () => {
 .volumes-list.grid-view :deep(.volume-author) {
   width: 100%;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .volumes-list.grid-view :deep(.volume-actions) {
   justify-content: center;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder) {
@@ -965,18 +965,18 @@ onMounted(async () => {
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .info) {
-  padding: 12px 8px 8px;
+  padding: 0 6px 2px;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .title),
 .volumes-list.grid-view :deep(.volume-placeholder .warning) {
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .actions) {
   justify-content: center;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
 }
 
 .view-switch-enter-active,

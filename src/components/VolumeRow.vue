@@ -38,6 +38,7 @@
         <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/>
         </svg>
+        <span v-if="tomo.acquired" class="acquired-text">{{ $t('volume.inLibrary') }}</span>
       </button>
     </div>
   </div>
@@ -211,8 +212,9 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  gap: 6px;
   height: 32px;
+  padding: 0 10px;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -235,6 +237,11 @@ onUnmounted(() => {
 .acquired-toggle svg {
   width: 18px;
   height: 18px;
+}
+
+.acquired-toggle .acquired-text {
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .spinner-sm {

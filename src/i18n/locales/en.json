@@ -88,6 +88,7 @@
     "coverUrl": "Cover URL",
     "status": "Status",
     "acquired": "In my possession",
+    "inLibrary": "In library",
     "notAcquired": "Missing",
     "delete": "Delete volume",
     "deleteConfirm": "Delete this volume? This cannot be undone.",
