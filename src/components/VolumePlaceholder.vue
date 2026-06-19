@@ -88,18 +88,19 @@ defineEmits(['click'])
 
 .actions {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  width: 100%;
 }
 
 .add-btn {
+  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 10px 12px;
   background: rgba(230, 57, 70, 0.1);
-  border: 1px solid var(--accent);
-  border-radius: 4px;
+  border: none;
+  border-top: 1px solid var(--accent);
   color: var(--accent);
   font-size: 13px;
   font-weight: 500;

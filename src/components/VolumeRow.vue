@@ -31,14 +31,21 @@
         @click="$emit('toggle-acquired')"
         :title="tomo.acquired ? $t('volume.acquired') : $t('volume.notAcquired')"
       >
-        <svg v-if="tomo.acquired" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-          <polyline points="22 4 12 14.01 9 11.01"/>
-        </svg>
-        <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/>
-        </svg>
-        <span v-if="tomo.acquired" class="acquired-text">{{ $t('volume.inLibrary') }}</span>
+        <Transition name="fade" mode="out-in">
+          <span v-if="tomo.acquired" key="acquired" class="acquired-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span class="acquired-text">{{ $t('volume.inLibrary') }}</span>
+          </span>
+          <span v-else key="not-acquired" class="acquired-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            <span class="acquired-text">{{ $t('volume.notAcquired') }}</span>
+          </span>
+        </Transition>
       </button>
     </div>
   </div>
@@ -212,15 +219,14 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   height: 32px;
   padding: 0 10px;
-  background: transparent;
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
   color: var(--text-secondary);
-  transition: all 0.2s;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .acquired-toggle:hover {
@@ -229,9 +235,14 @@ onUnmounted(() => {
 }
 
 .acquired-toggle.acquired {
-  background: rgba(230, 57, 70, 0.15);
+  background: var(--accent);
   border-color: var(--accent);
-  color: var(--accent);
+  color: white;
+}
+
+.acquired-toggle.acquired:hover {
+  background: #c13b4a;
+  color: white;
 }
 
 .acquired-toggle svg {
@@ -239,9 +250,25 @@ onUnmounted(() => {
   height: 18px;
 }
 
+.acquired-toggle .acquired-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .acquired-toggle .acquired-text {
   font-size: 12px;
   font-weight: 500;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .spinner-sm {

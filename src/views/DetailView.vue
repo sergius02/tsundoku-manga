@@ -948,8 +948,21 @@ onMounted(async () => {
 }
 
 .volumes-list.grid-view :deep(.volume-actions) {
-  justify-content: center;
-  padding-bottom: 4px;
+  display: flex;
+  width: 100%;
+}
+
+.volumes-list.grid-view :deep(.acquired-toggle) {
+  flex: 1;
+  border-radius: 0 0 8px 8px;
+  border: none;
+  border-top: 1px solid var(--border);
+  height: 36px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.volumes-list.grid-view :deep(.acquired-toggle.acquired) {
+  border-top-color: var(--accent);
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder) {
@@ -975,8 +988,16 @@ onMounted(async () => {
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .actions) {
-  justify-content: center;
-  padding-bottom: 4px;
+  display: flex;
+  width: 100%;
+}
+
+.volumes-list.grid-view :deep(.volume-placeholder .add-btn) {
+  flex: 1;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--accent);
+  height: 36px;
 }
 
 .view-switch-enter-active,
