@@ -3,21 +3,19 @@
     class="status-overlay"
     :class="`status-${status}`"
     @click.stop="$emit('toggle-status')"
-    :title="statusLabel"
+    :title="label"
   >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <circle v-if="status === 'unread'" cx="12" cy="12" r="10"/>
-      <circle v-else-if="status === 'reading'" cx="12" cy="12" r="10"/>
-      <path v-else-if="status === 'read'" d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-      <polyline v-if="status === 'read'" points="22 4 12 14.01 9 11.01"/>
-    </svg>
-    <span class="status-text">{{ statusLabel }}</span>
+    <IconCheck v-if="status === 'read'" />
+    <IconCircle v-else />
+    <span class="status-text">{{ label }}</span>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useStatus } from '../composables/useStatus.js'
+import IconCheck from './icons/IconCheck.vue'
+import IconCircle from './icons/IconCircle.vue'
 
 const props = defineProps({
   status: {
@@ -29,16 +27,8 @@ const props = defineProps({
 
 defineEmits(['toggle-status'])
 
-const { t } = useI18n()
-
-const statusLabel = computed(() => {
-  const labels = {
-    unread: t('status.unread'),
-    reading: t('status.reading'),
-    read: t('status.read')
-  }
-  return labels[props.status] || props.status
-})
+const { statusLabel } = useStatus()
+const label = computed(() => statusLabel(props.status))
 </script>
 
 <style scoped>
@@ -67,7 +57,7 @@ const statusLabel = computed(() => {
   transform: scale(0.98);
 }
 
-.status-overlay svg {
+.status-overlay :deep(svg) {
   width: 14px;
   height: 14px;
   flex-shrink: 0;

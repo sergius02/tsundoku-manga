@@ -1,9 +1,6 @@
 <template>
   <div class="search-input-wrapper">
-    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
+    <IconSearch class="search-icon" />
     <input
       type="text"
       :value="modelValue"
@@ -17,16 +14,17 @@
       class="clear-btn"
       type="button"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
+      <IconClose />
     </button>
-    <div v-if="loading" class="spinner"></div>
+    <LoadingSpinner v-if="loading" size="sm" class="spinner" />
   </div>
 </template>
 
 <script setup>
+import IconSearch from './icons/IconSearch.vue'
+import IconClose from './icons/IconClose.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
+
 defineProps({
   modelValue: {
     type: String,
@@ -56,8 +54,6 @@ defineEmits(['update:modelValue'])
 .search-icon {
   position: absolute;
   left: 12px;
-  width: 18px;
-  height: 18px;
   color: var(--text-secondary);
   pointer-events: none;
 }
@@ -93,23 +89,8 @@ defineEmits(['update:modelValue'])
   color: var(--text-primary);
 }
 
-.clear-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
 .spinner {
   position: absolute;
   right: 12px;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>

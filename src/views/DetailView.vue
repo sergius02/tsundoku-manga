@@ -619,21 +619,6 @@ onMounted(async () => {
   animation: slide-in-left 0.5s ease-out forwards;
 }
 
-.animate-slide-left {
-  animation: slide-left 0.6s ease-out forwards;
-}
-
-@keyframes slide-left {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .detail-header {
   display: flex;
   justify-content: space-between;

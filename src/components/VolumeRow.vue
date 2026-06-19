@@ -6,7 +6,7 @@
   >
     <div class="volume-cover" @click.stop="$emit('toggle-status')">
       <div v-if="!imageLoaded && !hasDirectCover && hasCoverUrl" class="cover-loading">
-        <div class="spinner-sm"></div>
+        <LoadingSpinner size="sm" />
       </div>
       <img
         v-else-if="displayCover"
@@ -32,16 +32,11 @@
       >
         <Transition name="fade" mode="out-in">
           <span v-if="tomo.acquired" key="acquired" class="acquired-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+            <IconCheck />
             <span class="acquired-text">{{ $t('volume.inLibrary') }}</span>
           </span>
           <span v-else key="not-acquired" class="acquired-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-            </svg>
+            <IconCircle />
             <span class="acquired-text">{{ $t('volume.notAcquired') }}</span>
           </span>
         </Transition>
@@ -51,9 +46,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
-import { getBookInfoByISBN } from '../api/covers.js'
+import LoadingSpinner from './LoadingSpinner.vue'
+import IconCheck from './icons/IconCheck.vue'
+import IconCircle from './icons/IconCircle.vue'
+import { useCoverFetch } from '../composables/useCoverFetch.js'
 
 const props = defineProps({
   tomo: {
@@ -68,56 +66,7 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle-status', 'toggle-acquired', 'context-menu', 'edit', 'delete'])
 
-const bookInfo = ref(null)
-const loading = ref(false)
-const imageLoaded = ref(false)
-
-watch(() => props.tomo.id, () => {
-  imageLoaded.value = !!props.tomo.cover_url
-  bookInfo.value = null
-})
-
-const displayTitle = computed(() => {
-  if (props.tomo.title) return props.tomo.title
-  if (props.tomo.volume_number) return `Volume ${props.tomo.volume_number}`
-  if (bookInfo.value?.title) return bookInfo.value.title
-  return `Volume ${props.index + 1}`
-})
-
-const hasDirectCover = computed(() => !!props.tomo.cover_url)
-
-const displayAuthor = computed(() => {
-  if (props.tomo.author) return props.tomo.author
-  if (bookInfo.value?.author) return bookInfo.value.author.join(', ')
-  return null
-})
-
-const hasCoverUrl = computed(() => {
-  return props.tomo.cover_url || bookInfo.value?.cover_url
-})
-
-watch(bookInfo, (newVal) => {
-  if (newVal?.cover_url) {
-    imageLoaded.value = true
-  }
-})
-
-const displayCover = computed(() => {
-  if (props.tomo.cover_url) return props.tomo.cover_url
-  if (bookInfo.value?.cover_url) return bookInfo.value.cover_url
-  return null
-})
-
-async function fetchBookInfo() {
-  if (!props.tomo.isbn) return
-
-  loading.value = true
-  try {
-    bookInfo.value = await getBookInfoByISBN(props.tomo.isbn)
-  } finally {
-    loading.value = false
-  }
-}
+const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, fetchBookInfo } = useCoverFetch(props)
 
 function openContextMenu(event) {
   event.preventDefault()
@@ -126,9 +75,6 @@ function openContextMenu(event) {
 
 onMounted(() => {
   fetchBookInfo()
-})
-
-onUnmounted(() => {
 })
 </script>
 
@@ -167,7 +113,7 @@ onUnmounted(() => {
   color: white;
 }
 
-.acquired-toggle svg {
+.acquired-toggle :deep(svg) {
   width: 18px;
   height: 18px;
 }
@@ -191,18 +137,5 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.spinner-sm {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>

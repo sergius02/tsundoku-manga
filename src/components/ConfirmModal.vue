@@ -3,16 +3,8 @@
     <div v-if="modelValue" class="confirm-overlay" @click.self="onCancel">
       <div class="confirm-modal">
         <div class="confirm-icon" :class="type">
-          <svg v-if="type === 'danger'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="15" y1="9" x2="9" y2="15"/>
-            <line x1="9" y1="9" x2="15" y2="15"/>
-          </svg>
-          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
+          <IconWarning v-if="type === 'danger'" />
+          <IconInfo v-else />
         </div>
         <h3 class="confirm-title">{{ title }}</h3>
         <p class="confirm-message">{{ message }}</p>
@@ -26,9 +18,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import IconWarning from './icons/IconWarning.vue'
+import IconInfo from './icons/IconInfo.vue'
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Boolean,
     default: false
@@ -110,7 +103,7 @@ function onCancel() {
   color: #c77c02;
 }
 
-.confirm-icon svg {
+.confirm-icon :deep(svg) {
   width: 24px;
   height: 24px;
 }
