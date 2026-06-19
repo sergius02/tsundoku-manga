@@ -18,11 +18,10 @@
       <div v-else class="cover-placeholder">
         {{ tomo.volume_number || '?' }}
       </div>
-    </div>
-    <div class="volume-info">
-      <span class="volume-title">{{ displayTitle }}</span>
-      <span v-if="displayAuthor" class="volume-author">{{ displayAuthor }}</span>
-      <StatusBadge :status="tomo.status" />
+      <VolumeStatusOverlay
+        :status="tomo.status"
+        @toggle-status="$emit('toggle-status')"
+      />
     </div>
     <div class="volume-actions" @click.stop>
       <button
@@ -53,7 +52,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import StatusBadge from './StatusBadge.vue'
+import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
 import { getBookInfoByISBN } from '../api/covers.js'
 
 const props = defineProps({
@@ -154,6 +153,10 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+.volume-cover :deep(.status-overlay) {
+  display: none;
+}
+
 .volume-cover img {
   width: 80px;
   height: 113px;
@@ -183,30 +186,6 @@ onUnmounted(() => {
   color: var(--text-secondary);
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
-}
-
-.volume-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.volume-title {
-  font-weight: 500;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.volume-author {
-  font-size: 12px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .volume-actions {

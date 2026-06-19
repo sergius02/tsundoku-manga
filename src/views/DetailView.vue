@@ -902,13 +902,29 @@ onMounted(async () => {
 
 .volumes-list.grid-view :deep(.volume-row) {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  padding: 0;
+  grid-template-rows: 1fr auto;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .volumes-list.grid-view :deep(.volume-cover) {
+  grid-row: 1;
+  position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
+}
+
+.volumes-list.grid-view :deep(.volume-actions) {
+  grid-row: 2;
+  display: flex;
+  width: 100%;
 }
 
 .volumes-list.grid-view :deep(.volume-cover img),
@@ -919,37 +935,8 @@ onMounted(async () => {
   object-fit: cover;
 }
 
-.volumes-list.grid-view :deep(.volume-info) {
+.volumes-list.grid-view :deep(.volume-cover .status-overlay) {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 0 6px 2px;
-}
-
-.volumes-list.grid-view :deep(.volume-title) {
-  width: 100%;
-  text-align: center;
-  font-size: 14px;
-  white-space: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.volumes-list.grid-view :deep(.volume-author) {
-  width: 100%;
-  text-align: center;
-  font-size: 12px;
-}
-
-.volumes-list.grid-view :deep(.volume-actions) {
-  display: flex;
-  width: 100%;
 }
 
 .volumes-list.grid-view :deep(.acquired-toggle) {
@@ -967,29 +954,41 @@ onMounted(async () => {
 
 .volumes-list.grid-view :deep(.volume-placeholder) {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  padding: 0;
+  grid-template-rows: 1fr auto;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .cover-placeholder) {
-  width: 100%;
+  grid-row: 1;
+  width: 100% !important;
+  max-width: 100% !important;
   height: 100%;
   aspect-ratio: 2 / 3;
-}
-
-.volumes-list.grid-view :deep(.volume-placeholder .info) {
-  padding: 0 6px 2px;
-}
-
-.volumes-list.grid-view :deep(.volume-placeholder .title),
-.volumes-list.grid-view :deep(.volume-placeholder .warning) {
-  font-size: 14px;
-  text-align: center;
+  flex-shrink: 0 !important;
+  border-radius: 0;
+  box-sizing: border-box;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .actions) {
+  grid-row: 2;
   display: flex;
   width: 100%;
+}
+
+.volumes-list.grid-view :deep(.volume-placeholder .cover-volume-num) {
+  font-size: 22px;
+}
+
+.volumes-list.grid-view :deep(.volume-placeholder .cover-warning) {
+  font-size: 14px;
 }
 
 .volumes-list.grid-view :deep(.volume-placeholder .add-btn) {

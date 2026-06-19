@@ -1,11 +1,8 @@
 <template>
   <div class="volume-placeholder" @click="$emit('click')" @contextmenu.prevent>
     <div class="cover-placeholder">
-      ?
-    </div>
-    <div class="info">
-      <span class="title">Volume {{ volumeNumber }}</span>
-      <span class="warning">{{ $t('volume.notRegistered') }}</span>
+      <span class="cover-volume-num">Vol. {{ volumeNumber }}</span>
+      <span class="cover-warning">{{ $t('volume.notRegistered') }}</span>
     </div>
     <div class="actions" @click.stop>
       <button class="add-btn" @click.stop="$emit('click')">
@@ -47,43 +44,31 @@ defineEmits(['click'])
 }
 
 .cover-placeholder {
+  position: relative;
   width: 80px;
   height: 113px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   background: var(--bg-secondary);
   border-radius: 4px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 20px;
   flex-shrink: 0;
 }
 
-.info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+.cover-volume-num {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.title {
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.warning {
-  font-size: 12px;
+.cover-warning {
+  font-size: 9px;
   color: var(--accent);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .actions {
