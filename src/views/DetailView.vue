@@ -182,12 +182,20 @@
     <Modal v-model="showAddVolumeModal" :title="$t('volume.addVolume')">
       <form @submit.prevent="addVolume" class="add-volume-form">
         <div class="form-group">
-          <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="volumeForm.isbn" placeholder="978-4-1234-5678-9" />
+          <label>{{ $t('volume.title') }}</label>
+          <input type="text" v-model="volumeForm.title" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
           <input type="number" v-model.number="volumeForm.volume_number" min="1" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('volume.isbn') }}</label>
+          <input type="text" v-model="volumeForm.isbn" placeholder="978-4-1234-5678-9" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('volume.coverUrl') }}</label>
+          <input type="text" v-model="volumeForm.cover_url" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
@@ -203,10 +211,6 @@
             {{ $t('volume.acquired') }}
           </label>
         </div>
-        <div class="form-group">
-          <label>{{ $t('volume.coverUrl') }}</label>
-          <input type="text" v-model="volumeForm.cover_url" />
-        </div>
       </form>
       <template #footer>
         <button type="button" class="btn btn-ghost" @click="showAddVolumeModal = false">{{ $t('common.cancel') }}</button>
@@ -217,12 +221,20 @@
     <Modal v-model="showEditVolumeModal" :title="$t('volume.editVolume')">
       <form @submit.prevent="saveEditVolume" class="edit-volume-form">
         <div class="form-group">
-          <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="editVolumeForm.isbn" />
+          <label>{{ $t('volume.title') }}</label>
+          <input type="text" v-model="editVolumeForm.title" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
           <input type="number" v-model.number="editVolumeForm.volume_number" min="1" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('volume.isbn') }}</label>
+          <input type="text" v-model="editVolumeForm.isbn" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('volume.coverUrl') }}</label>
+          <input type="text" v-model="editVolumeForm.cover_url" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
@@ -237,10 +249,6 @@
             <input type="checkbox" v-model="editVolumeForm.acquired" />
             {{ $t('volume.acquired') }}
           </label>
-        </div>
-        <div class="form-group">
-          <label>{{ $t('volume.coverUrl') }}</label>
-          <input type="text" v-model="editVolumeForm.cover_url" />
         </div>
       </form>
       <template #footer>
@@ -319,16 +327,18 @@ const editForm = ref({
 })
 
 const volumeForm = ref({
+  title: '',
   isbn: '',
   volume_number: null,
+  cover_url: '',
   status: 'unread',
-  acquired: false,
-  cover_url: ''
+  acquired: false
 })
 
 const editVolumeForm = ref({
   isbn: '',
   volume_number: null,
+  title: '',
   status: 'unread',
   acquired: false,
   cover_url: ''
@@ -480,6 +490,7 @@ function openEditVolumeModal(volume) {
   editVolumeForm.value = {
     isbn: volume.isbn || '',
     volume_number: volume.volume_number !== undefined ? volume.volume_number : null,
+    title: volume.title || '',
     status: volume.status || 'unread',
     acquired: volume.acquired === true || volume.acquired === 1,
     cover_url: volume.cover_url || ''
@@ -505,6 +516,7 @@ async function saveEditVolume() {
   const data = {}
   if (editVolumeForm.value.isbn !== '') data.isbn = editVolumeForm.value.isbn || null
   if (editVolumeForm.value.volume_number !== null) data.volume_number = editVolumeForm.value.volume_number
+  if (editVolumeForm.value.title !== '') data.title = editVolumeForm.value.title || null
   data.status = editVolumeForm.value.status
   data.acquired = editVolumeForm.value.acquired
   if (editVolumeForm.value.cover_url !== '') data.cover_url = editVolumeForm.value.cover_url || null

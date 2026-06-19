@@ -86,6 +86,7 @@
   "volume": {
     "isbn": "ISBN",
     "volumeNumber": "Número de tomo",
+    "title": "Título",
     "coverUrl": "URL de portada",
     "status": "Estado",
     "acquired": "En mi posesión",
