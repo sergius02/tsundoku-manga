@@ -295,12 +295,14 @@
     />
 
     <FloatingActionBar
-      :visible="selectionMode && selectedVolumes.size > 0"
+      :visible="selectionMode"
       :count="selectedVolumes.size"
+      :total="realVolumeCount"
       @edit="bulkEdit"
       @delete="bulkDelete"
       @mark-read="bulkMarkRead"
       @mark-unread="bulkMarkUnread"
+      @select-all="toggleSelectAll"
       @close="toggleSelectionMode"
     />
 
@@ -414,6 +416,7 @@ const initials = computed(() => {
 
 const volumesTotal = computed(() => store.currentManga?.volumes?.length || 0)
 const volumesRead = computed(() => store.currentManga?.volumes?.filter(t => t.status === 'read').length || 0)
+const realVolumeCount = computed(() => store.currentManga?.volumes?.length || 0)
 const progressPercent = computed(() => {
   if (volumesTotal.value === 0) return 0
   return Math.round((volumesRead.value / volumesTotal.value) * 100)
@@ -623,6 +626,15 @@ function toggleVolumeSelection(volumeId) {
     selectedVolumes.value.delete(volumeId)
   } else {
     selectedVolumes.value.add(volumeId)
+  }
+}
+
+function toggleSelectAll() {
+  if (selectedVolumes.value.size === realVolumeCount.value) {
+    selectedVolumes.value.clear()
+  } else {
+    selectedVolumes.value.clear()
+    store.currentManga.volumes.forEach(v => selectedVolumes.value.add(v.id))
   }
 }
 
@@ -1009,7 +1021,7 @@ onMounted(async () => {
 .volumes-list.grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
+  gap: 28px;
 }
 
 .volumes-list.grid-view :deep(.volume-row) {

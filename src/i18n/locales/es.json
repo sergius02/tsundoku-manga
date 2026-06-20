@@ -14,7 +14,9 @@
     "retry": "Reintentar",
     "loading": "Cargando...",
     "next": "Siguiente",
-    "select": "Seleccionar"
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar todo",
+    "clearSelection": "Limpiar selección"
   },
   "contextMenu": {
     "markAllRead": "Marcar todos como leídos",

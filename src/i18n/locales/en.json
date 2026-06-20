@@ -14,7 +14,9 @@
     "retry": "Retry",
     "loading": "Loading...",
     "next": "Next",
-    "select": "Select"
+    "select": "Select",
+    "selectAll": "Select all",
+    "clearSelection": "Clear selection"
   },
   "contextMenu": {
     "markAllRead": "Mark all as read",
