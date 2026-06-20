@@ -391,6 +391,8 @@ const editForm = ref({
   notes: ''
 })
 
+const isSaving = ref(false)
+
 const volumeForm = ref({
   title: '',
   isbn: '',
@@ -509,8 +511,16 @@ function populateEditForm() {
 }
 
 async function saveEdit() {
+  if (isSaving.value) return
+  isSaving.value = true
   await store.editManga(route.params.id, editForm.value)
+  store.currentManga.title = editForm.value.title
+  store.currentManga.author = editForm.value.author
+  store.currentManga.publisher = editForm.value.publisher
+  store.currentManga.cover_url = editForm.value.cover_url
+  store.currentManga.notes = editForm.value.notes
   showEditModal.value = false
+  isSaving.value = false
 }
 
 function openAddMissingVolume(volumeNumber) {
@@ -525,12 +535,15 @@ function openAddMissingVolume(volumeNumber) {
 }
 
 async function addVolume() {
+  if (isSaving.value) return
+  isSaving.value = true
   const newVolume = await apiAddVolume(route.params.id, volumeForm.value)
   if (store.currentManga?.volumes) {
     store.currentManga.volumes.push(newVolume)
   }
   showAddVolumeModal.value = false
   volumeForm.value = { isbn: '', status: 'unread', acquired: false, cover_url: '' }
+  isSaving.value = false
 }
 
 async function cycleVolumeStatus(volume) {
@@ -577,7 +590,8 @@ function editVolume() {
 }
 
 async function saveEditVolume() {
-  if (!selectedVolume.value) return
+  if (!selectedVolume.value || isSaving.value) return
+  isSaving.value = true
 
   const data = {}
   if (editVolumeForm.value.isbn !== '') data.isbn = editVolumeForm.value.isbn || null
@@ -590,6 +604,7 @@ async function saveEditVolume() {
   await updateVolume(route.params.id, selectedVolume.value.id, data)
   store.updateVolumeState(selectedVolume.value.id, data)
   showEditVolumeModal.value = false
+  isSaving.value = false
 }
 
 async function confirmDeleteVolume(volume) {
@@ -645,6 +660,9 @@ async function bulkEdit() {
 }
 
 async function confirmBulkEdit() {
+  if (isSaving.value) return
+  isSaving.value = true
+
   const ids = Array.from(selectedVolumes.value)
   const data = {}
 
@@ -657,12 +675,13 @@ async function confirmBulkEdit() {
 
   if (Object.keys(data).length > 0) {
     await bulkUpdateVolumes(route.params.id, ids, data)
+    store.bulkUpdateVolumesLocal(ids, data)
   }
 
   showBulkEditModal.value = false
   selectionMode.value = false
   selectedVolumes.value.clear()
-  await store.fetchManga(route.params.id)
+  isSaving.value = false
 }
 
 async function bulkDelete() {
@@ -674,9 +693,9 @@ async function bulkDelete() {
       try {
         const ids = Array.from(selectedVolumes.value)
         await bulkDeleteVolumes(route.params.id, ids)
+        store.bulkDeleteVolumesLocal(ids)
         selectionMode.value = false
         selectedVolumes.value.clear()
-        await store.fetchManga(route.params.id)
       } catch (err) {
         console.error('Bulk delete error:', err)
         alert(err.message)
@@ -689,9 +708,9 @@ async function bulkMarkRead() {
   try {
     const ids = Array.from(selectedVolumes.value)
     await bulkUpdateVolumes(route.params.id, ids, { status: 'read' })
+    store.bulkUpdateVolumesLocal(ids, { status: 'read' })
     selectionMode.value = false
     selectedVolumes.value.clear()
-    await store.fetchManga(route.params.id)
   } catch (err) {
     console.error('Bulk mark read error:', err)
     alert(err.message)
@@ -702,9 +721,9 @@ async function bulkMarkUnread() {
   try {
     const ids = Array.from(selectedVolumes.value)
     await bulkUpdateVolumes(route.params.id, ids, { status: 'unread' })
+    store.bulkUpdateVolumesLocal(ids, { status: 'unread' })
     selectionMode.value = false
     selectedVolumes.value.clear()
-    await store.fetchManga(route.params.id)
   } catch (err) {
     console.error('Bulk mark unread error:', err)
     alert(err.message)
@@ -733,7 +752,7 @@ watch(showEditModal, (val) => {
 
 watch(() => store.currentManga, () => {
   fetchCover()
-})
+}, { deep: true })
 
 onMounted(async () => {
   await store.fetchManga(route.params.id)
