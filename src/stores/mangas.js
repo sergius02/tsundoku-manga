@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getMangas, getManga, createManga, updateManga, deleteManga } from '../api/index.js'
+import { getMangas, getManga, createManga, updateManga, deleteManga, bulkUpdateVolumes, bulkDeleteVolumes } from '../api/index.js'
 
 export const useMangaStore = defineStore('mangas', {
   state: () => ({
@@ -101,6 +101,27 @@ export const useMangaStore = defineStore('mangas', {
 
     setVolumeSort(value) {
       this.volumeSort = value
+    },
+
+    async bulkUpdateVolumesLocal(ids, data) {
+      if (!this.currentManga?.volumes) return
+      ids.forEach(id => {
+        const idx = this.currentManga.volumes.findIndex(v => v.id === id)
+        if (idx !== -1) {
+          this.currentManga.volumes[idx] = { ...this.currentManga.volumes[idx], ...data }
+        }
+      })
+    },
+
+    async bulkDeleteVolumesLocal(ids) {
+      if (!this.currentManga?.volumes) return
+      this.currentManga.volumes = this.currentManga.volumes.filter(v => !ids.includes(v.id))
+    },
+
+    async refreshCurrentManga() {
+      if (this.currentManga?.id) {
+        await this.fetchManga(this.currentManga.id)
+      }
     }
   }
 })

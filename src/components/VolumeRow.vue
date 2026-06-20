@@ -1,9 +1,12 @@
 <template>
   <div
-    :class="['volume-row', `status-${tomo.status}`]"
-    @click="$emit('toggle-status')"
+    :class="['volume-row', `status-${tomo.status}`, { selected: isSelected }]"
+    @click="handleClick"
     @contextmenu.prevent.stop="openContextMenu"
   >
+    <div v-if="showCheckbox" class="volume-checkbox" @click.stop="toggleSelect">
+      <input type="checkbox" :checked="isSelected" @change="toggleSelect" />
+    </div>
     <div class="volume-cover" @click.stop="$emit('toggle-status')">
       <div v-if="!imageLoaded && !hasDirectCover && hasCoverUrl" class="cover-loading">
         <LoadingSpinner size="sm" />
@@ -61,10 +64,18 @@ const props = defineProps({
   index: {
     type: Number,
     default: 0
+  },
+  showCheckbox: {
+    type: Boolean,
+    default: false
+  },
+  isSelected: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['toggle-status', 'toggle-acquired', 'context-menu', 'edit', 'delete'])
+const emit = defineEmits(['toggle-status', 'toggle-acquired', 'context-menu', 'edit', 'delete', 'select'])
 
 const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, fetchBookInfo } = useCoverFetch(props)
 
@@ -73,12 +84,48 @@ function openContextMenu(event) {
   emit('context-menu', event)
 }
 
+function handleClick() {
+  if (props.showCheckbox) {
+    toggleSelect()
+  } else {
+    emit('toggle-status')
+  }
+}
+
+function toggleSelect() {
+  emit('select', props.tomo.id)
+}
+
 onMounted(() => {
   fetchBookInfo()
 })
 </script>
 
 <style scoped>
+.volume-row {
+  position: relative;
+}
+
+.volume-row.selected {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.volume-checkbox {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+}
+
+.volume-checkbox input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
 .volume-cover :deep(.status-overlay) {
   display: none;
 }

@@ -164,6 +164,51 @@ router.put('/:id/volumes', (req, res) => {
   res.json(volumes);
 });
 
+router.put('/:id/volumes/bulk', (req, res) => {
+  const { ids, status, acquired } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: 'ids must be a non-empty array' });
+  }
+
+  const fields = [];
+  const values = [];
+
+  if (status !== undefined) {
+    fields.push('status = ?');
+    values.push(status);
+  }
+  if (acquired !== undefined) {
+    fields.push('acquired = ?');
+    values.push(acquired ? 1 : 0);
+  }
+
+  if (fields.length === 0) {
+    return res.status(400).json({ error: 'No fields to update' });
+  }
+
+  const placeholders = ids.map(() => '?').join(',');
+  values.push(...ids);
+
+  db.prepare(`UPDATE volumes SET ${fields.join(', ')} WHERE id IN (${placeholders}) AND manga_id = ?`).run(...values, req.params.id);
+
+  const volumes = db.prepare('SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC').all(req.params.id);
+  res.json(volumes);
+});
+
+router.delete('/:id/volumes/bulk', (req, res) => {
+  const { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: 'ids must be a non-empty array' });
+  }
+
+  const placeholders = ids.map(() => '?').join(',');
+  db.prepare(`DELETE FROM volumes WHERE id IN (${placeholders}) AND manga_id = ?`).run(...ids, req.params.id);
+
+  res.status(204).send();
+});
+
 router.put('/:id/volumes/:volumeId', (req, res) => {
   const existing = db.prepare('SELECT * FROM volumes WHERE id = ? AND manga_id = ?').get(req.params.volumeId, req.params.id);
   if (!existing) return res.status(404).json({ error: 'Volume not found' });

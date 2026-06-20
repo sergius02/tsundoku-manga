@@ -13,12 +13,16 @@
     "view": "View",
     "retry": "Retry",
     "loading": "Loading...",
-    "next": "Next"
+    "next": "Next",
+    "select": "Select"
   },
   "contextMenu": {
     "markAllRead": "Mark all as read",
     "markAllUnread": "Mark as unread",
     "markAsRead": "Mark as read"
+  },
+  "cover": {
+    "changeCover": "Change cover"
   },
   "nav": {
     "library": "Library",
@@ -188,7 +192,8 @@
     "backupFile": "Backup file",
     "backupDate": "Exported on",
     "backupMangas": "mangas",
-    "backupVolumes": "volumes"
+    "backupVolumes": "volumes",
+    "editMultiple": "Edit multiple"
   },
   "auth": {
     "loginRequired": "Please login to continue",

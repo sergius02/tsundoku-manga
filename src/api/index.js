@@ -163,3 +163,28 @@ export async function importBackup(file) {
   }
   return res.json()
 }
+
+export async function bulkUpdateVolumes(mangaId, ids, data) {
+  const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes/bulk`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids, ...data })
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.error || 'Error updating volumes')
+  }
+  return res.json()
+}
+
+export async function bulkDeleteVolumes(mangaId, ids) {
+  const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes/bulk`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids })
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.error || 'Error deleting volumes')
+  }
+}

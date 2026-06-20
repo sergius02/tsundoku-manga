@@ -13,12 +13,16 @@
     "view": "Ver",
     "retry": "Reintentar",
     "loading": "Cargando...",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "select": "Seleccionar"
   },
   "contextMenu": {
     "markAllRead": "Marcar todos como leídos",
     "markAllUnread": "Marcar como no leídos",
     "markAsRead": "Marcar como leído"
+  },
+  "cover": {
+    "changeCover": "Cambiar portada"
   },
   "nav": {
     "library": "Biblioteca",
@@ -188,7 +192,8 @@
     "backupFile": "Archivo de backup",
     "backupDate": "Exportado el",
     "backupMangas": "mangas",
-    "backupVolumes": "volúmenes"
+    "backupVolumes": "volúmenes",
+    "editMultiple": "Editar múltiples"
   },
   "auth": {
     "loginRequired": "Inicia sesión para continuar",

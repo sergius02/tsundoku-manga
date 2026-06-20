@@ -86,6 +86,24 @@
         <div class="volumes-header">
           <h2>{{ $t('manga.volumes') }}</h2>
           <div class="volumes-controls">
+            <button
+              v-if="!selectionMode"
+              class="btn btn-secondary"
+              @click="toggleSelectionMode"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <polyline points="9 11 12 14 22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+              {{ $t('common.select') }}
+            </button>
+            <button
+              v-else
+              class="btn btn-secondary"
+              @click="toggleSelectionMode"
+            >
+              {{ $t('common.cancel') }}
+            </button>
             <button class="btn btn-primary" @click="showAddVolumeModal = true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -114,11 +132,14 @@
                 v-else
                 :tomo="volume"
                 :index="index"
+                :show-checkbox="selectionMode"
+                :is-selected="selectedVolumes.has(volume.id)"
                 class="volume-item-animate"
                 :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-                @toggle-status="cycleVolumeStatus(volume)"
+                @toggle-status="selectionMode ? toggleVolumeSelection(volume.id) : cycleVolumeStatus(volume)"
                 @toggle-acquired="toggleVolumeAcquired(volume)"
                 @context-menu="(e) => openVolumeContextMenu(e, volume)"
+                @select="toggleVolumeSelection"
               />
             </template>
           </div>
@@ -131,7 +152,7 @@
 
       <ContextMenu
         ref="volumeContextMenu"
-        :manga="selectedVolume"
+        :manga="selectedVolume || {}"
         :is-volume="true"
         @edit="editVolume"
         @delete="confirmDeleteVolume(selectedVolume)"
@@ -273,6 +294,34 @@
       :current-cover-url="store.currentManga?.cover_url || ''"
       @save="saveCover"
     />
+
+    <FloatingActionBar
+      :visible="selectionMode && selectedVolumes.size > 0"
+      :count="selectedVolumes.size"
+      @edit="bulkEdit"
+      @delete="bulkDelete"
+      @mark-read="bulkMarkRead"
+      @mark-unread="bulkMarkUnread"
+      @close="toggleSelectionMode"
+    />
+
+    <Modal v-model="showBulkEditModal" :title="$t('settings.editMultiple')">
+      <form @submit.prevent="confirmBulkEdit" class="bulk-edit-form">
+        <p class="bulk-edit-info">{{ selectedVolumes.size }} {{ selectedVolumes.size === 1 ? 'volume' : 'volumes' }} selected</p>
+        <div class="form-group">
+          <label>{{ $t('volume.acquired') }}</label>
+          <select v-model="bulkEditAcquired">
+            <option :value="null">—</option>
+            <option :value="true">{{ $t('volume.acquired') }}</option>
+            <option :value="false">{{ $t('volume.notAcquired') }}</option>
+          </select>
+        </div>
+      </form>
+      <template #footer>
+        <button type="button" class="btn btn-ghost" @click="showBulkEditModal = false">{{ $t('common.cancel') }}</button>
+        <button type="submit" class="btn btn-primary" @click="confirmBulkEdit">{{ $t('common.save') }}</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -281,7 +330,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useMangaStore } from '../stores/mangas.js'
-import { addVolume as apiAddVolume, updateVolume, deleteVolume as apiDeleteVolume } from '../api/index.js'
+import { addVolume as apiAddVolume, updateVolume, deleteVolume as apiDeleteVolume, bulkUpdateVolumes, bulkDeleteVolumes } from '../api/index.js'
 import { getCoverByISBN } from '../api/covers.js'
 import { useSeo } from '../composables/useSeo.js'
 import VolumeRow from '../components/VolumeRow.vue'
@@ -290,6 +339,7 @@ import Modal from '../components/Modal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContextMenu from '../components/ContextMenu.vue'
 import CoverModal from '../components/CoverModal.vue'
+import FloatingActionBar from '../components/FloatingActionBar.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -312,6 +362,11 @@ const confirmConfig = ref({
   message: '',
   onConfirm: () => {}
 })
+
+const selectionMode = ref(false)
+const selectedVolumes = ref(new Set())
+const showBulkEditModal = ref(false)
+const bulkEditAcquired = ref(false)
 
 function openConfirm(title, message, onConfirm) {
   confirmConfig.value = { title, message, onConfirm }
@@ -546,6 +601,83 @@ async function confirmDelete() {
       router.push('/')
     }
   )
+}
+
+function toggleSelectionMode() {
+  selectionMode.value = !selectionMode.value
+  if (!selectionMode.value) {
+    selectedVolumes.value.clear()
+  }
+}
+
+function toggleVolumeSelection(volumeId) {
+  if (selectedVolumes.value.has(volumeId)) {
+    selectedVolumes.value.delete(volumeId)
+  } else {
+    selectedVolumes.value.add(volumeId)
+  }
+}
+
+async function bulkEdit() {
+  bulkEditAcquired.value = false
+  showBulkEditModal.value = true
+}
+
+async function confirmBulkEdit() {
+  const ids = Array.from(selectedVolumes.value)
+  if (bulkEditAcquired.value !== null) {
+    await bulkUpdateVolumes(route.params.id, ids, { acquired: bulkEditAcquired.value })
+  }
+  showBulkEditModal.value = false
+  selectionMode.value = false
+  selectedVolumes.value.clear()
+  await store.fetchManga(route.params.id)
+}
+
+async function bulkDelete() {
+  const count = selectedVolumes.value.size
+  openConfirm(
+    t('volume.delete'),
+    count === 1 ? t('volume.deleteConfirm') : `Delete ${count} volumes? This cannot be undone.`,
+    async () => {
+      try {
+        const ids = Array.from(selectedVolumes.value)
+        await bulkDeleteVolumes(route.params.id, ids)
+        selectionMode.value = false
+        selectedVolumes.value.clear()
+        await store.fetchManga(route.params.id)
+      } catch (err) {
+        console.error('Bulk delete error:', err)
+        alert(err.message)
+      }
+    }
+  )
+}
+
+async function bulkMarkRead() {
+  try {
+    const ids = Array.from(selectedVolumes.value)
+    await bulkUpdateVolumes(route.params.id, ids, { status: 'read' })
+    selectionMode.value = false
+    selectedVolumes.value.clear()
+    await store.fetchManga(route.params.id)
+  } catch (err) {
+    console.error('Bulk mark read error:', err)
+    alert(err.message)
+  }
+}
+
+async function bulkMarkUnread() {
+  try {
+    const ids = Array.from(selectedVolumes.value)
+    await bulkUpdateVolumes(route.params.id, ids, { status: 'unread' })
+    selectionMode.value = false
+    selectedVolumes.value.clear()
+    await store.fetchManga(route.params.id)
+  } catch (err) {
+    console.error('Bulk mark unread error:', err)
+    alert(err.message)
+  }
 }
 
 function openCoverModal() {
@@ -1065,5 +1197,21 @@ onMounted(async () => {
   .metadata {
     justify-content: center;
   }
+}
+
+.bulk-edit-info {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.bulk-edit-form .form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
 }
 </style>
