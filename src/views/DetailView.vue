@@ -1031,7 +1031,6 @@ onMounted(async () => {
   width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  height: 100%;
   overflow: hidden;
   box-sizing: border-box;
   border-radius: 8px;
@@ -1042,6 +1041,7 @@ onMounted(async () => {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
+  overflow: hidden;
 }
 
 .volumes-list.grid-view :deep(.volume-cover img),
@@ -1063,7 +1063,7 @@ onMounted(async () => {
   width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  height: 100%;
+  aspect-ratio: 2 / 3;
   overflow: hidden;
   box-sizing: border-box;
   border-radius: 8px;
