@@ -34,7 +34,7 @@ const label = computed(() => statusLabel(props.status))
 <style scoped>
 .status-overlay {
   position: absolute;
-  bottom: 12px;
+  bottom: 8px;
   right: 8px;
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@ const label = computed(() => statusLabel(props.status))
   font-weight: 500;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
 .status-overlay:hover {

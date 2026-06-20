@@ -7,7 +7,7 @@
     <div v-if="showCheckbox" class="volume-checkbox" @click.stop="toggleSelect">
       <input type="checkbox" :checked="isSelected" @change="toggleSelect" />
     </div>
-    <div class="volume-cover" @click.stop="$emit('toggle-status')">
+    <div class="volume-cover" :class="{ unacquired: !tomo.acquired }" @click.stop="$emit('toggle-status')">
       <div v-if="!imageLoaded && !hasDirectCover && hasCoverUrl" class="cover-loading">
         <LoadingSpinner size="sm" />
       </div>
@@ -21,29 +21,16 @@
       <div v-else class="cover-placeholder">
         {{ tomo.volume_number || '?' }}
       </div>
-      <VolumeStatusOverlay
-        :status="tomo.status"
-        @toggle-status="$emit('toggle-status')"
-      />
-    </div>
-    <div class="volume-actions" @click.stop>
-      <button
-        class="acquired-toggle"
-        :class="{ acquired: tomo.acquired }"
-        @click="$emit('toggle-acquired')"
-        :title="tomo.acquired ? $t('volume.acquired') : $t('volume.notAcquired')"
-      >
-        <Transition name="fade" mode="out-in">
-          <span v-if="tomo.acquired" key="acquired" class="acquired-content">
-            <IconCheck />
-            <span class="acquired-text">{{ $t('volume.inLibrary') }}</span>
-          </span>
-          <span v-else key="not-acquired" class="acquired-content">
-            <IconCircle />
-            <span class="acquired-text">{{ $t('volume.notAcquired') }}</span>
-          </span>
-        </Transition>
-      </button>
+      <div class="indicators">
+        <AcquiredIndicator
+          :tomo="tomo"
+          @toggle-acquired="$emit('toggle-acquired')"
+        />
+        <VolumeStatusOverlay
+          :status="tomo.status"
+          @toggle-status="$emit('toggle-status')"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -51,9 +38,8 @@
 <script setup>
 import { onMounted } from 'vue'
 import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
+import AcquiredIndicator from './AcquiredIndicator.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
-import IconCheck from './icons/IconCheck.vue'
-import IconCircle from './icons/IconCircle.vue'
 import { useCoverFetch } from '../composables/useCoverFetch.js'
 
 const props = defineProps({
@@ -130,59 +116,42 @@ onMounted(() => {
   display: none;
 }
 
-.acquired-toggle {
+.volume-cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.volume-cover .indicators {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  padding: 0 10px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  justify-content: space-between;
+  padding: 0 8px;
+  z-index: 2;
 }
 
-.acquired-toggle:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+.volume-cover :deep(.acquired-indicator),
+.volume-cover :deep(.status-overlay) {
+  position: static;
+  transform: none;
 }
 
-.acquired-toggle.acquired {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
+.volume-cover :deep(img),
+.volume-cover :deep(.cover-placeholder) {
+  transition: filter 0.5s ease;
 }
 
-.acquired-toggle.acquired:hover {
-  background: #c13b4a;
-  color: white;
-}
-
-.acquired-toggle :deep(svg) {
-  width: 18px;
-  height: 18px;
-}
-
-.acquired-toggle .acquired-content {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.acquired-toggle .acquired-text {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.volume-cover.unacquired :deep(img),
+.volume-cover.unacquired :deep(.cover-placeholder) {
+  filter: grayscale(100%);
 }
 </style>

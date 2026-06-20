@@ -3,19 +3,12 @@
     <div class="cover-placeholder">
       <span class="cover-volume-num">Vol. {{ volumeNumber }}</span>
       <span class="cover-warning">{{ $t('volume.notRegistered') }}</span>
-    </div>
-    <div class="actions" @click.stop>
-      <button class="add-btn" @click.stop="$emit('click')">
-        <IconPlus />
-        {{ $t('volume.addMissing') }}
-      </button>
+      <span class="add-text">{{ $t('volume.addMissing') }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import IconPlus from './icons/IconPlus.vue'
-
 defineProps({
   volumeNumber: {
     type: Number,
@@ -27,8 +20,11 @@ defineEmits(['click'])
 </script>
 
 <style scoped>
+.volume-placeholder {
+  cursor: pointer;
+}
+
 .cover-placeholder {
-  position: relative;
   width: 80px;
   height: 113px;
   display: flex;
@@ -55,31 +51,13 @@ defineEmits(['click'])
   line-height: 1.2;
 }
 
-.add-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 12px;
-  background: rgba(230, 57, 70, 0.1);
-  border: none;
-  border-top: 1px solid var(--accent);
+.add-text {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.volume-placeholder:hover .add-text {
   color: var(--accent);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.add-btn:hover {
-  background: rgba(230, 57, 70, 0.2);
-}
-
-.add-btn :deep(svg) {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
 }
 </style>
