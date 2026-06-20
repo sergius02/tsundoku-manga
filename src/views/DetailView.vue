@@ -88,14 +88,13 @@
           <div class="volumes-controls">
             <button
               v-if="!selectionMode"
-              class="btn btn-secondary"
+              class="btn btn-secondary select-btn"
               @click="toggleSelectionMode"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                 <polyline points="9 11 12 14 22 4" />
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
-              {{ $t('common.select') }}
             </button>
             <button
               v-else
@@ -1254,5 +1253,11 @@ onMounted(async () => {
   color: var(--text-secondary);
   margin-top: 8px;
   line-height: 1.5;
+}
+
+.select-btn {
+  padding: 8px;
+  width: 36px;
+  height: 36px;
 }
 </style>

@@ -66,6 +66,7 @@ defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'close'])
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
+  max-width: calc(100vw - 32px);
 }
 
 .fab-content {
@@ -77,6 +78,8 @@ defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'close'])
   border-radius: 50px;
   padding: 12px 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .fab-count {
@@ -90,6 +93,8 @@ defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'close'])
 .fab-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .fab-btn {
@@ -105,6 +110,7 @@ defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'close'])
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .fab-btn:hover {
@@ -153,5 +159,59 @@ defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'close'])
 .fab-leave-to {
   opacity: 0;
   transform: translateX(-50%) translateY(100px);
+}
+
+@media (max-width: 600px) {
+  .fab-container {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    max-width: none;
+  }
+
+  .fab-content {
+    padding: 10px 12px;
+    gap: 8px;
+    border-radius: 16px;
+  }
+
+  .fab-count {
+    width: 100%;
+    text-align: center;
+    padding-right: 0;
+    padding-bottom: 8px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fab-actions {
+    gap: 6px;
+  }
+
+  .fab-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .fab-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .fab-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+
+  .fab-content {
+    position: relative;
+    padding-top: 20px;
+  }
 }
 </style>
