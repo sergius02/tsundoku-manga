@@ -165,32 +165,52 @@ router.put('/:id/volumes', (req, res) => {
 });
 
 router.put('/:id/volumes/bulk', (req, res) => {
-  const { ids, status, acquired } = req.body;
+  const { ids, status, acquired, titleTemplate } = req.body;
 
   if (!Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ error: 'ids must be a non-empty array' });
   }
 
-  const fields = [];
-  const values = [];
+  const manga = db.prepare('SELECT title FROM mangas WHERE id = ?').get(req.params.id);
+  if (!manga) return res.status(404).json({ error: 'Manga not found' });
+
+  const updateFields = [];
+  const updateValues = [];
 
   if (status !== undefined) {
-    fields.push('status = ?');
-    values.push(status);
+    updateFields.push('status = ?');
+    updateValues.push(status);
   }
   if (acquired !== undefined) {
-    fields.push('acquired = ?');
-    values.push(acquired ? 1 : 0);
+    updateFields.push('acquired = ?');
+    updateValues.push(acquired ? 1 : 0);
   }
 
-  if (fields.length === 0) {
+  if (updateFields.length === 0 && !titleTemplate) {
     return res.status(400).json({ error: 'No fields to update' });
   }
 
-  const placeholders = ids.map(() => '?').join(',');
-  values.push(...ids);
+  const transaction = db.transaction(() => {
+    if (titleTemplate) {
+      const volumes = db.prepare(`SELECT * FROM volumes WHERE id IN (${ids.map(() => '?').join(',')}) AND manga_id = ?`).all(...ids, req.params.id);
+      const updateStmt = db.prepare('UPDATE volumes SET title = ? WHERE id = ?');
 
-  db.prepare(`UPDATE volumes SET ${fields.join(', ')} WHERE id IN (${placeholders}) AND manga_id = ?`).run(...values, req.params.id);
+      for (const volume of volumes) {
+        const title = titleTemplate
+          .replace(/\$volumeNumber/g, volume.volume_number !== null ? String(volume.volume_number) : '')
+          .replace(/\$mangaTitle/g, manga.title)
+          .replace(/\$series/g, manga.title);
+        updateStmt.run(title || null, volume.id);
+      }
+    }
+
+    if (updateFields.length > 0) {
+      const placeholders = ids.map(() => '?').join(',');
+      db.prepare(`UPDATE volumes SET ${updateFields.join(', ')} WHERE id IN (${placeholders}) AND manga_id = ?`).run(...updateValues, ...ids, req.params.id);
+    }
+  });
+
+  transaction();
 
   const volumes = db.prepare('SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC').all(req.params.id);
   res.json(volumes);

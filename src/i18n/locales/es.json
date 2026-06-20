@@ -91,6 +91,8 @@
     "isbn": "ISBN",
     "volumeNumber": "Número de tomo",
     "title": "Título",
+    "titleTemplate": "Plantilla de título",
+    "titleTemplatePlaceholder": "Usa $volumeNumber para el número del tomo",
     "coverUrl": "URL de portada",
     "status": "Estado",
     "acquired": "En mi posesión",

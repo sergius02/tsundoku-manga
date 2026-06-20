@@ -309,6 +309,14 @@
       <form @submit.prevent="confirmBulkEdit" class="bulk-edit-form">
         <p class="bulk-edit-info">{{ selectedVolumes.size }} {{ selectedVolumes.size === 1 ? 'volume' : 'volumes' }} selected</p>
         <div class="form-group">
+          <label>{{ $t('volume.titleTemplate') }}</label>
+          <input type="text" v-model="bulkEditTitleTemplate" :placeholder="$t('volume.titleTemplatePlaceholder')" />
+          <p class="form-help">
+            <strong>Variables:</strong> $volumeNumber, $mangaTitle, $series<br />
+            Ejemplo: "One Punch-Man $volumeNumber" → "One Punch-Man 1", "One Punch-Man 2"
+          </p>
+        </div>
+        <div class="form-group">
           <label>{{ $t('volume.acquired') }}</label>
           <select v-model="bulkEditAcquired">
             <option :value="null">—</option>
@@ -366,7 +374,8 @@ const confirmConfig = ref({
 const selectionMode = ref(false)
 const selectedVolumes = ref(new Set())
 const showBulkEditModal = ref(false)
-const bulkEditAcquired = ref(false)
+const bulkEditAcquired = ref(null)
+const bulkEditTitleTemplate = ref('')
 
 function openConfirm(title, message, onConfirm) {
   confirmConfig.value = { title, message, onConfirm }
@@ -619,15 +628,26 @@ function toggleVolumeSelection(volumeId) {
 }
 
 async function bulkEdit() {
-  bulkEditAcquired.value = false
+  bulkEditAcquired.value = null
+  bulkEditTitleTemplate.value = ''
   showBulkEditModal.value = true
 }
 
 async function confirmBulkEdit() {
   const ids = Array.from(selectedVolumes.value)
-  if (bulkEditAcquired.value !== null) {
-    await bulkUpdateVolumes(route.params.id, ids, { acquired: bulkEditAcquired.value })
+  const data = {}
+
+  if (bulkEditTitleTemplate.value.trim()) {
+    data.titleTemplate = bulkEditTitleTemplate.value.trim()
   }
+  if (bulkEditAcquired.value !== null) {
+    data.acquired = bulkEditAcquired.value
+  }
+
+  if (Object.keys(data).length > 0) {
+    await bulkUpdateVolumes(route.params.id, ids, data)
+  }
+
   showBulkEditModal.value = false
   selectionMode.value = false
   selectedVolumes.value.clear()
@@ -1205,6 +1225,20 @@ onMounted(async () => {
   margin-bottom: 16px;
 }
 
+.bulk-edit-form .form-group {
+  margin-bottom: 20px;
+}
+
+.bulk-edit-form .form-group input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
+}
+
 .bulk-edit-form .form-group select {
   width: 100%;
   padding: 10px;
@@ -1213,5 +1247,12 @@ onMounted(async () => {
   background: var(--bg-secondary);
   color: var(--text);
   font-size: 14px;
+}
+
+.form-help {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  line-height: 1.5;
 }
 </style>
