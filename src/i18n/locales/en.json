@@ -197,7 +197,16 @@
     "backupDate": "Exported on",
     "backupMangas": "mangas",
     "backupVolumes": "volumes",
-    "editMultiple": "Edit multiple"
+    "editMultiple": "Edit multiple",
+    "about": {
+      "title": "About Tsundoku",
+      "version": "Version",
+      "description": "Open source manga library manager that helps you catalog and organize your collection.",
+      "openSource": "This project is open source under the AGPL-3.0 license. You're free to use, study, modify, and distribute it.",
+      "collaborate": "Found a bug? Have a feature request? Contributions are welcome! Feel free to open issues or submit pull requests on GitHub.",
+      "github": "GitHub Repository",
+      "license": "License"
+    }
   },
   "auth": {
     "loginRequired": "Please login to continue",

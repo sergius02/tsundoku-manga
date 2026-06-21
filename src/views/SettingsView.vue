@@ -57,6 +57,27 @@
       </div>
     </section>
 
+    <section class="settings-section about-section">
+      <h2>{{ $t('settings.about.title') }}</h2>
+      <div class="about-content">
+        <p class="about-version">{{ $t('settings.about.version') }}: {{ version }}</p>
+        <p>{{ $t('settings.about.description') }}</p>
+        <p>{{ $t('settings.about.openSource') }}</p>
+        <p>{{ $t('settings.about.collaborate') }}</p>
+        <div class="about-links">
+          <a
+            href="https://github.com/sergius02/tsundoku-manga"
+            target="_blank"
+            rel="noopener"
+            class="about-link"
+          >
+            <IconGithub size="sm" /> {{ $t('settings.about.github') }}
+          </a>
+          <span class="license-info">{{ $t('settings.about.license') }}: AGPL-3.0</span>
+        </div>
+      </div>
+    </section>
+
     <div v-if="showFileModal" class="modal-overlay" @click.self="closeFileModal">
       <div class="modal">
         <h3>{{ $t('settings.import') }}</h3>
@@ -109,11 +130,14 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '../stores/settings.js'
 import { useRouter } from 'vue-router'
+import IconGithub from '../components/icons/IconGithub.vue'
+import pkg from '../../package.json'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
 const router = useRouter()
 
+const version = pkg.version
 const exporting = ref(false)
 const importing = ref(false)
 const showFileModal = ref(false)
@@ -230,6 +254,64 @@ function formatDate(isoString) {
 
 .backup-section {
   margin-top: 48px;
+}
+
+.about-section {
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-content p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.about-version {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.about-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.about-link:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-secondary);
+}
+
+.license-info {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .settings-section h2 {
