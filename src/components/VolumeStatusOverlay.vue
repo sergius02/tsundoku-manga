@@ -1,11 +1,12 @@
 <template>
   <div
     class="status-overlay"
-    :class="`status-${status}`"
-    @click.stop="$emit('toggle-status')"
+    :class="[`status-${status}`, { clickable }]"
+    @click.stop="clickable && handleClick()"
     :title="label"
   >
     <IconCheck v-if="status === 'read'" />
+    <IconMinus v-else-if="status === 'no_volumes'" />
     <IconCircle v-else />
     <span class="status-text">{{ label }}</span>
   </div>
@@ -16,12 +17,17 @@ import { computed } from 'vue'
 import { useStatus } from '../composables/useStatus.js'
 import IconCheck from './icons/IconCheck.vue'
 import IconCircle from './icons/IconCircle.vue'
+import IconMinus from './icons/IconMinus.vue'
 
 const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ['unread', 'reading', 'read'].includes(value)
+    validator: (value) => ['unread', 'reading', 'read', 'no_volumes'].includes(value)
+  },
+  clickable: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -29,6 +35,12 @@ defineEmits(['toggle-status'])
 
 const { statusLabel } = useStatus()
 const label = computed(() => statusLabel(props.status))
+
+function handleClick() {
+  if (props.status !== 'no_volumes') {
+    emit('toggle-status')
+  }
+}
 </script>
 
 <style scoped>
@@ -43,9 +55,13 @@ const label = computed(() => statusLabel(props.status))
   border-radius: 16px;
   font-size: 11px;
   font-weight: 500;
-  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   z-index: 2;
+  white-space: nowrap;
+}
+
+.status-overlay.clickable {
+  cursor: pointer;
 }
 
 .status-overlay:hover {
@@ -75,6 +91,11 @@ const label = computed(() => statusLabel(props.status))
 
 .status-overlay.status-read {
   background: rgba(45, 106, 79, 0.9);
+  color: white;
+}
+
+.status-overlay.status-no_volumes {
+  background: rgba(128, 128, 128, 0.85);
   color: white;
 }
 

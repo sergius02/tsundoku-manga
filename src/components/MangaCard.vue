@@ -17,9 +17,11 @@
       <div v-else class="cover-placeholder">
         {{ initials }}
       </div>
+      <div class="indicators">
+        <VolumeStatusOverlay :status="overallStatus" :clickable="false" />
+      </div>
     </div>
     <div class="info">
-      <StatusBadge :status="overallStatus" class="card-status" />
       <h3 class="title">{{ manga.title }}</h3>
       <p v-if="manga.author" class="author">{{ manga.author }}</p>
       <p v-if="progressText" class="progress">{{ progressText }}</p>
@@ -30,7 +32,7 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import StatusBadge from './StatusBadge.vue'
+import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import { getCoverByISBN } from '../api/covers.js'
 
@@ -133,6 +135,25 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
+.cover-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cover-wrapper .indicators {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
 .cover {
   width: 100%;
   height: 100%;
@@ -167,11 +188,6 @@ onMounted(() => {
   flex-direction: column;
   flex: 1;
   min-height: 0;
-}
-
-.card-status {
-  margin-bottom: 12px;
-  flex-shrink: 0;
 }
 
 .title {
