@@ -7,7 +7,7 @@
     <div v-if="showCheckbox" class="volume-checkbox" @click.stop="toggleSelect">
       <input type="checkbox" :checked="isSelected" @change="toggleSelect" />
     </div>
-    <div class="volume-cover" :class="{ unacquired: !tomo.acquired }" @click.stop="$emit('toggle-status')">
+    <div class="volume-cover" :class="{ unacquired: !tomo.acquired }" @click.stop>
       <div v-if="!imageLoaded && !hasDirectCover && hasCoverUrl" class="cover-loading">
         <LoadingSpinner size="sm" />
       </div>
@@ -110,10 +110,6 @@ onMounted(() => {
   height: 20px;
   cursor: pointer;
   accent-color: var(--accent);
-}
-
-.volume-cover :deep(.status-overlay) {
-  display: none;
 }
 
 .volume-cover::after {

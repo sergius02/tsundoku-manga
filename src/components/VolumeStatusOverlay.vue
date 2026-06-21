@@ -31,7 +31,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['toggle-status'])
+const emit = defineEmits(['toggle-status'])
 
 const { statusLabel } = useStatus()
 const label = computed(() => statusLabel(props.status))
