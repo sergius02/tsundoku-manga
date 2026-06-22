@@ -4,7 +4,7 @@
 - **Frontend**: Vue 3 + Vite + Vue Router + Pinia + vue-i18n
 - **Backend**: Express (Node.js) + better-sqlite3 (SQLite)
 - **Testing**: Vitest (unit + integration tests)
-- **No TypeScript, no linting**
+- **Linting**: ESLint + Prettier
 
 ## Dev Commands
 ```bash
@@ -12,8 +12,10 @@ npm run dev      # Runs both client (port 5173) + server (port 3000) concurrentl
 npm run build    # Builds Vue app → dist/
 npm run client   # Vite dev server only (port 5173)
 npm run server   # Express server only (port 3000)
-npm run preview # Preview production build from dist/
-npm run test    # Run all tests (Vitest)
+npm run preview  # Preview production build from dist/
+npm run lint     # Run ESLint + Prettier
+npm run lint:fix # Auto-fix lint issues
+npm run test     # Run all tests (Vitest)
 npm run test:watch  # Watch mode for development
 ```
 
@@ -25,7 +27,7 @@ Test files:
 - `src/stores/*.test.js` - Pinia store tests (31 tests)
 - `src/views/*.test.js` - View computed logic tests (41 tests)
 
-**Important**: After implementing changes, ALWAYS run `npm run test` before testing with `npm run build` or `npm run dev`. All tests must pass before committing.
+**Important**: After implementing changes, ALWAYS run `npm run lint` and `npm run test` before committing. All lint checks and tests must pass before committing.
 
 ## Key Quirks
 

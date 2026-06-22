@@ -36,7 +36,7 @@
 | Database     | SQLite (via `better-sqlite3`)                |
 | Packaging    | Multi-stage Docker                           |
 
-No TypeScript, no linter — it's a small, straightforward project. Tests: 126 passing.
+No TypeScript — it's a small, straightforward project. ESLint + Prettier for code quality. Tests: 126 passing.
 
 ---
 

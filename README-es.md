@@ -36,7 +36,7 @@
 | Base de datos| SQLite (vía `better-sqlite3`)               |
 | Empaquetado  | Multi-stage Docker                          |
 
-No hay TypeScript, no hay linter — es un proyecto pequeño y directo. Tests: 126 passing.
+No hay TypeScript — es un proyecto pequeño y directo. ESLint + Prettier para calidad de código. Tests: 126 passing.
 
 ---
 
