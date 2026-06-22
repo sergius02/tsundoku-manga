@@ -16,18 +16,12 @@ FROM node:22-bookworm-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y python3 make g++ && \
-    rm -rf /var/lib/apt/lists/*
-
 RUN mkdir -p /app/data
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
-
-RUN npm install --omit=dev && \
-    apt-get purge -y python3 make g++ && \
-    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 ENV NODE_ENV=production
