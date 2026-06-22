@@ -57,10 +57,10 @@ npm run dev
 
 This runs concurrently:
 
-- 🖥️ Vite client at `http://localhost:5173`
-- 🛠️ Express server at `http://localhost:3000`
+- 🖥️ Vite client at `http://localhost:5173` (default, configurable via `WEB_PORT`)
+- 🛠️ Express server at `http://localhost:3000` (default, configurable via `PORT`)
 
-Calls to `/api/*` are automatically proxied to the backend by Vite, so you don't need to prefix the full URL in your code.
+Ports are configurable via `.env` (see environment variables below). The Vite proxy automatically routes `/api/*` requests to the Express server.
 
 ### Production build
 
@@ -95,6 +95,7 @@ Recognized environment variables:
 | Variable              | Default       | Description                                      |
 |-----------------------|---------------|--------------------------------------------------|
 | `PORT`                | `3000`        | Express server port                              |
+| `WEB_PORT`            | `5173`        | Vite dev server port                             |
 | `DATA_DIR`            | `/app/data`   | Directory where `tsundoku.db` is stored          |
 | `NODE_ENV`            | `production`  | Runtime mode                                     |
 | `AUTH_USERNAME`       | (required)    | Username for authentication                      |
