@@ -60,7 +60,7 @@ describe('useAuthStore', () => {
     it('throws error on login failure', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
-        json: () => Promise.resolve({ error: 'Invalid credentials' })
+        json: () => Promise.resolve({ error: 'Invalid credentials' }),
       })
       const store = useAuthStore()
 
@@ -71,7 +71,7 @@ describe('useAuthStore', () => {
     it('throws generic error when no error message in response', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
-        json: () => Promise.resolve({})
+        json: () => Promise.resolve({}),
       })
       const store = useAuthStore()
 
@@ -79,7 +79,12 @@ describe('useAuthStore', () => {
     })
 
     it('sets loading while logging in', async () => {
-      mockFetch.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 10)))
+      mockFetch.mockImplementation(
+        () =>
+          new Promise(resolve =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 10)
+          )
+      )
       const store = useAuthStore()
 
       const promise = store.login('admin', 'password')

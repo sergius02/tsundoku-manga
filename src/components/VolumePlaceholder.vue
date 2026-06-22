@@ -12,8 +12,8 @@
 defineProps({
   volumeNumber: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 })
 
 defineEmits(['click'])

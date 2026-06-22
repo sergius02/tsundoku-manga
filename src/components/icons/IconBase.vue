@@ -17,33 +17,33 @@
 defineProps({
   viewBox: {
     type: String,
-    default: '0 0 24 24'
+    default: '0 0 24 24',
   },
   stroke: {
     type: String,
-    default: 'currentColor'
+    default: 'currentColor',
   },
   strokeWidth: {
     type: [Number, String],
-    default: 2
+    default: 2,
   },
   strokeLinecap: {
     type: String,
-    default: 'round'
+    default: 'round',
   },
   strokeLinejoin: {
     type: String,
-    default: 'round'
+    default: 'round',
   },
   ariaHidden: {
     type: Boolean,
-    default: true
+    default: true,
   },
   size: {
     type: String,
     default: 'md',
-    validator: (value) => ['sm', 'md', 'lg'].includes(value)
-  }
+    validator: value => ['sm', 'md', 'lg'].includes(value),
+  },
 })
 </script>
 

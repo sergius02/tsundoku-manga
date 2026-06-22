@@ -1,10 +1,14 @@
 <template>
-  <Modal :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" :title="$t('cover.changeCover') || 'Change Cover'">
+  <Modal
+    :model-value="modelValue"
+    :title="$t('cover.changeCover') || 'Change Cover'"
+    @update:model-value="$emit('update:modelValue', $event)"
+  >
     <div class="cover-modal-content">
       <div class="form-group">
         <input
-          type="text"
           v-model="coverUrlInput"
+          type="text"
           :placeholder="$t('cover.urlPlaceholder') || 'Image URL'"
           class="cover-url-input"
         />
@@ -31,8 +35,12 @@
       </div>
     </div>
     <template #footer>
-      <button type="button" class="btn btn-ghost" @click="$emit('update:modelValue', false)">{{ $t('common.cancel') }}</button>
-      <button type="button" class="btn btn-primary" @click="save">{{ $t('common.save') }}</button>
+      <button type="button" class="btn btn-ghost" @click="$emit('update:modelValue', false)">
+        {{ $t('common.cancel') }}
+      </button>
+      <button type="button" class="btn btn-primary" @click="save">
+        {{ $t('common.save') }}
+      </button>
     </template>
   </Modal>
 </template>
@@ -44,16 +52,16 @@ import Modal from './Modal.vue'
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   volumes: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   currentCoverUrl: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'save'])
@@ -65,12 +73,15 @@ const volumesWithCovers = computed(() => {
   return props.volumes.filter(v => v.cover_url)
 })
 
-watch(() => props.modelValue, (isOpen) => {
-  if (isOpen) {
-    coverUrlInput.value = props.currentCoverUrl || ''
-    selectedVolumeId.value = null
+watch(
+  () => props.modelValue,
+  isOpen => {
+    if (isOpen) {
+      coverUrlInput.value = props.currentCoverUrl || ''
+      selectedVolumeId.value = null
+    }
   }
-})
+)
 
 function getVolumeCover(tomo) {
   if (tomo.cover_url) return tomo.cover_url

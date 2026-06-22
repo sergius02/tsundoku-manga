@@ -1,19 +1,19 @@
-import Database from 'better-sqlite3';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import fs from 'fs';
+import Database from 'better-sqlite3'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import fs from 'fs'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
-const DATA_DIR = process.env.DATA_DIR || __dirname;
-const DB_PATH = join(DATA_DIR, 'tsundoku.db');
+const DATA_DIR = process.env.DATA_DIR || __dirname
+const DB_PATH = join(DATA_DIR, 'tsundoku.db')
 
 if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.mkdirSync(DATA_DIR, { recursive: true })
 }
 
-const db = new Database(DB_PATH);
+const db = new Database(DB_PATH)
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS mangas (
@@ -53,11 +53,11 @@ db.exec(`
     expires_at DATETIME,
     user_agent TEXT
   );
-`);
+`)
 
 db.exec(`
   INSERT OR IGNORE INTO api_config (api_name, enabled) VALUES ('openlibrary', 1);
   INSERT OR IGNORE INTO api_config (api_name, enabled) VALUES ('googlebooks', 1);
-`);
+`)
 
-export default db;
+export default db

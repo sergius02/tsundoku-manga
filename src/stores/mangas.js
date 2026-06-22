@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getMangas, getManga, createManga, updateManga, deleteManga, bulkUpdateVolumes, bulkDeleteVolumes } from '../api/index.js'
+import { getMangas, getManga, createManga, updateManga, deleteManga } from '../api/index.js'
 
 export const useMangaStore = defineStore('mangas', {
   state: () => ({
@@ -10,9 +10,9 @@ export const useMangaStore = defineStore('mangas', {
     filters: {
       status: 'all',
       q: '',
-      sort: 'date'
+      sort: 'date',
     },
-    volumeSort: 'number'
+    volumeSort: 'number',
   }),
 
   actions: {
@@ -122,6 +122,6 @@ export const useMangaStore = defineStore('mangas', {
       if (this.currentManga?.id) {
         await this.fetchManga(this.currentManga.id)
       }
-    }
-  }
+    },
+  },
 })

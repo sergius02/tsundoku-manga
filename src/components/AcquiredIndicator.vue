@@ -2,8 +2,8 @@
   <div
     class="acquired-indicator"
     :class="{ acquired: tomo.acquired }"
-    @click.stop="$emit('toggle-acquired')"
     :title="tomo.acquired ? 'En mi posesión' : 'Marcar como en posesión'"
+    @click.stop="$emit('toggle-acquired')"
   >
     <IconCheck v-if="tomo.acquired" />
     <IconCircle v-else />
@@ -17,8 +17,8 @@ import IconCircle from './icons/IconCircle.vue'
 defineProps({
   tomo: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 defineEmits(['toggle-acquired'])
@@ -40,7 +40,9 @@ defineEmits(['toggle-acquired'])
   color: white;
   z-index: 2;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .acquired-indicator:hover {

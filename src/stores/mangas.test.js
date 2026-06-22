@@ -13,13 +13,13 @@ vi.mock('../api/index.js', () => ({
   getManga: (...args) => mockGetManga(...args),
   createManga: (...args) => mockCreateManga(...args),
   updateManga: (...args) => mockUpdateManga(...args),
-  deleteManga: (...args) => mockDeleteManga(...args)
+  deleteManga: (...args) => mockDeleteManga(...args),
 }))
 
 const mockMangas = [
   { id: 1, title: 'Naruto', author: 'Masashi Kishimoto', volumes_total: 10, volumes_read: 5 },
   { id: 2, title: 'One Piece', author: 'Eiichiro Oda', volumes_total: 10, volumes_read: 10 },
-  { id: 3, title: 'Bleach', author: 'Tite Kubo', volumes_total: 5, volumes_read: 0 }
+  { id: 3, title: 'Bleach', author: 'Tite Kubo', volumes_total: 5, volumes_read: 0 },
 ]
 
 describe('useMangaStore', () => {
@@ -52,7 +52,9 @@ describe('useMangaStore', () => {
     })
 
     it('sets loading state while fetching', async () => {
-      mockGetMangas.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(mockMangas), 10)))
+      mockGetMangas.mockImplementation(
+        () => new Promise(resolve => setTimeout(() => resolve(mockMangas), 10))
+      )
       const store = useMangaStore()
 
       const promise = store.fetchMangas()
@@ -165,8 +167,8 @@ describe('useMangaStore', () => {
         id: 1,
         volumes: [
           { id: 1, status: 'unread' },
-          { id: 2, status: 'read' }
-        ]
+          { id: 2, status: 'read' },
+        ],
       }
 
       store.updateVolumeState(1, { status: 'read' })
@@ -185,7 +187,7 @@ describe('useMangaStore', () => {
       const store = useMangaStore()
       store.currentManga = {
         id: 1,
-        volumes: [{ id: 1, status: 'unread' }]
+        volumes: [{ id: 1, status: 'unread' }],
       }
 
       store.updateVolumeState(999, { status: 'read' })
@@ -202,8 +204,8 @@ describe('useMangaStore', () => {
         volumes: [
           { id: 1, status: 'unread' },
           { id: 2, status: 'reading' },
-          { id: 3, status: 'unread' }
-        ]
+          { id: 3, status: 'unread' },
+        ],
       }
 
       store.markAllVolumesReadLocal(1)
@@ -228,8 +230,8 @@ describe('useMangaStore', () => {
         id: 1,
         volumes: [
           { id: 1, status: 'read' },
-          { id: 2, status: 'read' }
-        ]
+          { id: 2, status: 'read' },
+        ],
       }
 
       store.markAllVolumesUnreadLocal(1)

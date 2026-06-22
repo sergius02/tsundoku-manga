@@ -6,17 +6,25 @@
 
     <section class="settings-section">
       <h2>{{ $t('settings.apis') }}</h2>
-      <p class="section-description">{{ $t('settings.apisDescription') }}</p>
+      <p class="section-description">
+        {{ $t('settings.apisDescription') }}
+      </p>
 
-      <div v-if="settingsStore.loading" class="loading">{{ $t('common.loading') }}</div>
-      <div v-else-if="settingsStore.error" class="error-message">{{ settingsStore.error }}</div>
+      <div v-if="settingsStore.loading" class="loading">
+        {{ $t('common.loading') }}
+      </div>
+      <div v-else-if="settingsStore.error" class="error-message">
+        {{ settingsStore.error }}
+      </div>
 
       <div v-else class="api-list">
         <div v-for="api in settingsStore.apis" :key="api.name" class="api-card">
           <div class="api-info">
             <div class="api-header">
               <span class="api-name">{{ $t(`settings.${api.name}`) }}</span>
-              <span v-if="api.name === 'openlibrary'" class="api-badge mandatory">{{ $t('settings.mandatory') }}</span>
+              <span v-if="api.name === 'openlibrary'" class="api-badge mandatory">{{
+                $t('settings.mandatory')
+              }}</span>
             </div>
             <p class="api-status">
               <span v-if="api.name === 'googlebooks' && !api.hasKey" class="warning-text">
@@ -33,7 +41,7 @@
               :disabled="api.name === 'openlibrary' || (api.name === 'googlebooks' && !api.hasKey)"
               @change="handleToggle(api.name, $event.target.checked)"
             />
-            <span class="toggle-slider"></span>
+            <span class="toggle-slider" />
           </label>
         </div>
       </div>
@@ -41,17 +49,19 @@
 
     <section class="settings-section backup-section">
       <h2>{{ $t('settings.backup') }}</h2>
-      <p class="section-description">{{ $t('settings.backupDescription') }}</p>
+      <p class="section-description">
+        {{ $t('settings.backupDescription') }}
+      </p>
 
       <div class="backup-warning">
         <p>{{ $t('settings.backupWarning') }}</p>
       </div>
 
       <div class="backup-actions">
-        <button class="btn btn-secondary" @click="handleExport" :disabled="exporting">
+        <button class="btn btn-secondary" :disabled="exporting" @click="handleExport">
           {{ exporting ? $t('common.loading') : $t('settings.export') }}
         </button>
-        <button class="btn btn-primary" @click="openImportModal" :disabled="importing">
+        <button class="btn btn-primary" :disabled="importing" @click="openImportModal">
           {{ $t('settings.import') }}
         </button>
       </div>
@@ -83,11 +93,15 @@
         <h3>{{ $t('settings.import') }}</h3>
         <div class="file-input-wrapper">
           <label for="backup-file">{{ $t('settings.backupFile') }}</label>
-          <input type="file" id="backup-file" accept=".json" @change="handleFileSelect" />
+          <input id="backup-file" type="file" accept=".json" @change="handleFileSelect" />
         </div>
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeFileModal">{{ $t('common.cancel') }}</button>
-          <button class="btn btn-primary" @click="openConfirmModal" :disabled="!selectedFile">{{ $t('common.next') }}</button>
+          <button class="btn btn-secondary" @click="closeFileModal">
+            {{ $t('common.cancel') }}
+          </button>
+          <button class="btn btn-primary" :disabled="!selectedFile" @click="openConfirmModal">
+            {{ $t('common.next') }}
+          </button>
         </div>
       </div>
     </div>
@@ -95,27 +109,40 @@
     <div v-if="showConfirmModal" class="modal-overlay" @click.self="closeConfirmModal">
       <div class="modal">
         <h3>{{ $t('settings.restoreConfirmTitle') }}</h3>
-        <p class="confirm-text">{{ $t('settings.restoreConfirmText') }}</p>
+        <p class="confirm-text">
+          {{ $t('settings.restoreConfirmText') }}
+        </p>
         <div v-if="pendingBackup" class="backup-info">
-          <p><strong>{{ $t('settings.backupDate') }}:</strong> {{ formatDate(pendingBackup.exported_at) }}</p>
-          <p><strong>{{ pendingBackup.data.mangas.length }}</strong> {{ $t('settings.backupMangas') }}</p>
-          <p><strong>{{ pendingBackup.data.volumes.length }}</strong> {{ $t('settings.backupVolumes') }}</p>
+          <p>
+            <strong>{{ $t('settings.backupDate') }}:</strong>
+            {{ formatDate(pendingBackup.exported_at) }}
+          </p>
+          <p>
+            <strong>{{ pendingBackup.data.mangas.length }}</strong>
+            {{ $t('settings.backupMangas') }}
+          </p>
+          <p>
+            <strong>{{ pendingBackup.data.volumes.length }}</strong>
+            {{ $t('settings.backupVolumes') }}
+          </p>
         </div>
         <div class="restore-input-wrapper">
           <label for="restore-confirm">{{ $t('settings.restoreConfirmInput') }}</label>
           <input
-            type="text"
             id="restore-confirm"
             v-model="restoreConfirmation"
+            type="text"
             :placeholder="$t('settings.restoreConfirmInput')"
           />
         </div>
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeConfirmModal">{{ $t('common.cancel') }}</button>
+          <button class="btn btn-secondary" @click="closeConfirmModal">
+            {{ $t('common.cancel') }}
+          </button>
           <button
             class="btn btn-danger"
-            @click="handleRestore"
             :disabled="restoreConfirmation !== 'Tsundoku'"
+            @click="handleRestore"
           >
             {{ $t('settings.restore') }}
           </button>
@@ -301,7 +328,9 @@ function formatDate(isoString) {
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
 
 .about-link:hover {
@@ -429,7 +458,7 @@ function formatDate(isoString) {
 
 .toggle-slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 20px;
   width: 20px;
   left: 3px;
@@ -479,7 +508,9 @@ function formatDate(isoString) {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
 }
 
 .btn:disabled {
@@ -541,7 +572,7 @@ function formatDate(isoString) {
   color: var(--text-secondary);
 }
 
-.file-input-wrapper input[type="file"] {
+.file-input-wrapper input[type='file'] {
   width: 100%;
   padding: 10px;
   border: 1px solid var(--border);

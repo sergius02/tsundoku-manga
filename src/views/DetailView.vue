@@ -1,29 +1,37 @@
 <template>
   <div class="page-container">
     <div v-if="store.loading" class="loading">
-      <div class="spinner"></div>
+      <div class="spinner" />
     </div>
 
     <div v-else-if="store.error" class="error-state">
       <p>{{ store.error }}</p>
-      <button class="btn btn-primary" @click="store.fetchManga(route.params.id)">{{ $t('common.retry') }}</button>
+      <button class="btn btn-primary" @click="store.fetchManga(route.params.id)">
+        {{ $t('common.retry') }}
+      </button>
     </div>
 
     <div v-else-if="store.currentManga" class="manga-detail">
       <div class="detail-header animate-in">
         <button class="back-btn" @click="router.push('/')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12,19 5,12 12,5"/>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12,19 5,12 12,5" />
           </svg>
           {{ $t('common.back') || 'Back' }}
         </button>
-        <button class="btn btn-secondary" @click="showEditModal = true">{{ $t('common.edit') }}</button>
+        <button class="btn btn-secondary" @click="showEditModal = true">
+          {{ $t('common.edit') }}
+        </button>
       </div>
 
       <div class="detail-content animate-in-cover">
         <div class="cover-section">
-          <div class="cover-wrapper" @mouseenter="showCoverEdit = true" @mouseleave="showCoverEdit = false">
+          <div
+            class="cover-wrapper"
+            @mouseenter="showCoverEdit = true"
+            @mouseleave="showCoverEdit = false"
+          >
             <div class="cover-container">
               <Transition name="cover-fade">
                 <img
@@ -37,20 +45,20 @@
                   @load="imageLoaded = true"
                   @error="imageLoaded = true"
                 />
-                <div v-else-if="!coverLoading" class="cover-placeholder" :key="'placeholder'">
+                <div v-else-if="!coverLoading" :key="'placeholder'" class="cover-placeholder">
                   {{ initials }}
                 </div>
                 <div v-else class="cover-loading">
-                  <div class="spinner-sm"></div>
+                  <div class="spinner-sm" />
                 </div>
               </Transition>
             </div>
             <Transition name="fade">
               <button v-if="showCoverEdit" class="cover-edit-btn" @click="openCoverModal">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <polyline points="21,15 16,10 5,21"/>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21,15 16,10 5,21" />
                 </svg>
               </button>
             </Transition>
@@ -58,8 +66,12 @@
         </div>
 
         <div class="info-section">
-          <h1 class="title">{{ store.currentManga.title }}</h1>
-          <p v-if="store.currentManga.author" class="author">{{ store.currentManga.author }}</p>
+          <h1 class="title">
+            {{ store.currentManga.title }}
+          </h1>
+          <p v-if="store.currentManga.author" class="author">
+            {{ store.currentManga.author }}
+          </p>
 
           <div class="metadata">
             <div v-if="store.currentManga.publisher" class="meta-item">
@@ -70,9 +82,11 @@
 
           <div class="progress-section">
             <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+              <div class="progress-fill" :style="{ width: progressPercent + '%' }" />
             </div>
-            <span class="progress-text">{{ volumesRead }} / {{ volumesTotal }} {{ $t('library.stats.volumes') }}</span>
+            <span class="progress-text"
+              >{{ volumesRead }} / {{ volumesTotal }} {{ $t('library.stats.volumes') }}</span
+            >
           </div>
 
           <div v-if="store.currentManga.notes" class="notes">
@@ -91,22 +105,32 @@
               class="btn btn-secondary select-btn"
               @click="toggleSelectionMode"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="18"
+                height="18"
+              >
                 <polyline points="9 11 12 14 22 4" />
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
             </button>
-            <button
-              v-else
-              class="btn btn-secondary"
-              @click="toggleSelectionMode"
-            >
+            <button v-else class="btn btn-secondary" @click="toggleSelectionMode">
               {{ $t('common.cancel') }}
             </button>
             <button class="btn btn-primary" @click="showAddVolumeModal = true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="18"
+                height="18"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
               {{ $t('volume.addVolume') }}
             </button>
@@ -124,7 +148,7 @@
                 v-if="volume.placeholder"
                 :volume-number="volume.volume_number"
                 class="volume-item-animate"
-                :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
+                :style="{ animationDelay: 0.3 + index * 0.05 + 's' }"
                 @click="openAddMissingVolume(volume.volume_number)"
               />
               <VolumeRow
@@ -134,17 +158,21 @@
                 :show-checkbox="selectionMode"
                 :is-selected="selectedVolumes.has(volume.id)"
                 class="volume-item-animate"
-                :style="{ animationDelay: (0.3 + index * 0.05) + 's' }"
-                @toggle-status="selectionMode ? toggleVolumeSelection(volume.id) : cycleVolumeStatus(volume)"
+                :style="{ animationDelay: 0.3 + index * 0.05 + 's' }"
+                @toggle-status="
+                  selectionMode ? toggleVolumeSelection(volume.id) : cycleVolumeStatus(volume)
+                "
                 @toggle-acquired="toggleVolumeAcquired(volume)"
-                @context-menu="(e) => openVolumeContextMenu(e, volume)"
+                @context-menu="e => openVolumeContextMenu(e, volume)"
                 @select="toggleVolumeSelection"
               />
             </template>
           </div>
           <div v-else key="empty" class="empty-volumes">
             <p>{{ $t('manga.noVolumes') }}</p>
-            <button class="btn btn-secondary" @click="showAddVolumeModal = true">{{ $t('manga.addFirstVolume') }}</button>
+            <button class="btn btn-secondary" @click="showAddVolumeModal = true">
+              {{ $t('manga.addFirstVolume') }}
+            </button>
           </div>
         </Transition>
       </div>
@@ -161,9 +189,18 @@
 
       <div class="danger-zone">
         <button class="btn btn-ghost delete-btn" @click="confirmDelete">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <polyline points="3,6 5,6 21,6"/>
-            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="18"
+            height="18"
+          >
+            <polyline points="3,6 5,6 21,6" />
+            <path
+              d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"
+            />
           </svg>
           {{ $t('manga.deleteManga') }}
         </button>
@@ -171,109 +208,133 @@
     </div>
 
     <Modal v-model="showEditModal" :title="$t('manga.editManga') || 'Edit manga'">
-      <form @submit.prevent="saveEdit" class="edit-form">
+      <form class="edit-form" @submit.prevent="saveEdit">
         <div class="form-group">
           <label>{{ $t('manga.title') }} *</label>
-          <input type="text" v-model="editForm.title" required />
+          <input v-model="editForm.title" type="text" required />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.author') }}</label>
-          <input type="text" v-model="editForm.author" />
+          <input v-model="editForm.author" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.publisher') }}</label>
-          <input type="text" v-model="editForm.publisher" />
+          <input v-model="editForm.publisher" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.coverUrl') }}</label>
-          <input type="text" v-model="editForm.cover_url" />
+          <input v-model="editForm.cover_url" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.notes') }}</label>
-          <textarea v-model="editForm.notes" rows="3"></textarea>
+          <textarea v-model="editForm.notes" rows="3" />
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showEditModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="saveEdit">{{ $t('common.save') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showEditModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="saveEdit">
+          {{ $t('common.save') }}
+        </button>
       </template>
     </Modal>
 
     <Modal v-model="showAddVolumeModal" :title="$t('volume.addVolume')">
-      <form @submit.prevent="addVolume" class="add-volume-form">
+      <form class="add-volume-form" @submit.prevent="addVolume">
         <div class="form-group">
           <label>{{ $t('volume.title') }}</label>
-          <input type="text" v-model="volumeForm.title" />
+          <input v-model="volumeForm.title" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
-          <input type="number" v-model.number="volumeForm.volume_number" min="1" />
+          <input v-model.number="volumeForm.volume_number" type="number" min="1" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="volumeForm.isbn" placeholder="978-4-1234-5678-9" />
+          <input v-model="volumeForm.isbn" type="text" placeholder="978-4-1234-5678-9" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.coverUrl') }}</label>
-          <input type="text" v-model="volumeForm.cover_url" />
+          <input v-model="volumeForm.cover_url" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
           <select v-model="volumeForm.status">
-            <option value="unread">{{ $t('status.unread') }}</option>
-            <option value="reading">{{ $t('status.reading') }}</option>
-            <option value="read">{{ $t('status.read') }}</option>
+            <option value="unread">
+              {{ $t('status.unread') }}
+            </option>
+            <option value="reading">
+              {{ $t('status.reading') }}
+            </option>
+            <option value="read">
+              {{ $t('status.read') }}
+            </option>
           </select>
         </div>
         <div class="form-group checkbox-group">
           <label>
-            <input type="checkbox" v-model="volumeForm.acquired" />
+            <input v-model="volumeForm.acquired" type="checkbox" />
             {{ $t('volume.acquired') }}
           </label>
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showAddVolumeModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="addVolume">{{ $t('common.add') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showAddVolumeModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="addVolume">
+          {{ $t('common.add') }}
+        </button>
       </template>
     </Modal>
 
     <Modal v-model="showEditVolumeModal" :title="$t('volume.editVolume')">
-      <form @submit.prevent="saveEditVolume" class="edit-volume-form">
+      <form class="edit-volume-form" @submit.prevent="saveEditVolume">
         <div class="form-group">
           <label>{{ $t('volume.title') }}</label>
-          <input type="text" v-model="editVolumeForm.title" />
+          <input v-model="editVolumeForm.title" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
-          <input type="number" v-model.number="editVolumeForm.volume_number" min="1" />
+          <input v-model.number="editVolumeForm.volume_number" type="number" min="1" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="editVolumeForm.isbn" />
+          <input v-model="editVolumeForm.isbn" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.coverUrl') }}</label>
-          <input type="text" v-model="editVolumeForm.cover_url" />
+          <input v-model="editVolumeForm.cover_url" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
           <select v-model="editVolumeForm.status">
-            <option value="unread">{{ $t('status.unread') }}</option>
-            <option value="reading">{{ $t('status.reading') }}</option>
-            <option value="read">{{ $t('status.read') }}</option>
+            <option value="unread">
+              {{ $t('status.unread') }}
+            </option>
+            <option value="reading">
+              {{ $t('status.reading') }}
+            </option>
+            <option value="read">
+              {{ $t('status.read') }}
+            </option>
           </select>
         </div>
         <div class="form-group checkbox-group">
           <label>
-            <input type="checkbox" v-model="editVolumeForm.acquired" />
+            <input v-model="editVolumeForm.acquired" type="checkbox" />
             {{ $t('volume.acquired') }}
           </label>
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showEditVolumeModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="saveEditVolume">{{ $t('common.save') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showEditVolumeModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="saveEditVolume">
+          {{ $t('common.save') }}
+        </button>
       </template>
     </Modal>
 
@@ -307,11 +368,18 @@
     />
 
     <Modal v-model="showBulkEditModal" :title="$t('settings.editMultiple')">
-      <form @submit.prevent="confirmBulkEdit" class="bulk-edit-form">
-        <p class="bulk-edit-info">{{ selectedVolumes.size }} {{ selectedVolumes.size === 1 ? 'volume' : 'volumes' }} selected</p>
+      <form class="bulk-edit-form" @submit.prevent="confirmBulkEdit">
+        <p class="bulk-edit-info">
+          {{ selectedVolumes.size }}
+          {{ selectedVolumes.size === 1 ? 'volume' : 'volumes' }} selected
+        </p>
         <div class="form-group">
           <label>{{ $t('volume.titleTemplate') }}</label>
-          <input type="text" v-model="bulkEditTitleTemplate" :placeholder="$t('volume.titleTemplatePlaceholder')" />
+          <input
+            v-model="bulkEditTitleTemplate"
+            type="text"
+            :placeholder="$t('volume.titleTemplatePlaceholder')"
+          />
           <p class="form-help">
             <strong>Variables:</strong> $volumeNumber, $mangaTitle, $series<br />
             Ejemplo: "One Punch-Man $volumeNumber" → "One Punch-Man 1", "One Punch-Man 2"
@@ -321,14 +389,22 @@
           <label>{{ $t('volume.acquired') }}</label>
           <select v-model="bulkEditAcquired">
             <option :value="null">—</option>
-            <option :value="true">{{ $t('volume.acquired') }}</option>
-            <option :value="false">{{ $t('volume.notAcquired') }}</option>
+            <option :value="true">
+              {{ $t('volume.acquired') }}
+            </option>
+            <option :value="false">
+              {{ $t('volume.notAcquired') }}
+            </option>
           </select>
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showBulkEditModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="confirmBulkEdit">{{ $t('common.save') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showBulkEditModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="confirmBulkEdit">
+          {{ $t('common.save') }}
+        </button>
       </template>
     </Modal>
   </div>
@@ -339,7 +415,13 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useMangaStore } from '../stores/mangas.js'
-import { addVolume as apiAddVolume, updateVolume, deleteVolume as apiDeleteVolume, bulkUpdateVolumes, bulkDeleteVolumes } from '../api/index.js'
+import {
+  addVolume as apiAddVolume,
+  updateVolume,
+  deleteVolume as apiDeleteVolume,
+  bulkUpdateVolumes,
+  bulkDeleteVolumes,
+} from '../api/index.js'
 import { getCoverByISBN } from '../api/covers.js'
 import { useSeo } from '../composables/useSeo.js'
 import VolumeRow from '../components/VolumeRow.vue'
@@ -369,7 +451,7 @@ const volumeContextMenu = ref(null)
 const confirmConfig = ref({
   title: '',
   message: '',
-  onConfirm: () => {}
+  onConfirm: () => {},
 })
 
 const selectionMode = ref(false)
@@ -388,7 +470,7 @@ const editForm = ref({
   author: '',
   publisher: '',
   cover_url: '',
-  notes: ''
+  notes: '',
 })
 
 const isSaving = ref(false)
@@ -399,7 +481,7 @@ const volumeForm = ref({
   volume_number: null,
   cover_url: '',
   status: 'unread',
-  acquired: false
+  acquired: false,
 })
 
 const editVolumeForm = ref({
@@ -408,16 +490,23 @@ const editVolumeForm = ref({
   title: '',
   status: 'unread',
   acquired: false,
-  cover_url: ''
+  cover_url: '',
 })
 
 const initials = computed(() => {
   if (!store.currentManga?.title) return ''
-  return store.currentManga.title.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
+  return store.currentManga.title
+    .split(' ')
+    .slice(0, 2)
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
 })
 
 const volumesTotal = computed(() => store.currentManga?.volumes?.length || 0)
-const volumesRead = computed(() => store.currentManga?.volumes?.filter(t => t.status === 'read').length || 0)
+const volumesRead = computed(
+  () => store.currentManga?.volumes?.filter(t => t.status === 'read').length || 0
+)
 const realVolumeCount = computed(() => store.currentManga?.volumes?.length || 0)
 const progressPercent = computed(() => {
   if (volumesTotal.value === 0) return 0
@@ -448,15 +537,14 @@ const volumesWithGaps = computed(() => {
   const placeholders = missingVolumeNumbers.value.map(num => ({
     id: `placeholder-${num}`,
     volume_number: num,
-    placeholder: true
+    placeholder: true,
   }))
 
-  return [...store.currentManga.volumes, ...placeholders]
-    .sort((a, b) => {
-      const aNum = a.volume_number ?? 999999
-      const bNum = b.volume_number ?? 999999
-      return aNum - bNum
-    })
+  return [...store.currentManga.volumes, ...placeholders].sort((a, b) => {
+    const aNum = a.volume_number ?? 999999
+    const bNum = b.volume_number ?? 999999
+    return aNum - bNum
+  })
 })
 
 const seoTitle = computed(() => store.currentManga?.title || '')
@@ -471,7 +559,7 @@ useSeo({
   title: seoTitle.value,
   description: seoDescription.value,
   ogImage: coverUrl.value,
-  watch: [seoTitle, seoDescription, coverUrl]
+  watch: [seoTitle, seoDescription, coverUrl],
 })
 
 async function fetchCover() {
@@ -505,7 +593,7 @@ function populateEditForm() {
       author: store.currentManga.author || '',
       publisher: store.currentManga.publisher || '',
       cover_url: store.currentManga.cover_url || '',
-      notes: store.currentManga.notes || ''
+      notes: store.currentManga.notes || '',
     }
   }
 }
@@ -529,7 +617,7 @@ function openAddMissingVolume(volumeNumber) {
     volume_number: volumeNumber,
     status: 'unread',
     acquired: true,
-    cover_url: ''
+    cover_url: '',
   }
   showAddVolumeModal.value = true
 }
@@ -549,19 +637,22 @@ async function addVolume() {
 async function cycleVolumeStatus(volume) {
   const statusCycle = { unread: 'reading', reading: 'read', read: 'unread' }
   const newStatus = statusCycle[volume.status]
-  await updateVolume(route.params.id, volume.id, { isbn: volume.isbn, status: newStatus, acquired: volume.acquired })
+  await updateVolume(route.params.id, volume.id, {
+    isbn: volume.isbn,
+    status: newStatus,
+    acquired: volume.acquired,
+  })
   store.updateVolumeState(volume.id, { status: newStatus })
 }
 
 async function toggleVolumeAcquired(volume) {
   const newAcquired = !volume.acquired
-  await updateVolume(route.params.id, volume.id, { isbn: volume.isbn, status: volume.status, acquired: newAcquired })
+  await updateVolume(route.params.id, volume.id, {
+    isbn: volume.isbn,
+    status: volume.status,
+    acquired: newAcquired,
+  })
   store.updateVolumeState(volume.id, { acquired: newAcquired })
-}
-
-async function deleteVolume(volume) {
-  await apiDeleteVolume(route.params.id, volume.id)
-  await store.fetchManga(route.params.id)
 }
 
 function openEditVolumeModal(volume) {
@@ -572,14 +663,14 @@ function openEditVolumeModal(volume) {
     title: volume.title || '',
     status: volume.status || 'unread',
     acquired: volume.acquired === true || volume.acquired === 1,
-    cover_url: volume.cover_url || ''
+    cover_url: volume.cover_url || '',
   }
   showEditVolumeModal.value = true
 }
 
 function openVolumeContextMenu(event, volume) {
   selectedVolume.value = volume
-  volumeContextMenu.value?.show(event, volume)
+  volumeContextMenu.value?.show(event)
 }
 
 function editVolume() {
@@ -595,7 +686,8 @@ async function saveEditVolume() {
 
   const data = {}
   if (editVolumeForm.value.isbn !== '') data.isbn = editVolumeForm.value.isbn || null
-  if (editVolumeForm.value.volume_number !== null) data.volume_number = editVolumeForm.value.volume_number
+  if (editVolumeForm.value.volume_number !== null)
+    data.volume_number = editVolumeForm.value.volume_number
   if (editVolumeForm.value.title !== '') data.title = editVolumeForm.value.title || null
   data.status = editVolumeForm.value.status
   data.acquired = editVolumeForm.value.acquired
@@ -608,25 +700,17 @@ async function saveEditVolume() {
 }
 
 async function confirmDeleteVolume(volume) {
-  openConfirm(
-    t('volume.delete'),
-    t('volume.deleteConfirm'),
-    async () => {
-      await apiDeleteVolume(route.params.id, volume.id)
-      await store.fetchManga(route.params.id)
-    }
-  )
+  openConfirm(t('volume.delete'), t('volume.deleteConfirm'), async () => {
+    await apiDeleteVolume(route.params.id, volume.id)
+    await store.fetchManga(route.params.id)
+  })
 }
 
 async function confirmDelete() {
-  openConfirm(
-    t('manga.deleteManga'),
-    t('manga.deleteConfirm'),
-    async () => {
-      await store.removeManga(route.params.id)
-      router.push('/')
-    }
-  )
+  openConfirm(t('manga.deleteManga'), t('manga.deleteConfirm'), async () => {
+    await store.removeManga(route.params.id)
+    router.push('/')
+  })
 }
 
 function toggleSelectionMode() {
@@ -741,18 +825,25 @@ async function saveCover(url) {
   showCoverModal.value = false
 }
 
-watch(() => route.params.id, async () => {
-  await store.fetchManga(route.params.id)
-  await fetchCover()
-})
+watch(
+  () => route.params.id,
+  async () => {
+    await store.fetchManga(route.params.id)
+    await fetchCover()
+  }
+)
 
-watch(showEditModal, (val) => {
+watch(showEditModal, val => {
   if (val) populateEditForm()
 })
 
-watch(() => store.currentManga, () => {
-  fetchCover()
-}, { deep: true })
+watch(
+  () => store.currentManga,
+  () => {
+    fetchCover()
+  },
+  { deep: true }
+)
 
 onMounted(async () => {
   await store.fetchManga(route.params.id)
@@ -761,7 +852,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.loading, .error-state {
+.loading,
+.error-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -780,7 +872,9 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes slide-up {
@@ -1113,7 +1207,9 @@ onMounted(async () => {
 
 .view-switch-enter-active,
 .view-switch-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .fade-enter-active,
@@ -1166,7 +1262,9 @@ onMounted(async () => {
   background: rgba(230, 57, 70, 0.08);
 }
 
-.edit-form, .add-volume-form, .edit-volume-form {
+.edit-form,
+.add-volume-form,
+.edit-volume-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -1224,7 +1322,7 @@ onMounted(async () => {
   margin-bottom: 20px;
 }
 
-.bulk-edit-form .form-group input[type="text"] {
+.bulk-edit-form .form-group input[type='text'] {
   width: 100%;
   padding: 10px;
   border: 1px solid var(--border);

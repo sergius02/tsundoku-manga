@@ -1,14 +1,14 @@
-import db from '../db.js';
-import express from 'express';
-const router = express.Router();
+import db from '../db.js'
+import express from 'express'
+const router = express.Router()
 
 router.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store');
-  next();
-});
+  res.set('Cache-Control', 'no-store')
+  next()
+})
 
 router.get('/', (req, res) => {
-  const { status, q, sort } = req.query;
+  const { status, q, sort } = req.query
 
   let query = `
     SELECT m.*,
@@ -17,221 +17,262 @@ router.get('/', (req, res) => {
       (SELECT v.isbn FROM volumes v WHERE v.manga_id = m.id ORDER BY v.volume_number ASC NULLS LAST, v.id ASC LIMIT 1) as first_volume_isbn
     FROM mangas m
     WHERE 1=1
-  `;
-  const params = [];
+  `
+  const params = []
 
   if (q) {
-    query += ' AND (m.title LIKE ? OR m.author LIKE ?)';
-    params.push(`%${q}%`, `%${q}%`);
+    query += ' AND (m.title LIKE ? OR m.author LIKE ?)'
+    params.push(`%${q}%`, `%${q}%`)
   }
 
   if (status && status !== 'all') {
     if (status === 'read') {
-      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'read') = (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) > 0`;
+      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'read') = (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) > 0`
     } else if (status === 'reading') {
-      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'reading') > 0`;
+      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'reading') > 0`
     } else if (status === 'unread') {
-      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'read') = 0 AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) > 0`;
+      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = 'read') = 0 AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) > 0`
     } else if (status === 'no_volumes') {
-      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) = 0`;
+      query += ` AND (SELECT COUNT(*) FROM volumes WHERE manga_id = m.id) = 0`
     }
   }
 
   const orderMap = {
     title: 'm.title ASC',
     date: 'm.created_at DESC',
-    progress: '(CAST((SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = "read") AS FLOAT) / NULLIF((SELECT COUNT(*) FROM volumes WHERE manga_id = m.id), 0)) DESC'
-  };
-  const VALID_SORTS = ['title', 'date', 'progress'];
-  const sortOrder = VALID_SORTS.includes(sort) ? sort : 'date';
-  query += ` ORDER BY ${orderMap[sortOrder]}`;
+    progress:
+      '(CAST((SELECT COUNT(*) FROM volumes WHERE manga_id = m.id AND status = "read") AS FLOAT) / NULLIF((SELECT COUNT(*) FROM volumes WHERE manga_id = m.id), 0)) DESC',
+  }
+  const VALID_SORTS = ['title', 'date', 'progress']
+  const sortOrder = VALID_SORTS.includes(sort) ? sort : 'date'
+  query += ` ORDER BY ${orderMap[sortOrder]}`
 
-  const mangas = db.prepare(query).all(...params);
-  res.json(mangas);
-});
+  const mangas = db.prepare(query).all(...params)
+  res.json(mangas)
+})
 
 router.get('/:id', (req, res) => {
-  const { sort } = req.query;
+  const { sort } = req.query
 
-  const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id);
-  if (!manga) return res.status(404).json({ error: 'Manga not found' });
+  const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id)
+  if (!manga) return res.status(404).json({ error: 'Manga not found' })
 
-  const VALID_VOLUME_SORTS = ['alphabetical', 'date'];
-  const volumeSortOrder = VALID_VOLUME_SORTS.includes(sort) ? sort : null;
+  const VALID_VOLUME_SORTS = ['alphabetical', 'date']
+  const volumeSortOrder = VALID_VOLUME_SORTS.includes(sort) ? sort : null
 
-  let orderClause = 'ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC';
+  let orderClause = 'ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC'
   if (volumeSortOrder === 'alphabetical') {
-    orderClause = 'ORDER BY title ASC, volume_number ASC NULLS LAST, id ASC';
+    orderClause = 'ORDER BY title ASC, volume_number ASC NULLS LAST, id ASC'
   } else if (volumeSortOrder === 'date') {
-    orderClause = 'ORDER BY id DESC';
+    orderClause = 'ORDER BY id DESC'
   }
 
-  const volumes = db.prepare(`SELECT * FROM volumes WHERE manga_id = ? ${orderClause}`).all(req.params.id);
-  res.json({ ...manga, volumes });
-});
+  const volumes = db
+    .prepare(`SELECT * FROM volumes WHERE manga_id = ? ${orderClause}`)
+    .all(req.params.id)
+  res.json({ ...manga, volumes })
+})
 
 router.post('/', (req, res) => {
-  const { title, author, publisher, cover_url, notes } = req.body;
+  const { title, author, publisher, cover_url, notes } = req.body
 
-  if (!title) return res.status(400).json({ error: 'Title is required' });
+  if (!title) return res.status(400).json({ error: 'Title is required' })
 
   try {
-    const result = db.prepare(`
+    const result = db
+      .prepare(
+        `
       INSERT INTO mangas (title, author, publisher, cover_url, notes)
       VALUES (?, ?, ?, ?, ?)
-    `).run(title, author, publisher, cover_url, notes);
+    `
+      )
+      .run(title, author, publisher, cover_url, notes)
 
-    const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(result.lastInsertRowid);
-    res.status(201).json(manga);
+    const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(result.lastInsertRowid)
+    res.status(201).json(manga)
   } catch (err) {
-    console.error('Error creating manga:', err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error creating manga:', err.message)
+    res.status(500).json({ error: 'Internal server error' })
   }
-});
+})
 
 router.put('/:id', (req, res) => {
-  const existing = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id);
-  if (!existing) return res.status(404).json({ error: 'Manga not found' });
+  const existing = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id)
+  if (!existing) return res.status(404).json({ error: 'Manga not found' })
 
-  const fields = [];
-  const values = [];
+  const fields = []
+  const values = []
 
   if (req.body.title !== undefined) {
-    fields.push('title = ?');
-    values.push(req.body.title);
+    fields.push('title = ?')
+    values.push(req.body.title)
   }
   if (req.body.author !== undefined) {
-    fields.push('author = ?');
-    values.push(req.body.author);
+    fields.push('author = ?')
+    values.push(req.body.author)
   }
   if (req.body.publisher !== undefined) {
-    fields.push('publisher = ?');
-    values.push(req.body.publisher);
+    fields.push('publisher = ?')
+    values.push(req.body.publisher)
   }
   if (req.body.cover_url !== undefined) {
-    fields.push('cover_url = ?');
-    values.push(req.body.cover_url);
+    fields.push('cover_url = ?')
+    values.push(req.body.cover_url)
   }
   if (req.body.notes !== undefined) {
-    fields.push('notes = ?');
-    values.push(req.body.notes);
+    fields.push('notes = ?')
+    values.push(req.body.notes)
   }
 
   if (fields.length === 0) {
-    return res.status(400).json({ error: 'No fields to update' });
+    return res.status(400).json({ error: 'No fields to update' })
   }
 
-  fields.push('updated_at = CURRENT_TIMESTAMP');
-  values.push(req.params.id);
+  fields.push('updated_at = CURRENT_TIMESTAMP')
+  values.push(req.params.id)
 
-  db.prepare(`UPDATE mangas SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+  db.prepare(`UPDATE mangas SET ${fields.join(', ')} WHERE id = ?`).run(...values)
 
-  const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id);
-  res.json(manga);
-});
+  const manga = db.prepare('SELECT * FROM mangas WHERE id = ?').get(req.params.id)
+  res.json(manga)
+})
 
 router.delete('/:id', (req, res) => {
-  const result = db.prepare('DELETE FROM mangas WHERE id = ?').run(req.params.id);
-  if (result.changes === 0) return res.status(404).json({ error: 'Manga not found' });
-  res.status(204).send();
-});
+  const result = db.prepare('DELETE FROM mangas WHERE id = ?').run(req.params.id)
+  if (result.changes === 0) return res.status(404).json({ error: 'Manga not found' })
+  res.status(204).send()
+})
 
 router.post('/:id/volumes', (req, res) => {
-  const { isbn, title, volume_number, status, acquired, cover_url } = req.body;
+  const { isbn, title, volume_number, status, acquired, cover_url } = req.body
 
   try {
-    const result = db.prepare(`
+    const result = db
+      .prepare(
+        `
       INSERT INTO volumes (manga_id, isbn, title, volume_number, status, acquired, cover_url)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(req.params.id, isbn, title || null, volume_number !== undefined ? volume_number : null, status || 'unread', acquired ? 1 : 0, cover_url || null);
+    `
+      )
+      .run(
+        req.params.id,
+        isbn,
+        title || null,
+        volume_number !== undefined ? volume_number : null,
+        status || 'unread',
+        acquired ? 1 : 0,
+        cover_url || null
+      )
 
-    const volume = db.prepare('SELECT * FROM volumes WHERE id = ?').get(result.lastInsertRowid);
-    res.status(201).json(volume);
+    const volume = db.prepare('SELECT * FROM volumes WHERE id = ?').get(result.lastInsertRowid)
+    res.status(201).json(volume)
   } catch (err) {
-    console.error('Error creating volume:', err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error creating volume:', err.message)
+    res.status(500).json({ error: 'Internal server error' })
   }
-});
+})
 
 router.put('/:id/volumes', (req, res) => {
-  const { status } = req.body;
+  const { status } = req.body
 
-  if (!status) return res.status(400).json({ error: 'Status is required' });
+  if (!status) return res.status(400).json({ error: 'Status is required' })
 
-  db.prepare('UPDATE volumes SET status = ? WHERE manga_id = ?').run(status, req.params.id);
+  db.prepare('UPDATE volumes SET status = ? WHERE manga_id = ?').run(status, req.params.id)
 
-  const volumes = db.prepare('SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC').all(req.params.id);
-  res.json(volumes);
-});
+  const volumes = db
+    .prepare(
+      'SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC'
+    )
+    .all(req.params.id)
+  res.json(volumes)
+})
 
 router.put('/:id/volumes/bulk', (req, res) => {
-  const { ids, status, acquired, titleTemplate } = req.body;
+  const { ids, status, acquired, titleTemplate } = req.body
 
   if (!Array.isArray(ids) || ids.length === 0) {
-    return res.status(400).json({ error: 'ids must be a non-empty array' });
+    return res.status(400).json({ error: 'ids must be a non-empty array' })
   }
 
-  const manga = db.prepare('SELECT title FROM mangas WHERE id = ?').get(req.params.id);
-  if (!manga) return res.status(404).json({ error: 'Manga not found' });
+  const manga = db.prepare('SELECT title FROM mangas WHERE id = ?').get(req.params.id)
+  if (!manga) return res.status(404).json({ error: 'Manga not found' })
 
-  const updateFields = [];
-  const updateValues = [];
+  const updateFields = []
+  const updateValues = []
 
   if (status !== undefined) {
-    updateFields.push('status = ?');
-    updateValues.push(status);
+    updateFields.push('status = ?')
+    updateValues.push(status)
   }
   if (acquired !== undefined) {
-    updateFields.push('acquired = ?');
-    updateValues.push(acquired ? 1 : 0);
+    updateFields.push('acquired = ?')
+    updateValues.push(acquired ? 1 : 0)
   }
 
   if (updateFields.length === 0 && !titleTemplate) {
-    return res.status(400).json({ error: 'No fields to update' });
+    return res.status(400).json({ error: 'No fields to update' })
   }
 
   const transaction = db.transaction(() => {
     if (titleTemplate) {
-      const volumes = db.prepare(`SELECT * FROM volumes WHERE id IN (${ids.map(() => '?').join(',')}) AND manga_id = ?`).all(...ids, req.params.id);
-      const updateStmt = db.prepare('UPDATE volumes SET title = ? WHERE id = ?');
+      const volumes = db
+        .prepare(
+          `SELECT * FROM volumes WHERE id IN (${ids.map(() => '?').join(',')}) AND manga_id = ?`
+        )
+        .all(...ids, req.params.id)
+      const updateStmt = db.prepare('UPDATE volumes SET title = ? WHERE id = ?')
 
       for (const volume of volumes) {
         const title = titleTemplate
-          .replace(/\$volumeNumber/g, volume.volume_number !== null ? String(volume.volume_number) : '')
+          .replace(
+            /\$volumeNumber/g,
+            volume.volume_number !== null ? String(volume.volume_number) : ''
+          )
           .replace(/\$mangaTitle/g, manga.title)
-          .replace(/\$series/g, manga.title);
-        updateStmt.run(title || null, volume.id);
+          .replace(/\$series/g, manga.title)
+        updateStmt.run(title || null, volume.id)
       }
     }
 
     if (updateFields.length > 0) {
-      const placeholders = ids.map(() => '?').join(',');
-      db.prepare(`UPDATE volumes SET ${updateFields.join(', ')} WHERE id IN (${placeholders}) AND manga_id = ?`).run(...updateValues, ...ids, req.params.id);
+      const placeholders = ids.map(() => '?').join(',')
+      db.prepare(
+        `UPDATE volumes SET ${updateFields.join(', ')} WHERE id IN (${placeholders}) AND manga_id = ?`
+      ).run(...updateValues, ...ids, req.params.id)
     }
-  });
+  })
 
-  transaction();
+  transaction()
 
-  const volumes = db.prepare('SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC').all(req.params.id);
-  res.json(volumes);
-});
+  const volumes = db
+    .prepare(
+      'SELECT * FROM volumes WHERE manga_id = ? ORDER BY volume_number ASC NULLS LAST, title ASC, id ASC'
+    )
+    .all(req.params.id)
+  res.json(volumes)
+})
 
 router.delete('/:id/volumes/bulk', (req, res) => {
-  const { ids } = req.body;
+  const { ids } = req.body
 
   if (!Array.isArray(ids) || ids.length === 0) {
-    return res.status(400).json({ error: 'ids must be a non-empty array' });
+    return res.status(400).json({ error: 'ids must be a non-empty array' })
   }
 
-  const placeholders = ids.map(() => '?').join(',');
-  db.prepare(`DELETE FROM volumes WHERE id IN (${placeholders}) AND manga_id = ?`).run(...ids, req.params.id);
+  const placeholders = ids.map(() => '?').join(',')
+  db.prepare(`DELETE FROM volumes WHERE id IN (${placeholders}) AND manga_id = ?`).run(
+    ...ids,
+    req.params.id
+  )
 
-  res.status(204).send();
-});
+  res.status(204).send()
+})
 
 router.put('/:id/volumes/:volumeId', (req, res) => {
-  const existing = db.prepare('SELECT * FROM volumes WHERE id = ? AND manga_id = ?').get(req.params.volumeId, req.params.id);
-  if (!existing) return res.status(404).json({ error: 'Volume not found' });
+  const existing = db
+    .prepare('SELECT * FROM volumes WHERE id = ? AND manga_id = ?')
+    .get(req.params.volumeId, req.params.id)
+  if (!existing) return res.status(404).json({ error: 'Volume not found' })
 
   const fields = []
   const values = []
@@ -258,17 +299,22 @@ router.put('/:id/volumes/:volumeId', (req, res) => {
   }
 
   if (fields.length > 0) {
-    db.prepare(`UPDATE volumes SET ${fields.join(', ')} WHERE id = ?`).run(...values, req.params.volumeId);
+    db.prepare(`UPDATE volumes SET ${fields.join(', ')} WHERE id = ?`).run(
+      ...values,
+      req.params.volumeId
+    )
   }
 
-  const volume = db.prepare('SELECT * FROM volumes WHERE id = ?').get(req.params.volumeId);
-  res.json(volume);
-});
+  const volume = db.prepare('SELECT * FROM volumes WHERE id = ?').get(req.params.volumeId)
+  res.json(volume)
+})
 
 router.delete('/:id/volumes/:volumeId', (req, res) => {
-  const result = db.prepare('DELETE FROM volumes WHERE id = ? AND manga_id = ?').run(req.params.volumeId, req.params.id);
-  if (result.changes === 0) return res.status(404).json({ error: 'Volume not found' });
-  res.status(204).send();
-});
+  const result = db
+    .prepare('DELETE FROM volumes WHERE id = ? AND manga_id = ?')
+    .run(req.params.volumeId, req.params.id)
+  if (result.changes === 0) return res.status(404).json({ error: 'Volume not found' })
+  res.status(204).send()
+})
 
-export default router;
+export default router

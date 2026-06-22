@@ -22,14 +22,8 @@
         {{ tomo.volume_number || '?' }}
       </div>
       <div class="indicators">
-        <AcquiredIndicator
-          :tomo="tomo"
-          @toggle-acquired="$emit('toggle-acquired')"
-        />
-        <VolumeStatusOverlay
-          :status="tomo.status"
-          @toggle-status="$emit('toggle-status')"
-        />
+        <AcquiredIndicator :tomo="tomo" @toggle-acquired="$emit('toggle-acquired')" />
+        <VolumeStatusOverlay :status="tomo.status" @toggle-status="$emit('toggle-status')" />
       </div>
     </div>
   </div>
@@ -45,25 +39,33 @@ import { useCoverFetch } from '../composables/useCoverFetch.js'
 const props = defineProps({
   tomo: {
     type: Object,
-    required: true
+    required: true,
   },
   index: {
     type: Number,
-    default: 0
+    default: 0,
   },
   showCheckbox: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isSelected: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmits(['toggle-status', 'toggle-acquired', 'context-menu', 'edit', 'delete', 'select'])
+const emit = defineEmits([
+  'toggle-status',
+  'toggle-acquired',
+  'context-menu',
+  'edit',
+  'delete',
+  'select',
+])
 
-const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, fetchBookInfo } = useCoverFetch(props)
+const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, fetchBookInfo } =
+  useCoverFetch(props)
 
 function openContextMenu(event) {
   event.preventDefault()

@@ -24,7 +24,7 @@ export async function createManga(data) {
   const res = await fetch(`${BASE_URL}/mangas`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -37,7 +37,7 @@ export async function updateManga(id, data) {
   const res = await fetch(`${BASE_URL}/mangas/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Error updating manga')
   return res.json()
@@ -52,7 +52,7 @@ export async function addVolume(mangaId, data) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -65,7 +65,7 @@ export async function updateVolume(mangaId, volumeId, data) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes/${volumeId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Error updating volume')
   return res.json()
@@ -80,7 +80,7 @@ export async function markAllVolumesRead(mangaId) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: 'read' })
+    body: JSON.stringify({ status: 'read' }),
   })
   if (!res.ok) throw new Error('Error marking volumes as read')
   return res.json()
@@ -90,7 +90,7 @@ export async function markAllVolumesUnread(mangaId) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: 'unread' })
+    body: JSON.stringify({ status: 'unread' }),
   })
   if (!res.ok) throw new Error('Error marking volumes as unread')
   return res.json()
@@ -104,7 +104,7 @@ export async function searchByISBN(isbn) {
       notFound: true,
       openLibraryMissing: data.openLibraryMissing || false,
       isbn: data.isbn || isbn,
-      error: data.error
+      error: data.error,
     }
   }
   if (!res.ok) {
@@ -133,7 +133,7 @@ export async function updateApiConfig(name, enabled) {
   const res = await fetch(`${BASE_URL}/config/apis/${name}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ enabled })
+    body: JSON.stringify({ enabled }),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -155,7 +155,7 @@ export async function importBackup(file) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -168,7 +168,7 @@ export async function bulkUpdateVolumes(mangaId, ids, data) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes/bulk`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ids, ...data })
+    body: JSON.stringify({ ids, ...data }),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -181,7 +181,7 @@ export async function bulkDeleteVolumes(mangaId, ids) {
   const res = await fetch(`${BASE_URL}/mangas/${mangaId}/volumes/bulk`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ids })
+    body: JSON.stringify({ ids }),
   })
   if (!res.ok) {
     const err = await res.json()

@@ -4,15 +4,15 @@
     <input
       type="text"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
       :placeholder="placeholder"
       class="search-input"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
     <button
       v-if="modelValue"
-      @click="$emit('update:modelValue', '')"
       class="clear-btn"
       type="button"
+      @click="$emit('update:modelValue', '')"
     >
       <IconClose />
     </button>
@@ -28,16 +28,16 @@ import LoadingSpinner from './LoadingSpinner.vue'
 defineProps({
   modelValue: {
     type: String,
-    default: ''
+    default: '',
   },
   placeholder: {
     type: String,
-    default: 'Search...'
+    default: 'Search...',
   },
   loading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 defineEmits(['update:modelValue'])

@@ -6,44 +6,117 @@
           <div class="fab-selection">
             <span class="fab-count">{{ count }} {{ count === 1 ? 'volume' : 'volumes' }}</span>
             <button class="fab-btn" @click="$emit('select-all')">
-              <svg v-if="count !== total" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <polyline points="9 11 12 14 22 4"/>
+              <svg
+                v-if="count !== total"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <polyline points="9 11 12 14 22 4" />
               </svg>
-              <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <svg
+                v-else
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
               </svg>
               {{ count !== total ? $t('common.selectAll') : $t('common.clearSelection') }}
             </button>
           </div>
-          <div class="fab-divider"></div>
+          <div class="fab-divider" />
           <div class="fab-actions">
-            <button class="fab-btn" :disabled="count === 0" @click="$emit('edit')" :title="$t('common.edit')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <button
+              class="fab-btn"
+              :disabled="count === 0"
+              :title="$t('common.edit')"
+              @click="$emit('edit')"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
             </button>
-            <button class="fab-btn fab-btn-danger" :disabled="count === 0" @click="$emit('delete')" :title="$t('common.delete')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <button
+              class="fab-btn fab-btn-danger"
+              :disabled="count === 0"
+              :title="$t('common.delete')"
+              @click="$emit('delete')"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <path
+                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                />
               </svg>
             </button>
-            <button class="fab-btn" :disabled="count === 0" @click="$emit('mark-read')" :title="$t('contextMenu.markAllRead')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <button
+              class="fab-btn"
+              :disabled="count === 0"
+              :title="$t('contextMenu.markAllRead')"
+              @click="$emit('mark-read')"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </button>
-            <button class="fab-btn" :disabled="count === 0" @click="$emit('mark-unread')" :title="$t('contextMenu.markAllUnread')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
+            <button
+              class="fab-btn"
+              :disabled="count === 0"
+              :title="$t('contextMenu.markAllUnread')"
+              @click="$emit('mark-unread')"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
           <button class="fab-close" @click="$emit('close')">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -58,16 +131,16 @@
 defineProps({
   visible: {
     type: Boolean,
-    default: false
+    default: false,
   },
   count: {
     type: Number,
-    default: 0
+    default: 0,
   },
   total: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 defineEmits(['edit', 'delete', 'mark-read', 'mark-unread', 'select-all', 'close'])

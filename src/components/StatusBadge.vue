@@ -19,8 +19,8 @@ import IconMinus from './icons/IconMinus.vue'
 const props = defineProps({
   status: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const { statusLabel } = useStatus()

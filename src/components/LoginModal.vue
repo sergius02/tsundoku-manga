@@ -7,13 +7,13 @@
         <p>{{ $t('auth.loginRequired') }}</p>
       </div>
 
-      <form @submit.prevent="handleLogin" class="login-form">
+      <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="username">{{ $t('auth.username') }}</label>
           <input
-            type="text"
             id="username"
             v-model="username"
+            type="text"
             required
             autocomplete="username"
             :disabled="authStore.loading"
@@ -23,19 +23,21 @@
         <div class="form-group">
           <label for="password">{{ $t('auth.password') }}</label>
           <input
-            type="password"
             id="password"
             v-model="password"
+            type="password"
             required
             autocomplete="current-password"
             :disabled="authStore.loading"
           />
         </div>
 
-        <div v-if="authStore.error" class="error-message">{{ authStore.error }}</div>
+        <div v-if="authStore.error" class="error-message">
+          {{ authStore.error }}
+        </div>
 
         <button type="submit" class="btn btn-primary" :disabled="authStore.loading">
-          <span v-if="authStore.loading" class="spinner"></span>
+          <span v-if="authStore.loading" class="spinner" />
           {{ $t('auth.login') }}
         </button>
       </form>
@@ -46,10 +48,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth.js'
-import { useI18n } from 'vue-i18n'
 
 const authStore = useAuthStore()
-const { t } = useI18n()
 
 const username = ref('')
 const password = ref('')
@@ -60,7 +60,7 @@ async function handleLogin() {
   try {
     await authStore.login(username.value, password.value)
   } catch (err) {
-    // Error shown via authStore.error
+    console.warn('Login error:', err)
   }
 }
 </script>
@@ -187,13 +187,15 @@ async function handleLogin() {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

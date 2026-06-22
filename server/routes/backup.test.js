@@ -6,15 +6,15 @@ import backupRouter from './backup.js'
 vi.mock('../db.js', () => ({
   default: {
     prepare: vi.fn(),
-    transaction: vi.fn()
-  }
+    transaction: vi.fn(),
+  },
 }))
 
 vi.mock('../middleware/auth.js', () => ({
   authMiddleware: vi.fn((req, res, next) => {
     req.session = { id: 'test-session' }
     next()
-  })
+  }),
 }))
 
 import db from '../db.js'
@@ -33,7 +33,7 @@ describe('GET /api/backup', () => {
     const mockVolumes = [{ id: 1, manga_id: 1, volume_number: 1 }]
     const mockApiConfig = [{ id: 1, api_name: 'openlibrary', enabled: 1 }]
 
-    db.prepare.mockImplementation((query) => {
+    db.prepare.mockImplementation(query => {
       if (query.includes('FROM mangas')) {
         return { all: () => mockMangas }
       }
@@ -73,18 +73,14 @@ describe('POST /api/backup/restore', () => {
   })
 
   it('returns 400 when backup format is invalid', async () => {
-    const res = await request(app)
-      .post('/api/backup/restore')
-      .send({})
+    const res = await request(app).post('/api/backup/restore').send({})
 
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('Invalid backup format')
   })
 
   it('returns 400 when backup version is unsupported', async () => {
-    const res = await request(app)
-      .post('/api/backup/restore')
-      .send({ version: 999, data: {} })
+    const res = await request(app).post('/api/backup/restore').send({ version: 999, data: {} })
 
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('Unsupported backup version')
@@ -104,19 +100,39 @@ describe('POST /api/backup/restore', () => {
       version: 1,
       exported_at: new Date().toISOString(),
       data: {
-        mangas: [{ id: 1, title: 'Test Manga', author: null, publisher: null, cover_url: null, notes: null, created_at: '2024-01-01', updated_at: '2024-01-01' }],
-        volumes: [{ id: 1, manga_id: 1, isbn: null, title: null, volume_number: 1, status: 'unread', acquired: 0, cover_url: null }],
-        api_config: [{ id: 1, api_name: 'openlibrary', enabled: 1 }]
-      }
+        mangas: [
+          {
+            id: 1,
+            title: 'Test Manga',
+            author: null,
+            publisher: null,
+            cover_url: null,
+            notes: null,
+            created_at: '2024-01-01',
+            updated_at: '2024-01-01',
+          },
+        ],
+        volumes: [
+          {
+            id: 1,
+            manga_id: 1,
+            isbn: null,
+            title: null,
+            volume_number: 1,
+            status: 'unread',
+            acquired: 0,
+            cover_url: null,
+          },
+        ],
+        api_config: [{ id: 1, api_name: 'openlibrary', enabled: 1 }],
+      },
     }
 
     const transactionMock = vi.fn()
     db.transaction.mockReturnValue(transactionMock)
     db.prepare.mockReturnValue({ run: vi.fn() })
 
-    const res = await request(app)
-      .post('/api/backup/restore')
-      .send(mockBackup)
+    const res = await request(app).post('/api/backup/restore').send(mockBackup)
 
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)

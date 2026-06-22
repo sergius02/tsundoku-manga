@@ -3,7 +3,8 @@
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.trimAutoWhitespace": true,
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "files.endOfLine": "\n",
@@ -18,5 +19,13 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/tsundoku.db": true
+  },
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptvue", "vue"],
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

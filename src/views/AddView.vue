@@ -5,38 +5,47 @@
       <p>{{ $t('add.subtitle') }}</p>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="manga-form">
+    <form class="manga-form" @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="title">{{ $t('manga.title') }} *</label>
-        <input type="text" id="title" v-model="form.title" required />
+        <input id="title" v-model="form.title" type="text" required />
       </div>
 
       <div class="form-group">
         <label for="author">{{ $t('manga.author') }}</label>
-        <input type="text" id="author" v-model="form.author" />
+        <input id="author" v-model="form.author" type="text" />
       </div>
 
       <div class="form-group">
         <label for="publisher">{{ $t('manga.publisher') }}</label>
-        <input type="text" id="publisher" v-model="form.publisher" />
+        <input id="publisher" v-model="form.publisher" type="text" />
       </div>
 
       <div class="form-group">
         <label for="cover_url">{{ $t('manga.coverUrl') }}</label>
-        <input type="text" id="cover_url" v-model="form.cover_url" placeholder="https://..." />
+        <input id="cover_url" v-model="form.cover_url" type="text" placeholder="https://..." />
       </div>
 
       <div class="form-group">
         <label for="notes">{{ $t('manga.notes') }}</label>
-        <textarea id="notes" v-model="form.notes" rows="3" :placeholder="$t('add.notesPlaceholder')"></textarea>
+        <textarea
+          id="notes"
+          v-model="form.notes"
+          rows="3"
+          :placeholder="$t('add.notesPlaceholder')"
+        />
       </div>
 
-      <div v-if="error" class="error-message">{{ error }}</div>
+      <div v-if="error" class="error-message">
+        {{ error }}
+      </div>
 
       <div class="form-actions">
-        <router-link to="/" class="btn btn-ghost">{{ $t('common.cancel') }}</router-link>
+        <router-link to="/" class="btn btn-ghost">
+          {{ $t('common.cancel') }}
+        </router-link>
         <button type="submit" class="btn btn-primary" :disabled="submitting">
-          <span v-if="submitting" class="spinner-sm"></span>
+          <span v-if="submitting" class="spinner-sm" />
           {{ $t('add.addManga') }}
         </button>
       </div>
@@ -58,7 +67,7 @@ const form = ref({
   author: '',
   publisher: '',
   cover_url: '',
-  notes: ''
+  notes: '',
 })
 
 const submitting = ref(false)
@@ -136,13 +145,15 @@ async function handleSubmit() {
 .spinner-sm {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

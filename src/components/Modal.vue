@@ -1,19 +1,36 @@
 <template>
   <Teleport to="body">
-    <div v-if="modelValue" class="modal-overlay" @click.self="$emit('update:modelValue', false)" @keydown="handleKeydown">
+    <div
+      v-if="modelValue"
+      class="modal-overlay"
+      @click.self="$emit('update:modelValue', false)"
+      @keydown="handleKeydown"
+    >
       <div
+        ref="modalRef"
         class="modal-content"
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
-        ref="modalRef"
       >
         <div class="modal-header">
-          <h2 :id="titleId">{{ title }}</h2>
-          <button class="close-btn" @click="$emit('update:modelValue', false)" aria-label="Close modal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
+          <h2 :id="titleId">
+            {{ title }}
+          </h2>
+          <button
+            class="close-btn"
+            aria-label="Close modal"
+            @click="$emit('update:modelValue', false)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -34,12 +51,12 @@ import { computed, ref, watch, nextTick } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   title: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 defineEmits(['update:modelValue'])
@@ -47,7 +64,8 @@ defineEmits(['update:modelValue'])
 const titleId = computed(() => `modal-title-${props.title.toLowerCase().replace(/\s+/g, '-')}`)
 const modalRef = ref(null)
 
-const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const focusableSelectors =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
 function handleKeydown(e) {
   if (e.key === 'Escape') {
@@ -71,23 +89,26 @@ function handleKeydown(e) {
   }
 }
 
-watch(() => props.modelValue, async (isOpen) => {
-  if (isOpen) {
-    await nextTick()
-    const modal = modalRef.value
-    if (modal) {
-      const focusableElements = modal.querySelectorAll(focusableSelectors)
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus()
+watch(
+  () => props.modelValue,
+  async isOpen => {
+    if (isOpen) {
+      await nextTick()
+      const modal = modalRef.value
+      if (modal) {
+        const focusableElements = modal.querySelectorAll(focusableSelectors)
+        if (focusableElements.length > 0) {
+          focusableElements[0].focus()
+        }
       }
+      document.body.style.overflow = 'hidden'
+      document.addEventListener('keydown', handleKeydown)
+    } else {
+      document.body.style.overflow = ''
+      document.removeEventListener('keydown', handleKeydown)
     }
-    document.body.style.overflow = 'hidden'
-    document.addEventListener('keydown', handleKeydown)
-  } else {
-    document.body.style.overflow = ''
-    document.removeEventListener('keydown', handleKeydown)
   }
-})
+)
 </script>
 
 <style scoped>
@@ -165,8 +186,12 @@ watch(() => props.modelValue, async (isOpen) => {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scale-in {

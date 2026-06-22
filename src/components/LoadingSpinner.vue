@@ -1,5 +1,5 @@
 <template>
-  <div class="spinner" :class="`size-${size}`"></div>
+  <div class="spinner" :class="`size-${size}`" />
 </template>
 
 <script setup>
@@ -7,8 +7,8 @@ defineProps({
   size: {
     type: String,
     default: 'md',
-    validator: (value) => ['sm', 'md', 'lg'].includes(value)
-  }
+    validator: value => ['sm', 'md', 'lg'].includes(value),
+  },
 })
 </script>
 

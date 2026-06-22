@@ -13,12 +13,24 @@
           :loading="searching"
           @keyup.enter="search"
         />
-        <button class="btn btn-primary" @click="search" :disabled="!searchQuery.trim() || searching">
-          <svg v-if="!searching" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <button
+          class="btn btn-primary"
+          :disabled="!searchQuery.trim() || searching"
+          @click="search"
+        >
+          <svg
+            v-if="!searching"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="18"
+            height="18"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <span v-if="searching" class="spinner-sm"></span>
+          <span v-if="searching" class="spinner-sm" />
           {{ $t('search.search') }}
         </button>
       </div>
@@ -26,9 +38,9 @@
 
     <div v-if="error" class="error-message">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="15" y1="9" x2="9" y2="15"/>
-        <line x1="9" y1="9" x2="15" y2="15"/>
+        <circle cx="12" cy="12" r="10" />
+        <line x1="15" y1="9" x2="9" y2="15" />
+        <line x1="9" y1="9" x2="15" y2="15" />
       </svg>
       {{ error }}
     </div>
@@ -36,19 +48,29 @@
     <div v-if="result && !(result.notFound && result.openLibraryMissing)" class="result-card">
       <div class="result-cover">
         <img v-if="result.cover_url" :src="result.cover_url" :alt="result.title" />
-        <div v-else class="cover-placeholder">{{ result.title?.[0] || '?' }}</div>
+        <div v-else class="cover-placeholder">
+          {{ result.title?.[0] || '?' }}
+        </div>
       </div>
       <div class="result-info">
         <h2>{{ result.title }}</h2>
-        <p v-if="result.author?.length" class="author">{{ result.author.join(', ') }}</p>
+        <p v-if="result.author?.length" class="author">
+          {{ result.author.join(', ') }}
+        </p>
         <div class="result-meta">
           <span v-if="result.publisher">{{ result.publisher }}</span>
           <span v-if="result.isbn" class="mono">ISBN: {{ result.isbn }}</span>
-          <span v-if="result.volumeNumber" class="volume-badge">Vol. {{ result.volumeNumber }}</span>
+          <span v-if="result.volumeNumber" class="volume-badge"
+            >Vol. {{ result.volumeNumber }}</span
+          >
           <span v-if="result.source" class="source-info">
             {{ $t('search.sourcePrefix') }}
             <span class="source-badge" :class="result.source">
-              {{ result.source === 'openlibrary' ? $t('search.sourceOpenLibrary') : $t('search.sourceGoogle') }}
+              {{
+                result.source === 'openlibrary'
+                  ? $t('search.sourceOpenLibrary')
+                  : $t('search.sourceGoogle')
+              }}
             </span>
           </span>
         </div>
@@ -60,38 +82,83 @@
 
     <div v-if="result?.openLibraryMissing && result?.notFound" class="openlibrary-contribution">
       <div class="contribution-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="24"
+          height="24"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
       <div class="contribution-content">
-        <p class="contribution-title">{{ $t('search.openLibraryMissingTitle') }}</p>
-        <p class="contribution-subtitle">{{ $t('search.openLibraryContributeSubtitle') }}</p>
-        <p class="contribution-text">{{ $t('search.openLibraryMissingText') }}</p>
-        <p class="contribution-warning">{{ $t('search.openLibraryContributeWarning') }}</p>
+        <p class="contribution-title">
+          {{ $t('search.openLibraryMissingTitle') }}
+        </p>
+        <p class="contribution-subtitle">
+          {{ $t('search.openLibraryContributeSubtitle') }}
+        </p>
+        <p class="contribution-text">
+          {{ $t('search.openLibraryMissingText') }}
+        </p>
+        <p class="contribution-warning">
+          {{ $t('search.openLibraryContributeWarning') }}
+        </p>
         <p class="contribution-isbn">
           ISBN: <code>{{ result?.isbn }}</code>
-          <button class="copy-isbn-btn" @click="copyIsbn" :title="$t('search.copyIsbn')">
-            <svg v-if="!isbnCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          <button class="copy-isbn-btn" :title="$t('search.copyIsbn')" @click="copyIsbn">
+            <svg
+              v-if="!isbnCopied"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <polyline points="20 6 9 17 4 12"/>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <polyline points="20 6 9 17 4 12" />
             </svg>
           </button>
         </p>
-        <a href="https://openlibrary.org/books/add" target="_blank" rel="noopener noreferrer" class="contribution-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
+        <a
+          href="https://openlibrary.org/books/add"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contribution-link"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="16"
+            height="16"
+          >
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
           </svg>
           {{ $t('search.openLibraryContributeLink') }}
         </a>
-        <p class="contribution-credit">{{ $t('search.openLibraryCredit') }}</p>
+        <p class="contribution-credit">
+          {{ $t('search.openLibraryCredit') }}
+        </p>
       </div>
     </div>
 
@@ -102,23 +169,48 @@
         <div
           v-for="manga in filteredMangas"
           :key="manga.id"
-          :class="['manga-option', { selected: selectedMangaId === manga.id, 'auto-matched': autoMatchedId === manga.id }]"
+          :class="[
+            'manga-option',
+            { selected: selectedMangaId === manga.id, 'auto-matched': autoMatchedId === manga.id },
+          ]"
           @click="selectedMangaId = manga.id"
         >
           <span v-if="autoMatchedId === manga.id" class="auto-match-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-              <polyline points="20,6 9,17 4,12"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <polyline points="20,6 9,17 4,12" />
             </svg>
             {{ $t('search.autoMatch') }}
           </span>
-          <img v-if="manga.cover_url" :src="manga.cover_url" :alt="manga.title" class="manga-thumb" />
-          <div v-else class="manga-thumb-placeholder">{{ manga.title[0] }}</div>
+          <img
+            v-if="manga.cover_url"
+            :src="manga.cover_url"
+            :alt="manga.title"
+            class="manga-thumb"
+          />
+          <div v-else class="manga-thumb-placeholder">
+            {{ manga.title[0] }}
+          </div>
           <div class="manga-option-info">
             <span class="manga-option-title">{{ manga.title }}</span>
-            <span class="manga-option-meta">{{ manga.volumes_total || 0 }} {{ $t('library.stats.volumes') }}</span>
+            <span class="manga-option-meta"
+              >{{ manga.volumes_total || 0 }} {{ $t('library.stats.volumes') }}</span
+            >
           </div>
-          <svg v-if="selectedMangaId === manga.id" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20,6 9,17 4,12"/>
+          <svg
+            v-if="selectedMangaId === manga.id"
+            class="check-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="20,6 9,17 4,12" />
           </svg>
         </div>
       </div>
@@ -128,58 +220,100 @@
       </p>
 
       <div class="new-manga-toggle" @click="showNewMangaForm = !showNewMangaForm">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
         {{ $t('search.createNewManga') }}
       </div>
 
       <div v-if="showNewMangaForm" class="new-manga-form">
         <input
-          type="text"
           v-model="newMangaTitle"
+          type="text"
           :placeholder="$t('search.mangaNamePlaceholder')"
         />
-        <button class="btn btn-secondary" @click="createAndSelect" :disabled="!newMangaTitle.trim()">
+        <button
+          class="btn btn-secondary"
+          :disabled="!newMangaTitle.trim()"
+          @click="createAndSelect"
+        >
           {{ $t('search.createAndAdd') }}
         </button>
       </div>
 
       <div v-if="selectedMangaId && !showNewMangaForm" class="add-tomo-actions">
         <div v-if="autoMatchedId === selectedMangaId" class="auto-match-actions">
-          <button class="btn btn-primary btn-lg" @click="addVolumeToSelected" :disabled="adding">
-            <span v-if="adding" class="spinner-sm"></span>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
+          <button class="btn btn-primary btn-lg" :disabled="adding" @click="addVolumeToSelected">
+            <span v-if="adding" class="spinner-sm" />
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="18"
+              height="18"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             {{ $t('volume.addTo') }} {{ selectedMangaTitle }}
           </button>
-          <button class="btn btn-secondary btn-lg" @click="openEditVolumeModal" :disabled="adding">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          <button class="btn btn-secondary btn-lg" :disabled="adding" @click="openEditVolumeModal">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="18"
+              height="18"
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
             {{ $t('common.edit') }}
           </button>
         </div>
-        <button v-else class="btn btn-primary btn-lg" @click="addVolumeToSelected" :disabled="adding">
-          <span v-if="adding" class="spinner-sm"></span>
-          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
+        <button
+          v-else
+          class="btn btn-primary btn-lg"
+          :disabled="adding"
+          @click="addVolumeToSelected"
+        >
+          <span v-if="adding" class="spinner-sm" />
+          <svg
+            v-else
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="18"
+            height="18"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           {{ $t('volume.addTo') }} {{ selectedMangaTitle }}
         </button>
       </div>
     </div>
 
-    <div v-if="(notFound && !result) || (result?.notFound && !result?.openLibraryMissing)" class="not-found">
+    <div
+      v-if="(notFound && !result) || (result?.notFound && !result?.openLibraryMissing)"
+      class="not-found"
+    >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        <line x1="8" y1="11" x2="14" y2="11"/>
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <line x1="8" y1="11" x2="14" y2="11" />
       </svg>
       <h2>{{ $t('search.noResults') }}</h2>
       <p>{{ $t('search.noResultsHint') }}</p>
@@ -187,45 +321,57 @@
 
     <div v-if="addedSuccess" class="success-message">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
       </svg>
       {{ $t('search.volumeAdded') }}
-      <button class="btn btn-secondary" @click="reset">{{ $t('search.addAnother') }}</button>
+      <button class="btn btn-secondary" @click="reset">
+        {{ $t('search.addAnother') }}
+      </button>
     </div>
 
     <Modal v-model="showEditVolumeModal" :title="$t('volume.editVolume')">
-      <form @submit.prevent="addVolumeToSelected" class="edit-tomo-form">
+      <form class="edit-tomo-form" @submit.prevent="addVolumeToSelected">
         <div class="form-group">
           <label>{{ $t('volume.isbn') }}</label>
-          <input type="text" v-model="editVolumeForm.isbn" />
+          <input v-model="editVolumeForm.isbn" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.volumeNumber') }}</label>
-          <input type="number" v-model.number="editVolumeForm.volume_number" min="1" />
+          <input v-model.number="editVolumeForm.volume_number" type="number" min="1" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.title') }}</label>
-          <input type="text" v-model="editVolumeForm.title" />
+          <input v-model="editVolumeForm.title" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('volume.status') }}</label>
           <select v-model="editVolumeForm.status">
-            <option value="unread">{{ $t('status.unread') }}</option>
-            <option value="reading">{{ $t('status.reading') }}</option>
-            <option value="read">{{ $t('status.read') }}</option>
+            <option value="unread">
+              {{ $t('status.unread') }}
+            </option>
+            <option value="reading">
+              {{ $t('status.reading') }}
+            </option>
+            <option value="read">
+              {{ $t('status.read') }}
+            </option>
           </select>
         </div>
         <div class="form-group checkbox-group">
           <label>
-            <input type="checkbox" v-model="editVolumeForm.acquired" />
+            <input v-model="editVolumeForm.acquired" type="checkbox" />
             {{ $t('volume.acquired') }}
           </label>
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showEditVolumeModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="addVolumeToSelected">{{ $t('common.add') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showEditVolumeModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="addVolumeToSelected">
+          {{ $t('common.add') }}
+        </button>
       </template>
     </Modal>
   </div>
@@ -256,16 +402,15 @@ const editVolumeForm = ref({
   title: '',
   volume_number: null,
   status: 'unread',
-  acquired: true
+  acquired: true,
 })
 const isbnCopied = ref(false)
 
 const filteredMangas = computed(() => {
   if (!result.value) return mangas.value
   const seriesName = result.value.seriesName?.toLowerCase() || ''
-  return mangas.value.filter(m =>
-    m.title.toLowerCase().includes(seriesName) ||
-    seriesName.includes(m.title.toLowerCase())
+  return mangas.value.filter(
+    m => m.title.toLowerCase().includes(seriesName) || seriesName.includes(m.title.toLowerCase())
   )
 })
 
@@ -290,9 +435,8 @@ function tryAutoSelectManga() {
     return
   }
 
-  const partialMatch = mangas.value.find(m =>
-    m.title.toLowerCase().includes(seriesName) ||
-    seriesName.includes(m.title.toLowerCase())
+  const partialMatch = mangas.value.find(
+    m => m.title.toLowerCase().includes(seriesName) || seriesName.includes(m.title.toLowerCase())
   )
   if (partialMatch) {
     selectedMangaId.value = partialMatch.id
@@ -363,7 +507,7 @@ function openEditVolumeModal() {
     title: result.value.title || '',
     volume_number: result.value.volumeNumber || null,
     status: 'unread',
-    acquired: true
+    acquired: true,
   }
   showEditVolumeModal.value = true
 }
@@ -383,7 +527,7 @@ async function addVolumeToSelected() {
           volume_number: result.value.volumeNumber,
           status: 'unread',
           acquired: true,
-          cover_url: result.value.cover_url || null
+          cover_url: result.value.cover_url || null,
         }
 
     await apiAddVolume(selectedMangaId.value, data)
@@ -426,7 +570,7 @@ function reset() {
     title: '',
     volume_number: null,
     status: 'unread',
-    acquired: true
+    acquired: true,
   }
 }
 
@@ -652,7 +796,7 @@ onMounted(() => {
 
 .contribution-isbn code {
   font-family: 'JetBrains Mono', monospace;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 12px;
@@ -932,14 +1076,16 @@ onMounted(() => {
 .spinner-sm {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 640px) {

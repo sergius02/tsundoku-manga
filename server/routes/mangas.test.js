@@ -2,30 +2,31 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import request from 'supertest'
 import express from 'express'
 
-const { mockDb, mockSearchOpenLibraryISBNOnly, mockSearchByTitle, mockFetchGoogleBooksISBN } = vi.hoisted(() => {
-  return {
-    mockDb: {
-      prepare: vi.fn()
-    },
-    mockSearchOpenLibraryISBNOnly: vi.fn(),
-    mockSearchByTitle: vi.fn(),
-    mockFetchGoogleBooksISBN: vi.fn()
-  }
-})
+const { mockDb, mockSearchOpenLibraryISBNOnly, mockSearchByTitle, mockFetchGoogleBooksISBN } =
+  vi.hoisted(() => {
+    return {
+      mockDb: {
+        prepare: vi.fn(),
+      },
+      mockSearchOpenLibraryISBNOnly: vi.fn(),
+      mockSearchByTitle: vi.fn(),
+      mockFetchGoogleBooksISBN: vi.fn(),
+    }
+  })
 
 vi.mock('../db.js', () => ({
-  default: mockDb
+  default: mockDb,
 }))
 
 vi.mock('../services/openlibrary.js', () => ({
   searchByISBN: vi.fn(),
   searchByTitle: (...args) => mockSearchByTitle(...args),
-  searchOpenLibraryISBNOnly: (...args) => mockSearchOpenLibraryISBNOnly(...args)
+  searchOpenLibraryISBNOnly: (...args) => mockSearchOpenLibraryISBNOnly(...args),
 }))
 
 vi.mock('../services/googlebooks.js', () => ({
   fetchGoogleBooksISBN: (...args) => mockFetchGoogleBooksISBN(...args),
-  searchGoogleBooksByTitle: vi.fn()
+  searchGoogleBooksByTitle: vi.fn(),
 }))
 
 import mangasRouter from './mangas.js'
@@ -47,7 +48,7 @@ const mockManga = {
   updated_at: '2024-01-01T00:00:00.000Z',
   volumes_read: 5,
   volumes_total: 10,
-  first_volume_isbn: '978-1-2345-6789-0'
+  first_volume_isbn: '978-1-2345-6789-0',
 }
 
 const mockVolume = {
@@ -58,14 +59,14 @@ const mockVolume = {
   volume_number: 1,
   status: 'unread',
   acquired: false,
-  cover_url: null
+  cover_url: null,
 }
 
 function createStmtMock(data) {
   return {
     all: vi.fn().mockReturnValue(data),
     get: vi.fn().mockReturnValue(data),
-    run: vi.fn().mockReturnValue({ changes: 1, lastInsertRowid: 1 })
+    run: vi.fn().mockReturnValue({ changes: 1, lastInsertRowid: 1 }),
   }
 }
 
@@ -73,20 +74,20 @@ function createRunMock(changes = 1) {
   return {
     all: vi.fn().mockReturnValue([]),
     get: vi.fn().mockReturnValue(null),
-    run: vi.fn().mockReturnValue({ changes })
+    run: vi.fn().mockReturnValue({ changes }),
   }
 }
 
 function createApiConfigMock(enabled = 1) {
   return {
     all: vi.fn().mockReturnValue([{ enabled }]),
-    get: vi.fn().mockReturnValue({ enabled })
+    get: vi.fn().mockReturnValue({ enabled }),
   }
 }
 
 beforeEach(() => {
   vi.clearAllMocks()
-  mockDb.prepare.mockImplementation((query) => {
+  mockDb.prepare.mockImplementation(query => {
     if (query.includes('SELECT') && query.includes('COUNT')) {
       return createStmtMock([{ count: 0 }])
     }
@@ -220,21 +221,17 @@ describe('MANGAS - POST /api/mangas', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockManga, id: 2 }))
 
-    const res = await request(app)
-      .post('/api/mangas')
-      .send({
-        title: 'One Piece',
-        author: 'Eiichiro Oda',
-        publisher: 'Shueisha'
-      })
+    const res = await request(app).post('/api/mangas').send({
+      title: 'One Piece',
+      author: 'Eiichiro Oda',
+      publisher: 'Shueisha',
+    })
 
     expect(res.status).toBe(201)
   })
 
   it('returns 400 when title is missing', async () => {
-    const res = await request(app)
-      .post('/api/mangas')
-      .send({ author: 'Test Author' })
+    const res = await request(app).post('/api/mangas').send({ author: 'Test Author' })
 
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('Title is required')
@@ -245,9 +242,7 @@ describe('MANGAS - POST /api/mangas', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockManga, id: 3, title: 'Solo Leveling' }))
 
-    const res = await request(app)
-      .post('/api/mangas')
-      .send({ title: 'Solo Leveling' })
+    const res = await request(app).post('/api/mangas').send({ title: 'Solo Leveling' })
 
     expect(res.status).toBe(201)
   })
@@ -257,9 +252,7 @@ describe('MANGAS - POST /api/mangas', () => {
       throw new Error('Database error')
     })
 
-    const res = await request(app)
-      .post('/api/mangas')
-      .send({ title: 'Test' })
+    const res = await request(app).post('/api/mangas').send({ title: 'Test' })
 
     expect(res.status).toBe(500)
     expect(res.body.error).toBe('Internal server error')
@@ -273,9 +266,7 @@ describe('MANGAS - PUT /api/mangas/:id', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockManga, title: 'Naruto Updated' }))
 
-    const res = await request(app)
-      .put('/api/mangas/1')
-      .send({ title: 'Naruto Updated' })
+    const res = await request(app).put('/api/mangas/1').send({ title: 'Naruto Updated' })
 
     expect(res.status).toBe(200)
     expect(res.body.title).toBe('Naruto Updated')
@@ -285,7 +276,9 @@ describe('MANGAS - PUT /api/mangas/:id', () => {
     mockDb.prepare
       .mockReturnValueOnce(createStmtMock(mockManga))
       .mockReturnValueOnce(createRunMock(1))
-      .mockReturnValueOnce(createStmtMock({ ...mockManga, author: 'New Author', publisher: 'New Publisher' }))
+      .mockReturnValueOnce(
+        createStmtMock({ ...mockManga, author: 'New Author', publisher: 'New Publisher' })
+      )
 
     const res = await request(app)
       .put('/api/mangas/1')
@@ -297,9 +290,7 @@ describe('MANGAS - PUT /api/mangas/:id', () => {
   it('returns 404 when manga not found', async () => {
     mockDb.prepare.mockReturnValue(createStmtMock(null))
 
-    const res = await request(app)
-      .put('/api/mangas/999')
-      .send({ title: 'Test' })
+    const res = await request(app).put('/api/mangas/999').send({ title: 'Test' })
 
     expect(res.status).toBe(404)
     expect(res.body.error).toBe('Manga not found')
@@ -308,9 +299,7 @@ describe('MANGAS - PUT /api/mangas/:id', () => {
   it('returns 400 when no fields to update', async () => {
     mockDb.prepare.mockReturnValueOnce(createStmtMock(mockManga))
 
-    const res = await request(app)
-      .put('/api/mangas/1')
-      .send({})
+    const res = await request(app).put('/api/mangas/1').send({})
 
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('No fields to update')
@@ -342,14 +331,12 @@ describe('MANGAS - POST /api/mangas/:id/volumes', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockVolume, id: 2, volume_number: 2 }))
 
-    const res = await request(app)
-      .post('/api/mangas/1/volumes')
-      .send({
-        isbn: '978-1-2345-6789-1',
-        volume_number: 2,
-        status: 'unread',
-        acquired: true
-      })
+    const res = await request(app).post('/api/mangas/1/volumes').send({
+      isbn: '978-1-2345-6789-1',
+      volume_number: 2,
+      status: 'unread',
+      acquired: true,
+    })
 
     expect(res.status).toBe(201)
   })
@@ -357,11 +344,11 @@ describe('MANGAS - POST /api/mangas/:id/volumes', () => {
   it('creates volume with defaults', async () => {
     mockDb.prepare
       .mockReturnValueOnce(createRunMock(1))
-      .mockReturnValueOnce(createStmtMock({ ...mockVolume, id: 3, volume_number: 3, status: 'unread' }))
+      .mockReturnValueOnce(
+        createStmtMock({ ...mockVolume, id: 3, volume_number: 3, status: 'unread' })
+      )
 
-    const res = await request(app)
-      .post('/api/mangas/1/volumes')
-      .send({ volume_number: 3 })
+    const res = await request(app).post('/api/mangas/1/volumes').send({ volume_number: 3 })
 
     expect(res.status).toBe(201)
   })
@@ -371,9 +358,7 @@ describe('MANGAS - POST /api/mangas/:id/volumes', () => {
       throw new Error('Database error')
     })
 
-    const res = await request(app)
-      .post('/api/mangas/1/volumes')
-      .send({ volume_number: 1 })
+    const res = await request(app).post('/api/mangas/1/volumes').send({ volume_number: 1 })
 
     expect(res.status).toBe(500)
     expect(res.body.error).toBe('Internal server error')
@@ -384,18 +369,14 @@ describe('MANGAS - PUT /api/mangas/:id/volumes', () => {
   it('updates all volumes status', async () => {
     mockDb.prepare.mockReturnValue(createStmtMock([mockVolume]))
 
-    const res = await request(app)
-      .put('/api/mangas/1/volumes')
-      .send({ status: 'read' })
+    const res = await request(app).put('/api/mangas/1/volumes').send({ status: 'read' })
 
     expect(res.status).toBe(200)
     expect(Array.isArray(res.body)).toBe(true)
   })
 
   it('returns 400 when status is missing', async () => {
-    const res = await request(app)
-      .put('/api/mangas/1/volumes')
-      .send({})
+    const res = await request(app).put('/api/mangas/1/volumes').send({})
 
     expect(res.status).toBe(400)
     expect(res.body.error).toBe('Status is required')
@@ -409,9 +390,7 @@ describe('MANGAS - PUT /api/mangas/:id/volumes/:volumeId', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockVolume, status: 'read' }))
 
-    const res = await request(app)
-      .put('/api/mangas/1/volumes/1')
-      .send({ status: 'read' })
+    const res = await request(app).put('/api/mangas/1/volumes/1').send({ status: 'read' })
 
     expect(res.status).toBe(200)
     expect(res.body.status).toBe('read')
@@ -423,9 +402,7 @@ describe('MANGAS - PUT /api/mangas/:id/volumes/:volumeId', () => {
       .mockReturnValueOnce(createRunMock(1))
       .mockReturnValueOnce(createStmtMock({ ...mockVolume, acquired: true }))
 
-    const res = await request(app)
-      .put('/api/mangas/1/volumes/1')
-      .send({ acquired: true })
+    const res = await request(app).put('/api/mangas/1/volumes/1').send({ acquired: true })
 
     expect(res.status).toBe(200)
     expect(res.body.acquired).toBe(true)
@@ -434,9 +411,7 @@ describe('MANGAS - PUT /api/mangas/:id/volumes/:volumeId', () => {
   it('returns 404 when volume not found', async () => {
     mockDb.prepare.mockReturnValue(createStmtMock(null))
 
-    const res = await request(app)
-      .put('/api/mangas/1/volumes/999')
-      .send({ status: 'read' })
+    const res = await request(app).put('/api/mangas/1/volumes/999').send({ status: 'read' })
 
     expect(res.status).toBe(404)
     expect(res.body.error).toBe('Volume not found')
@@ -487,7 +462,7 @@ describe('SEARCH - GET /api/search?isbn=', () => {
     publisher: 'Shueisha',
     isbn: '978-1-2345-6789-0',
     cover_url: 'https://example.com/cover.jpg',
-    pages: 200
+    pages: 200,
   }
 
   const mockGoogleBooksResult = {
@@ -498,7 +473,7 @@ describe('SEARCH - GET /api/search?isbn=', () => {
     publisher: 'Viz Media',
     isbn: '978-1-2345-6789-0',
     cover_url: 'https://example.com/cover-gb.jpg',
-    pages: 180
+    pages: 180,
   }
 
   it('returns result from OpenLibrary', async () => {
@@ -588,7 +563,12 @@ describe('SEARCH - GET /api/search?isbn=', () => {
 describe('SEARCH - GET /api/search?title=', () => {
   const mockTitleResults = [
     { title: 'Naruto', seriesName: 'Naruto', volumeNumber: null, author: ['Masashi Kishimoto'] },
-    { title: 'Naruto Volume 1', seriesName: 'Naruto', volumeNumber: 1, author: ['Masashi Kishimoto'] }
+    {
+      title: 'Naruto Volume 1',
+      seriesName: 'Naruto',
+      volumeNumber: 1,
+      author: ['Masashi Kishimoto'],
+    },
   ]
 
   beforeEach(() => {

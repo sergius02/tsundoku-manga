@@ -2,12 +2,12 @@
   <Teleport to="body">
     <div v-if="visible" class="context-menu-overlay" @click="close" @contextmenu.prevent="close">
       <div
+        ref="menuRef"
         class="context-menu"
         :style="menuStyle"
-        @click.stop
         role="menu"
         aria-label="Context menu"
-        ref="menuRef"
+        @click.stop
       >
         <div class="context-menu-header">
           <span class="context-menu-title">{{ displayTitle }}</span>
@@ -25,7 +25,7 @@
             <IconCheck />
             {{ manga.acquired ? $t('volume.notAcquired') : $t('volume.acquired') }}
           </button>
-          <div class="menu-divider" role="separator"></div>
+          <div class="menu-divider" role="separator" />
           <button class="menu-item danger" role="menuitem" @click="handleAction('delete')">
             <IconTrash />
             {{ $t('common.delete') }}
@@ -40,7 +40,12 @@
             <IconEdit />
             {{ $t('common.edit') }}
           </button>
-          <button v-if="isCompleted" class="menu-item" role="menuitem" @click="handleAction('mark-unread')">
+          <button
+            v-if="isCompleted"
+            class="menu-item"
+            role="menuitem"
+            @click="handleAction('mark-unread')"
+          >
             <IconCircle />
             {{ $t('contextMenu.markAllUnread') }}
           </button>
@@ -48,7 +53,7 @@
             <IconCheck />
             {{ $t('contextMenu.markAsRead') }}
           </button>
-          <div class="menu-divider" role="separator"></div>
+          <div class="menu-divider" role="separator" />
           <button class="menu-item danger" role="menuitem" @click="handleAction('delete')">
             <IconTrash />
             {{ $t('common.delete') }}
@@ -70,15 +75,23 @@ import IconCircle from './icons/IconCircle.vue'
 const props = defineProps({
   manga: {
     type: Object,
-    required: true
+    required: true,
   },
   isVolume: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmits(['view', 'edit', 'mark-read', 'mark-unread', 'delete', 'toggle-status', 'toggle-acquired'])
+const emit = defineEmits([
+  'view',
+  'edit',
+  'mark-read',
+  'mark-unread',
+  'delete',
+  'toggle-status',
+  'toggle-acquired',
+])
 
 const visible = ref(false)
 const x = ref(0)
@@ -108,9 +121,10 @@ const menuStyle = computed(() => {
 })
 
 const menuRef = ref(null)
-const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const focusableSelectors =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
-function show(event, manga) {
+function show(event) {
   x.value = event.clientX
   y.value = event.clientY
   visible.value = true
@@ -150,7 +164,7 @@ function handleGlobalKeydown(e) {
   }
 }
 
-watch(visible, async (isVisible) => {
+watch(visible, async isVisible => {
   if (isVisible) {
     await nextTick()
     const firstItem = menuRef.value?.querySelector(focusableSelectors)

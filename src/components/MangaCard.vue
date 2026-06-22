@@ -22,9 +22,15 @@
       </div>
     </div>
     <div class="info">
-      <h3 class="title">{{ manga.title }}</h3>
-      <p v-if="manga.author" class="author">{{ manga.author }}</p>
-      <p v-if="progressText" class="progress">{{ progressText }}</p>
+      <h3 class="title">
+        {{ manga.title }}
+      </h3>
+      <p v-if="manga.author" class="author">
+        {{ manga.author }}
+      </p>
+      <p v-if="progressText" class="progress">
+        {{ progressText }}
+      </p>
     </div>
   </div>
 </template>
@@ -41,8 +47,8 @@ const { t } = useI18n()
 const props = defineProps({
   manga: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 defineEmits(['click'])
@@ -117,7 +123,9 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: box-shadow 0.25s ease-out, border-color 0.25s ease-out;
+  transition:
+    box-shadow 0.25s ease-out,
+    border-color 0.25s ease-out;
   box-shadow: 0 1px 3px var(--shadow);
   border: 2px solid transparent;
   height: 100%;
@@ -125,7 +133,9 @@ onMounted(() => {
 
 .manga-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.15), 0 4px 12px var(--shadow);
+  box-shadow:
+    0 0 0 4px rgba(230, 57, 70, 0.15),
+    0 4px 12px var(--shadow);
 }
 
 .cover-wrapper {

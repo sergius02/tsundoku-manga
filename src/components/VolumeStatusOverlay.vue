@@ -2,8 +2,8 @@
   <div
     class="status-overlay"
     :class="[`status-${status}`, { clickable }]"
-    @click.stop="clickable && handleClick()"
     :title="label"
+    @click.stop="clickable && handleClick()"
   >
     <IconCheck v-if="status === 'read'" />
     <IconMinus v-else-if="status === 'no_volumes'" />
@@ -23,12 +23,12 @@ const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ['unread', 'reading', 'read', 'no_volumes'].includes(value)
+    validator: value => ['unread', 'reading', 'read', 'no_volumes'].includes(value),
   },
   clickable: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 const emit = defineEmits(['toggle-status'])
@@ -55,7 +55,10 @@ function handleClick() {
   border-radius: 16px;
   font-size: 11px;
   font-weight: 500;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
   z-index: 2;
   white-space: nowrap;
 }

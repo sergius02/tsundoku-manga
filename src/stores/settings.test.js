@@ -7,12 +7,12 @@ const mockUpdateApiConfig = vi.fn()
 
 vi.mock('../api/index.js', () => ({
   getApiConfig: (...args) => mockGetApiConfig(...args),
-  updateApiConfig: (...args) => mockUpdateApiConfig(...args)
+  updateApiConfig: (...args) => mockUpdateApiConfig(...args),
 }))
 
 const mockApis = [
   { name: 'openlibrary', enabled: true, hasKey: true },
-  { name: 'googlebooks', enabled: false, hasKey: false }
+  { name: 'googlebooks', enabled: false, hasKey: false },
 ]
 
 describe('useSettingsStore', () => {

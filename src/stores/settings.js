@@ -5,7 +5,7 @@ export const useSettingsStore = defineStore('settings', {
   state: () => ({
     apis: [],
     loading: false,
-    error: null
+    error: null,
   }),
 
   actions: {
@@ -46,6 +46,6 @@ export const useSettingsStore = defineStore('settings', {
 
     async performImport(file) {
       await importBackup(file)
-    }
-  }
+    },
+  },
 })

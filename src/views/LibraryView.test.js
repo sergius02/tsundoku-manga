@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useMangaStore } from '../stores/mangas.js'
 
@@ -7,7 +7,7 @@ describe('LibraryView Computed Logic', () => {
     { id: 1, title: 'Naruto', author: 'Masashi Kishimoto', volumes_total: 10, volumes_read: 5 },
     { id: 2, title: 'One Piece', author: 'Eiichiro Oda', volumes_total: 10, volumes_read: 10 },
     { id: 3, title: 'Bleach', author: 'Tite Kubo', volumes_total: 5, volumes_read: 0 },
-    { id: 4, title: 'No Volumes', author: 'Test', volumes_total: 0, volumes_read: 0 }
+    { id: 4, title: 'No Volumes', author: 'Test', volumes_total: 0, volumes_read: 0 },
   ]
 
   function filterMangas(mangas, searchQuery, statusFilter, sortBy) {
@@ -15,9 +15,10 @@ describe('LibraryView Computed Logic', () => {
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      result = result.filter(m =>
-        m.title.toLowerCase().includes(query) ||
-        (m.author && m.author.toLowerCase().includes(query))
+      result = result.filter(
+        m =>
+          m.title.toLowerCase().includes(query) ||
+          (m.author && m.author.toLowerCase().includes(query))
       )
     }
 

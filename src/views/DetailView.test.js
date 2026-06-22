@@ -24,20 +24,24 @@ describe('DetailView Computed Logic', () => {
     const placeholders = missingNumbers.map(num => ({
       id: `placeholder-${num}`,
       volume_number: num,
-      placeholder: true
+      placeholder: true,
     }))
 
-    return [...volumes, ...placeholders]
-      .sort((a, b) => {
-        const aNum = a.volume_number ?? 999999
-        const bNum = b.volume_number ?? 999999
-        return aNum - bNum
-      })
+    return [...volumes, ...placeholders].sort((a, b) => {
+      const aNum = a.volume_number ?? 999999
+      const bNum = b.volume_number ?? 999999
+      return aNum - bNum
+    })
   }
 
   function getInitials(title) {
     if (!title) return ''
-    return title.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
+    return title
+      .split(' ')
+      .slice(0, 2)
+      .map(w => w[0])
+      .join('')
+      .toUpperCase()
   }
 
   function getProgressPercent(volumesTotal, volumesRead) {
@@ -60,7 +64,7 @@ describe('DetailView Computed Logic', () => {
       const result = getMissingVolumeNumbers([
         { id: 1, volume_number: 1 },
         { id: 2, volume_number: 2 },
-        { id: 3, volume_number: 3 }
+        { id: 3, volume_number: 3 },
       ])
       expect(result).toEqual([])
     })
@@ -68,7 +72,7 @@ describe('DetailView Computed Logic', () => {
     it('detects single missing volume', () => {
       const result = getMissingVolumeNumbers([
         { id: 1, volume_number: 1 },
-        { id: 2, volume_number: 3 }
+        { id: 2, volume_number: 3 },
       ])
       expect(result).toEqual([2])
     })
@@ -78,7 +82,7 @@ describe('DetailView Computed Logic', () => {
         { id: 1, volume_number: 1 },
         { id: 2, volume_number: 2 },
         { id: 3, volume_number: 5 },
-        { id: 4, volume_number: 7 }
+        { id: 4, volume_number: 7 },
       ])
       expect(result).toEqual([3, 4, 6])
     })
@@ -87,7 +91,7 @@ describe('DetailView Computed Logic', () => {
       const result = getMissingVolumeNumbers([
         { id: 1, volume_number: 3 },
         { id: 2, volume_number: 4 },
-        { id: 3, volume_number: 5 }
+        { id: 3, volume_number: 5 },
       ])
       expect(result).toEqual([])
     })
@@ -96,7 +100,7 @@ describe('DetailView Computed Logic', () => {
       const result = getMissingVolumeNumbers([
         { id: 1, volume_number: 1 },
         { id: 2, volume_number: 2 },
-        { id: 3, volume_number: 3 }
+        { id: 3, volume_number: 3 },
       ])
       expect(result).toEqual([])
     })
@@ -105,7 +109,7 @@ describe('DetailView Computed Logic', () => {
       const result = getMissingVolumeNumbers([
         { id: 1, volume_number: 1 },
         { id: 2, volume_number: null },
-        { id: 3, volume_number: 3 }
+        { id: 3, volume_number: 3 },
       ])
       expect(result).toEqual([2])
     })
@@ -115,7 +119,7 @@ describe('DetailView Computed Logic', () => {
     it('combines volumes and placeholders', () => {
       const volumes = [
         { id: 1, volume_number: 1, placeholder: false },
-        { id: 2, volume_number: 2, placeholder: false }
+        { id: 2, volume_number: 2, placeholder: false },
       ]
       const missing = [3, 4]
 
@@ -131,7 +135,7 @@ describe('DetailView Computed Logic', () => {
     it('sorts by volume number', () => {
       const volumes = [
         { id: 3, volume_number: 5, placeholder: false },
-        { id: 1, volume_number: 1, placeholder: false }
+        { id: 1, volume_number: 1, placeholder: false },
       ]
       const missing = [3]
 

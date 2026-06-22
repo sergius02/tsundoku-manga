@@ -6,11 +6,23 @@
           <IconWarning v-if="type === 'danger'" />
           <IconInfo v-else />
         </div>
-        <h3 class="confirm-title">{{ title }}</h3>
-        <p class="confirm-message">{{ message }}</p>
+        <h3 class="confirm-title">
+          {{ title }}
+        </h3>
+        <p class="confirm-message">
+          {{ message }}
+        </p>
         <div class="confirm-actions">
-          <button class="btn btn-ghost" @click="onCancel">{{ cancelText }}</button>
-          <button class="btn" :class="type === 'danger' ? 'btn-danger' : 'btn-primary'" @click="onConfirm">{{ confirmText }}</button>
+          <button class="btn btn-ghost" @click="onCancel">
+            {{ cancelText }}
+          </button>
+          <button
+            class="btn"
+            :class="type === 'danger' ? 'btn-danger' : 'btn-primary'"
+            @click="onConfirm"
+          >
+            {{ confirmText }}
+          </button>
         </div>
       </div>
     </div>
@@ -24,28 +36,28 @@ import IconInfo from './icons/IconInfo.vue'
 defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   title: {
     type: String,
-    default: ''
+    default: '',
   },
   message: {
     type: String,
-    default: ''
+    default: '',
   },
   confirmText: {
     type: String,
-    default: 'Confirm'
+    default: 'Confirm',
   },
   cancelText: {
     type: String,
-    default: 'Cancel'
+    default: 'Cancel',
   },
   type: {
     type: String,
-    default: 'danger'
-  }
+    default: 'danger',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
@@ -145,12 +157,22 @@ function onCancel() {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>
