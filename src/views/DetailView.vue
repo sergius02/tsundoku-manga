@@ -700,7 +700,7 @@ function openRefreshMetadataModal(volume) {
 async function handleRefreshMetadataSave(data) {
   if (!selectedVolumeForRefresh.value || !data) return
   await updateVolume(route.params.id, selectedVolumeForRefresh.value.id, data)
-  await store.fetchManga(route.params.id)
+  store.updateVolumeState(selectedVolumeForRefresh.value.id, data)
 }
 
 async function saveEditVolume() {
