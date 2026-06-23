@@ -297,6 +297,10 @@ router.put('/:id/volumes/:volumeId', (req, res) => {
     fields.push('acquired = ?')
     values.push(req.body.acquired ? 1 : 0)
   }
+  if (req.body.cover_url !== undefined) {
+    fields.push('cover_url = ?')
+    values.push(req.body.cover_url || null)
+  }
 
   if (fields.length > 0) {
     db.prepare(`UPDATE volumes SET ${fields.join(', ')} WHERE id = ?`).run(
