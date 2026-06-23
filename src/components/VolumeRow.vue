@@ -67,8 +67,15 @@ const emit = defineEmits([
   'select',
 ])
 
-const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, imageError, fetchBookInfo } =
-  useCoverFetch(props)
+const {
+  displayTitle,
+  displayCover,
+  hasDirectCover,
+  hasCoverUrl,
+  imageLoaded,
+  imageError,
+  fetchBookInfo,
+} = useCoverFetch(props)
 
 const placeholderText = computed(() => {
   if (props.tomo.title) return props.tomo.title
