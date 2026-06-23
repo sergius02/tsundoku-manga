@@ -42,6 +42,14 @@ export function useCoverFetch(props) {
   }
 
   watch(() => props.tomo?.id, resetImageLoaded, { immediate: true })
+  watch(
+    () => props.tomo?.cover_url,
+    newVal => {
+      if (newVal !== undefined) {
+        bookInfo.value = null
+      }
+    }
+  )
 
   watch(bookInfo, newVal => {
     if (newVal?.cover_url) {
