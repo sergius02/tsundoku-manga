@@ -61,7 +61,10 @@
       <div v-else-if="state === 'hasChanges'" class="state-has-changes">
         <div class="changes-preview">
           <div v-if="hasTitleChange" class="change-row">
-            <span class="change-label">{{ $t('volume.title') }}</span>
+            <label class="change-checkbox">
+              <input v-model="selectedChanges.title" type="checkbox" />
+              <span class="change-label">{{ $t('volume.title') }}</span>
+            </label>
             <div class="change-values">
               <div class="change-old">
                 <span class="change-tag">{{ $t('volume.currentValue') }}</span>
@@ -87,7 +90,10 @@
           </div>
 
           <div v-if="hasCoverChange" class="change-row">
-            <span class="change-label">{{ $t('volume.coverUrl') }}</span>
+            <label class="change-checkbox">
+              <input v-model="selectedChanges.cover" type="checkbox" />
+              <span class="change-label">{{ $t('volume.cover') }}</span>
+            </label>
             <div class="change-values">
               <div class="change-old">
                 <span class="change-tag">{{ $t('volume.currentValue') }}</span>
@@ -172,6 +178,10 @@ const emit = defineEmits(['update:modelValue', 'save'])
 
 const state = ref('loading')
 const searchResult = ref(null)
+const selectedChanges = ref({
+  title: true,
+  cover: true,
+})
 
 const hasTitleChange = computed(() => {
   if (!searchResult.value) return false
@@ -224,6 +234,10 @@ async function searchMetadata() {
     if (!titleChanged && !coverChanged) {
       state.value = 'upToDate'
     } else {
+      selectedChanges.value = {
+        title: titleChanged,
+        cover: coverChanged,
+      }
       state.value = 'hasChanges'
     }
   } catch (error) {
@@ -234,10 +248,10 @@ async function searchMetadata() {
 
 function save() {
   const data = {}
-  if (searchResult.value?.title) {
+  if (selectedChanges.value.title && searchResult.value?.title) {
     data.title = searchResult.value.title
   }
-  if (searchResult.value?.cover_url) {
+  if (selectedChanges.value.cover && searchResult.value?.cover_url) {
     data.cover_url = searchResult.value.cover_url
   }
   emit('save', data)
@@ -353,6 +367,20 @@ function close() {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.change-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.change-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent);
 }
 
 .change-label {
