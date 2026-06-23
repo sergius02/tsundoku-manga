@@ -707,14 +707,14 @@ async function saveEditVolume() {
   if (!selectedVolume.value || isSaving.value) return
   isSaving.value = true
 
-  const data = {}
-  if (editVolumeForm.value.isbn !== '') data.isbn = editVolumeForm.value.isbn || null
-  if (editVolumeForm.value.volume_number !== null)
-    data.volume_number = editVolumeForm.value.volume_number
-  if (editVolumeForm.value.title !== '') data.title = editVolumeForm.value.title || null
-  data.status = editVolumeForm.value.status
-  data.acquired = editVolumeForm.value.acquired
-  if (editVolumeForm.value.cover_url !== '') data.cover_url = editVolumeForm.value.cover_url || null
+  const data = {
+    isbn: editVolumeForm.value.isbn || null,
+    volume_number: editVolumeForm.value.volume_number ?? null,
+    title: editVolumeForm.value.title || null,
+    status: editVolumeForm.value.status,
+    acquired: editVolumeForm.value.acquired,
+    cover_url: editVolumeForm.value.cover_url || null,
+  }
 
   await updateVolume(route.params.id, selectedVolume.value.id, data)
   store.updateVolumeState(selectedVolume.value.id, data)
