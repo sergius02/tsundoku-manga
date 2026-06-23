@@ -12,14 +12,14 @@
         <LoadingSpinner size="sm" />
       </div>
       <img
-        v-else-if="displayCover"
+        v-if="displayCover && !imageError"
         :src="displayCover"
         :alt="displayTitle"
         @load="imageLoaded = true"
-        @error="imageLoaded = true"
+        @error="imageError = true"
       />
       <div v-else class="cover-placeholder">
-        {{ tomo.volume_number || '?' }}
+        <span class="placeholder-title">{{ placeholderText }}</span>
       </div>
       <div class="indicators">
         <AcquiredIndicator :tomo="tomo" @toggle-acquired="$emit('toggle-acquired')" />
@@ -30,11 +30,14 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
 import AcquiredIndicator from './AcquiredIndicator.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import { useCoverFetch } from '../composables/useCoverFetch.js'
+
+const { t, locale } = useI18n()
 
 const props = defineProps({
   tomo: {
@@ -64,8 +67,18 @@ const emit = defineEmits([
   'select',
 ])
 
-const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, fetchBookInfo } =
+const { displayTitle, displayCover, hasDirectCover, hasCoverUrl, imageLoaded, imageError, fetchBookInfo } =
   useCoverFetch(props)
+
+const placeholderText = computed(() => {
+  if (props.tomo.title) return props.tomo.title
+  if (props.tomo.volume_number) {
+    return locale.value === 'es'
+      ? t('volume.fallbackTomo', { number: props.tomo.volume_number })
+      : t('volume.fallbackVolume', { number: props.tomo.volume_number })
+  }
+  return '?'
+})
 
 function openContextMenu(event) {
   event.preventDefault()
@@ -151,5 +164,28 @@ onMounted(() => {
 .volume-cover.unacquired :deep(img),
 .volume-cover.unacquired :deep(.cover-placeholder) {
   filter: grayscale(100%);
+}
+
+.volume-cover :deep(.cover-placeholder) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.placeholder-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px;
+  word-break: break-word;
 }
 </style>

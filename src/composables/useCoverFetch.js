@@ -5,6 +5,7 @@ export function useCoverFetch(props) {
   const bookInfo = ref(null)
   const loading = ref(false)
   const imageLoaded = ref(false)
+  const imageError = ref(false)
 
   const hasDirectCover = computed(() => !!props.tomo?.cover_url)
   const hasCoverUrl = computed(() => props.tomo?.cover_url || bookInfo.value?.cover_url)
@@ -38,6 +39,7 @@ export function useCoverFetch(props) {
 
   function resetImageLoaded() {
     imageLoaded.value = !!props.tomo?.cover_url
+    imageError.value = false
     bookInfo.value = null
   }
 
@@ -61,6 +63,7 @@ export function useCoverFetch(props) {
     bookInfo,
     loading,
     imageLoaded,
+    imageError,
     hasDirectCover,
     hasCoverUrl,
     displayCover,

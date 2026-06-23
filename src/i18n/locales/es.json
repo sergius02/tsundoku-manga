@@ -94,6 +94,7 @@
     "isbn": "ISBN",
     "volumeNumber": "Número de tomo",
     "title": "Título",
+    "fallbackTomo": "Tomo {number}",
     "titleTemplate": "Plantilla de título",
     "titleTemplatePlaceholder": "Usa $volumeNumber para el número del tomo",
     "coverUrl": "URL de portada",

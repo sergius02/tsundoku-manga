@@ -94,6 +94,7 @@
     "isbn": "ISBN",
     "volumeNumber": "Volume number",
     "title": "Title",
+    "fallbackVolume": "Vol. {number}",
     "titleTemplate": "Title template",
     "titleTemplatePlaceholder": "Use $volumeNumber for the volume number",
     "coverUrl": "Cover URL",
