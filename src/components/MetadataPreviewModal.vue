@@ -98,7 +98,12 @@
               <div class="change-old">
                 <span class="change-tag">{{ $t('volume.currentValue') }}</span>
                 <div class="cover-container">
-                  <img v-if="volume.cover_url" :src="volume.cover_url" alt="current cover" />
+                  <img
+                    v-if="volume.cover_url && !coverLoadError.old"
+                    :src="volume.cover_url"
+                    alt="current cover"
+                    @error="coverLoadError.old = true"
+                  />
                   <span v-else class="no-cover">—</span>
                 </div>
               </div>
@@ -118,9 +123,10 @@
                 <span class="change-tag">{{ $t('volume.newValue') }}</span>
                 <div class="cover-container">
                   <img
-                    v-if="searchResult.cover_url"
+                    v-if="searchResult.cover_url && !coverLoadError.new"
                     :src="searchResult.cover_url"
                     alt="new cover"
+                    @error="coverLoadError.new = true"
                   />
                   <span v-else class="no-cover">—</span>
                 </div>
@@ -154,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import Modal from './Modal.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import { searchByISBN, searchByTitle } from '../api/index.js'
@@ -181,6 +187,10 @@ const searchResult = ref(null)
 const selectedChanges = ref({
   title: true,
   cover: true,
+})
+const coverLoadError = reactive({
+  old: false,
+  new: false,
 })
 
 const hasTitleChange = computed(() => {
@@ -259,6 +269,8 @@ function save() {
 }
 
 function close() {
+  coverLoadError.old = false
+  coverLoadError.new = false
   emit('update:modelValue', false)
 }
 </script>
