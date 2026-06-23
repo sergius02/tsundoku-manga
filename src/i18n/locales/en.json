@@ -21,7 +21,8 @@
   "contextMenu": {
     "markAllRead": "Mark all as read",
     "markAllUnread": "Mark as unread",
-    "markAsRead": "Mark as read"
+    "markAsRead": "Mark as read",
+    "refreshMetadata": "Refresh metadata"
   },
   "cover": {
     "changeCover": "Change cover"
@@ -106,7 +107,18 @@
     "editVolume": "Edit volume",
     "addTo": "Add to",
     "notRegistered": "Not registered",
-    "addMissing": "Add missing"
+    "addMissing": "Add missing",
+    "refreshMetadata": "Refresh metadata",
+    "refreshMetadataTitle": "Metadata found",
+    "refreshMetadataNoIsbn": "This volume has no ISBN. Searching by title instead.",
+    "refreshMetadataSearching": "Searching metadata...",
+    "refreshMetadataNotFound": "No data found for this ISBN.",
+    "refreshMetadataNotFoundHint": "Try editing the ISBN manually or add the volume manually.",
+    "refreshMetadataUpToDate": "Metadata is already up to date",
+    "refreshMetadataSource": "Source:",
+    "currentValue": "Current",
+    "newValue": "New",
+    "cover": "Cover"
   },
   "status": {
     "unread": "Unread",

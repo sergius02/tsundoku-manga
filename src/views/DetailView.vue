@@ -185,6 +185,7 @@
         @delete="confirmDeleteVolume(selectedVolume)"
         @toggle-status="cycleVolumeStatus(selectedVolume)"
         @toggle-acquired="toggleVolumeAcquired(selectedVolume)"
+        @refresh-metadata="openRefreshMetadataModal(selectedVolume)"
       />
 
       <div class="danger-zone">
@@ -355,6 +356,13 @@
       @save="saveCover"
     />
 
+    <MetadataPreviewModal
+      v-model="showRefreshMetadataModal"
+      :volume="selectedVolumeForRefresh"
+      :manga-title="store.currentManga?.title || ''"
+      @save="handleRefreshMetadataSave"
+    />
+
     <FloatingActionBar
       :visible="selectionMode"
       :count="selectedVolumes.size"
@@ -430,6 +438,7 @@ import Modal from '../components/Modal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContextMenu from '../components/ContextMenu.vue'
 import CoverModal from '../components/CoverModal.vue'
+import MetadataPreviewModal from '../components/MetadataPreviewModal.vue'
 import FloatingActionBar from '../components/FloatingActionBar.vue'
 
 const { t } = useI18n()
@@ -459,6 +468,8 @@ const selectedVolumes = ref(new Set())
 const showBulkEditModal = ref(false)
 const bulkEditAcquired = ref(null)
 const bulkEditTitleTemplate = ref('')
+const showRefreshMetadataModal = ref(false)
+const selectedVolumeForRefresh = ref(null)
 
 function openConfirm(title, message, onConfirm) {
   confirmConfig.value = { title, message, onConfirm }
@@ -678,6 +689,18 @@ function editVolume() {
     openEditVolumeModal(selectedVolume.value)
   }
   volumeContextMenu.value?.close()
+}
+
+function openRefreshMetadataModal(volume) {
+  selectedVolumeForRefresh.value = volume
+  showRefreshMetadataModal.value = true
+  volumeContextMenu.value?.close()
+}
+
+async function handleRefreshMetadataSave(data) {
+  if (!selectedVolumeForRefresh.value || !data) return
+  await updateVolume(route.params.id, selectedVolumeForRefresh.value.id, data)
+  await store.fetchManga(route.params.id)
 }
 
 async function saveEditVolume() {

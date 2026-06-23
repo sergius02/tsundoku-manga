@@ -21,7 +21,8 @@
   "contextMenu": {
     "markAllRead": "Marcar todos como leídos",
     "markAllUnread": "Marcar como no leídos",
-    "markAsRead": "Marcar como leído"
+    "markAsRead": "Marcar como leído",
+    "refreshMetadata": "Actualizar metadatos"
   },
   "cover": {
     "changeCover": "Cambiar portada"
@@ -106,7 +107,18 @@
     "editVolume": "Editar tomo",
     "addTo": "Añadir a",
     "notRegistered": "Sin registrar",
-    "addMissing": "Añadir faltante"
+    "addMissing": "Añadir faltante",
+    "refreshMetadata": "Actualizar metadatos",
+    "refreshMetadataTitle": "Metadatos encontrados",
+    "refreshMetadataNoIsbn": "Este tomo no tiene ISBN. Se buscará por título.",
+    "refreshMetadataSearching": "Buscando metadatos...",
+    "refreshMetadataNotFound": "No se encontraron datos para este ISBN.",
+    "refreshMetadataNotFoundHint": "Prueba editando el ISBN manualmente o añade el tomo manualmente.",
+    "refreshMetadataUpToDate": "Los metadatos ya están actualizados",
+    "refreshMetadataSource": "Fuente:",
+    "currentValue": "Actual",
+    "newValue": "Nuevo",
+    "cover": "Portada"
   },
   "status": {
     "unread": "Sin leer",

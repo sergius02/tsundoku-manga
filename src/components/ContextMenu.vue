@@ -25,6 +25,10 @@
             <IconCheck />
             {{ manga.acquired ? $t('volume.notAcquired') : $t('volume.acquired') }}
           </button>
+          <button class="menu-item" role="menuitem" @click="handleAction('refresh-metadata')">
+            <IconRefresh />
+            {{ $t('contextMenu.refreshMetadata') }}
+          </button>
           <div class="menu-divider" role="separator" />
           <button class="menu-item danger" role="menuitem" @click="handleAction('delete')">
             <IconTrash />
@@ -71,6 +75,7 @@ import IconCheck from './icons/IconCheck.vue'
 import IconTrash from './icons/IconTrash.vue'
 import IconEye from './icons/IconEye.vue'
 import IconCircle from './icons/IconCircle.vue'
+import IconRefresh from './icons/IconRefresh.vue'
 
 const props = defineProps({
   manga: {
