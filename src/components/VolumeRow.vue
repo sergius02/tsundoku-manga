@@ -125,6 +125,26 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.volume-row.status-unread {
+  border: 3px solid #808080 !important;
+  border-radius: 8px;
+}
+
+.volume-row.status-reading {
+  border: 3px solid #f4a261 !important;
+  border-radius: 8px;
+}
+
+.volume-row.status-read {
+  border: 3px solid #2d6a4f !important;
+  border-radius: 8px;
+}
+
+.volume-cover {
+  position: relative;
+  z-index: 1;
+}
+
 .volume-checkbox {
   position: absolute;
   top: 8px;
