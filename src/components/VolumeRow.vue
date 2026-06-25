@@ -21,6 +21,9 @@
       <div v-else class="cover-placeholder">
         <span class="placeholder-title">{{ placeholderText }}</span>
       </div>
+      <span class="volume-number-label">
+        {{ locale === 'es' ? `Tomo ${tomo.volume_number}` : `Vol. ${tomo.volume_number}` }}
+      </span>
       <div class="indicators">
         <AcquiredIndicator :tomo="tomo" @toggle-acquired="$emit('toggle-acquired')" />
         <VolumeStatusOverlay :status="tomo.status" @toggle-status="$emit('toggle-status')" />
@@ -141,9 +144,27 @@ onMounted(() => {
   left: 0;
   right: 0;
   height: 80px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   pointer-events: none;
   z-index: 1;
+}
+
+.volume-cover .volume-number-label {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .volume-cover .indicators {
@@ -154,7 +175,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   padding: 0 8px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .volume-cover :deep(.acquired-indicator),
