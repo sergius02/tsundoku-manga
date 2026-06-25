@@ -21,12 +21,14 @@
       <div v-else class="cover-placeholder">
         <span class="placeholder-title">{{ placeholderText }}</span>
       </div>
-      <span class="volume-number-label">
-        {{ locale === 'es' ? `Tomo ${tomo.volume_number}` : `Vol. ${tomo.volume_number}` }}
-      </span>
-      <div class="indicators">
-        <AcquiredIndicator :tomo="tomo" @toggle-acquired="$emit('toggle-acquired')" />
-        <VolumeStatusOverlay :status="tomo.status" @toggle-status="$emit('toggle-status')" />
+      <div class="volume-overlay">
+        <span class="volume-number-label">
+          {{ locale === 'es' ? `Tomo ${tomo.volume_number}` : `Vol. ${tomo.volume_number}` }}
+        </span>
+        <div class="indicators">
+          <AcquiredIndicator :tomo="tomo" @toggle-acquired="$emit('toggle-acquired')" />
+          <VolumeStatusOverlay :status="tomo.status" @toggle-status="$emit('toggle-status')" />
+        </div>
       </div>
     </div>
   </div>
@@ -137,8 +139,7 @@ onMounted(() => {
   accent-color: var(--accent);
 }
 
-.volume-cover::after {
-  content: '';
+.volume-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -149,11 +150,16 @@ onMounted(() => {
   -webkit-backdrop-filter: blur(8px);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  pointer-events: none;
+  transform: translateY(100%);
+  transition: transform 0.2s ease;
   z-index: 1;
 }
 
-.volume-cover .volume-number-label {
+.volume-cover:hover .volume-overlay {
+  transform: translateY(0);
+}
+
+.volume-overlay .volume-number-label {
   position: absolute;
   bottom: 44px;
   left: 0;
@@ -163,11 +169,10 @@ onMounted(() => {
   font-weight: 700;
   font-size: 16px;
   color: white;
-  z-index: 2;
   pointer-events: none;
 }
 
-.volume-cover .indicators {
+.volume-overlay .indicators {
   position: absolute;
   bottom: 8px;
   left: 0;
@@ -175,7 +180,6 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   padding: 0 8px;
-  z-index: 3;
 }
 
 .volume-cover :deep(.acquired-indicator),
