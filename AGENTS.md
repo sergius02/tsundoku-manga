@@ -3,7 +3,8 @@
 ## Stack
 - **Frontend**: Vue 3 + Vite + Vue Router + Pinia + vue-i18n
 - **Backend**: Express (Node.js) + better-sqlite3 (SQLite)
-- **No tests, no TypeScript, no linting**
+- **Testing**: Vitest (unit + integration tests)
+- **Linting**: ESLint + Prettier
 
 ## Dev Commands
 ```bash
@@ -11,8 +12,22 @@ npm run dev      # Runs both client (port 5173) + server (port 3000) concurrentl
 npm run build    # Builds Vue app → dist/
 npm run client   # Vite dev server only (port 5173)
 npm run server   # Express server only (port 3000)
-npm run preview # Preview production build from dist/
+npm run preview  # Preview production build from dist/
+npm run lint     # Run ESLint + Prettier
+npm run lint:fix # Auto-fix lint issues
+npm run test     # Run all tests (Vitest)
+npm run test:watch  # Watch mode for development
 ```
+
+## Testing
+Tests use Vitest + Supertest (backend) y @vue/test-utils + happy-dom (frontend).
+
+Test files:
+- `server/routes/*.test.js` - Backend API tests (54 tests)
+- `src/stores/*.test.js` - Pinia store tests (31 tests)
+- `src/views/*.test.js` - View computed logic tests (41 tests)
+
+**Important**: After implementing changes, ALWAYS run `npm run lint` and `npm run test` before committing. All lint checks and tests must pass before committing.
 
 ## Key Quirks
 
@@ -37,9 +52,6 @@ Vite config proxies `/api/*` to `http://localhost:3000`. Don't prefix API calls 
 - `/search` → SearchView (ISBN search via OpenLibrary/Google Books)
 - `/add` → AddView (manual manga entry)
 - `/settings` → SettingsView (API config and preferences) [planned]
-
-### Volume vs Tomo
-Schema uses `volumes` table, but code and API refer to "tomos". The DB schema has a `volume_number` column and a `title` column that may be unused.
 
 ### i18n
 - Auto-detects browser locale (prefers `es`)

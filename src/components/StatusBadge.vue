@@ -1,46 +1,30 @@
 <template>
   <span :class="['status-badge', `status-${status}`]">
-    <svg v-if="status === 'read'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="20,6 9,17 4,12"/>
-    </svg>
-    <svg v-else-if="status === 'reading'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/>
-      <polyline points="12,6 12,12 16,14"/>
-    </svg>
-    <svg v-else-if="status === 'unread'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/>
-    </svg>
-    <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="3" y="3" width="18" height="18" rx="2"/>
-    </svg>
+    <IconCheck v-if="status === 'read'" />
+    <IconClock v-else-if="status === 'reading'" />
+    <IconCircle v-else-if="status === 'unread'" />
+    <IconMinus v-else />
     <span>{{ label }}</span>
   </span>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
+import { useStatus } from '../composables/useStatus.js'
+import IconCheck from './icons/IconCheck.vue'
+import IconCircle from './icons/IconCircle.vue'
+import IconClock from './icons/IconClock.vue'
+import IconMinus from './icons/IconMinus.vue'
 
 const props = defineProps({
   status: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
-const statusMap = {
-  unread: 'status.unread',
-  reading: 'status.reading',
-  read: 'status.read',
-  no_volumes: 'status.noVolumes'
-}
-
-const label = computed(() => {
-  const key = statusMap[props.status] || `status.${props.status}`
-  return t(key)
-})
+const { statusLabel } = useStatus()
+const label = computed(() => statusLabel(props.status))
 </script>
 
 <style scoped>
@@ -55,7 +39,7 @@ const label = computed(() => {
   width: fit-content;
 }
 
-.status-badge svg {
+.status-badge :deep(svg) {
   width: 12px;
   height: 12px;
 }

@@ -2,80 +2,64 @@
   <Teleport to="body">
     <div v-if="visible" class="context-menu-overlay" @click="close" @contextmenu.prevent="close">
       <div
+        ref="menuRef"
         class="context-menu"
         :style="menuStyle"
-        @click.stop
         role="menu"
         aria-label="Context menu"
-        ref="menuRef"
+        @click.stop
       >
         <div class="context-menu-header">
           <span class="context-menu-title">{{ displayTitle }}</span>
         </div>
-        <template v-if="isTomo">
+        <template v-if="isVolume">
           <button class="menu-item" role="menuitem" @click="handleAction('edit')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
+            <IconEdit />
             {{ $t('common.edit') }}
           </button>
           <button class="menu-item" role="menuitem" @click="handleAction('toggle-status')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="20,6 9,17 4,12"/>
-            </svg>
+            <IconCheck />
             {{ $t('contextMenu.markAsRead') }}
           </button>
           <button class="menu-item" role="menuitem" @click="handleAction('toggle-acquired')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+            <IconCheck />
             {{ manga.acquired ? $t('volume.notAcquired') : $t('volume.acquired') }}
           </button>
-          <div class="menu-divider" role="separator"></div>
+          <button class="menu-item" role="menuitem" @click="handleAction('refresh-metadata')">
+            <IconRefresh />
+            {{ $t('contextMenu.refreshMetadata') }}
+          </button>
+          <div class="menu-divider" role="separator" />
           <button class="menu-item danger" role="menuitem" @click="handleAction('delete')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="3,6 5,6 21,6"/>
-              <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
-            </svg>
+            <IconTrash />
             {{ $t('common.delete') }}
           </button>
         </template>
         <template v-else>
           <button class="menu-item" role="menuitem" @click="handleAction('view')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
+            <IconEye />
             {{ $t('common.view') }}
           </button>
           <button class="menu-item" role="menuitem" @click="handleAction('edit')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
+            <IconEdit />
             {{ $t('common.edit') }}
           </button>
-          <button v-if="isCompleted" class="menu-item" role="menuitem" @click="handleAction('mark-unread')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <path d="M3 3v5h5"/>
-            </svg>
+          <button
+            v-if="isCompleted"
+            class="menu-item"
+            role="menuitem"
+            @click="handleAction('mark-unread')"
+          >
+            <IconCircle />
             {{ $t('contextMenu.markAllUnread') }}
           </button>
           <button v-else class="menu-item" role="menuitem" @click="handleAction('mark-read')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="20,6 9,17 4,12"/>
-            </svg>
+            <IconCheck />
             {{ $t('contextMenu.markAsRead') }}
           </button>
-          <div class="menu-divider" role="separator"></div>
+          <div class="menu-divider" role="separator" />
           <button class="menu-item danger" role="menuitem" @click="handleAction('delete')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="3,6 5,6 21,6"/>
-              <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
-            </svg>
+            <IconTrash />
             {{ $t('common.delete') }}
           </button>
         </template>
@@ -86,26 +70,40 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import IconEdit from './icons/IconEdit.vue'
+import IconCheck from './icons/IconCheck.vue'
+import IconTrash from './icons/IconTrash.vue'
+import IconEye from './icons/IconEye.vue'
+import IconCircle from './icons/IconCircle.vue'
+import IconRefresh from './icons/IconRefresh.vue'
 
 const props = defineProps({
   manga: {
     type: Object,
-    required: true
+    required: true,
   },
-  isTomo: {
+  isVolume: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmits(['view', 'edit', 'mark-read', 'mark-unread', 'delete', 'toggle-status', 'toggle-acquired'])
+const emit = defineEmits([
+  'view',
+  'edit',
+  'mark-read',
+  'mark-unread',
+  'delete',
+  'toggle-status',
+  'toggle-acquired',
+])
 
 const visible = ref(false)
 const x = ref(0)
 const y = ref(0)
 
 const displayTitle = computed(() => {
-  if (props.isTomo) {
+  if (props.isVolume) {
     if (props.manga.title) return props.manga.title
     if (props.manga.volume_number) return `Volume ${props.manga.volume_number}`
     return 'Volume'
@@ -128,9 +126,10 @@ const menuStyle = computed(() => {
 })
 
 const menuRef = ref(null)
-const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const focusableSelectors =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
-function show(event, manga) {
+function show(event) {
   x.value = event.clientX
   y.value = event.clientY
   visible.value = true
@@ -170,7 +169,7 @@ function handleGlobalKeydown(e) {
   }
 }
 
-watch(visible, async (isVisible) => {
+watch(visible, async isVisible => {
   if (isVisible) {
     await nextTick()
     const firstItem = menuRef.value?.querySelector(focusableSelectors)
@@ -270,7 +269,7 @@ defineExpose({ show, close })
   background: var(--bg-secondary);
 }
 
-.menu-item svg {
+.menu-item :deep(svg) {
   width: 16px;
   height: 16px;
   color: var(--text-secondary);
@@ -280,7 +279,7 @@ defineExpose({ show, close })
   color: var(--accent);
 }
 
-.menu-item.danger svg {
+.menu-item.danger :deep(svg) {
   color: var(--accent);
 }
 

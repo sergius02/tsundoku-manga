@@ -3,14 +3,28 @@
     <div class="filters-bar">
       <div class="filter-group sort-only">
         <label class="filter-label">{{ $t('library.sort.label') }}</label>
-        <select v-model="filters.sort" @change="updateFilter('sort', filters.sort)" class="filter-select">
-          <option value="title">{{ $t('library.sort.title') }}</option>
-          <option value="progress">{{ $t('library.sort.progress') }}</option>
-          <option value="date">{{ $t('library.sort.date') }}</option>
+        <select
+          v-model="filters.sort"
+          class="filter-select"
+          @change="updateFilter('sort', filters.sort)"
+        >
+          <option value="title">
+            {{ $t('library.sort.title') }}
+          </option>
+          <option value="progress">
+            {{ $t('library.sort.progress') }}
+          </option>
+          <option value="date">
+            {{ $t('library.sort.date') }}
+          </option>
         </select>
       </div>
       <div class="filter-group search-group">
-        <SearchInput v-model="searchQuery" :placeholder="$t('library.search.placeholder')" @update:modelValue="debouncedSearch" />
+        <SearchInput
+          v-model="searchQuery"
+          :placeholder="$t('library.search.placeholder')"
+          @update:model-value="debouncedSearch"
+        />
       </div>
     </div>
 
@@ -18,8 +32,8 @@
       <button
         class="stat filter-stat"
         :class="{ active: statusFilter === 'all', total: true }"
-        @click="toggleStatusFilter('all')"
         :aria-pressed="statusFilter === 'all'"
+        @click="toggleStatusFilter('all')"
       >
         <span class="stat-value">{{ store.mangas.length }}</span>
         <span class="stat-label">{{ $t('library.stats.total') }}</span>
@@ -27,8 +41,8 @@
       <button
         class="stat filter-stat"
         :class="{ active: statusFilter === 'read', completed: true }"
-        @click="toggleStatusFilter('read')"
         :aria-pressed="statusFilter === 'read'"
+        @click="toggleStatusFilter('read')"
       >
         <span class="stat-value stat-completed">{{ completedCount }}</span>
         <span class="stat-label">{{ $t('library.stats.completed') }}</span>
@@ -36,8 +50,8 @@
       <button
         class="stat filter-stat"
         :class="{ active: statusFilter === 'reading', reading: true }"
-        @click="toggleStatusFilter('reading')"
         :aria-pressed="statusFilter === 'reading'"
+        @click="toggleStatusFilter('reading')"
       >
         <span class="stat-value stat-reading">{{ readingCount }}</span>
         <span class="stat-label">{{ $t('library.stats.reading') }}</span>
@@ -46,19 +60,27 @@
 
     <div v-if="store.loading" class="loading-grid">
       <div v-for="i in 8" :key="i" class="skeleton-card">
-        <div class="skeleton skeleton-cover"></div>
-        <div class="skeleton skeleton-text"></div>
-        <div class="skeleton skeleton-text-sm"></div>
+        <div class="skeleton skeleton-cover" />
+        <div class="skeleton skeleton-text" />
+        <div class="skeleton skeleton-text-sm" />
       </div>
     </div>
 
     <div v-else-if="filteredMangas.length === 0" class="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        aria-hidden="true"
+      >
+        <path
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+        />
       </svg>
       <h2>{{ $t('library.empty') }}</h2>
       <p>{{ $t('library.emptyHint') }}</p>
-      <router-link to="/search" class="btn btn-primary">{{ $t('library.searchManga') }}</router-link>
+      <router-link to="/search" class="btn btn-primary"> $t('library.searchManga') }} </router-link>
     </div>
 
     <div v-else class="manga-grid" @contextmenu.prevent="openContextMenu">
@@ -67,7 +89,7 @@
           v-for="manga in filteredMangas"
           :key="manga.id"
           class="manga-card-wrapper"
-          @contextmenu.prevent.stop="(e) => openContextMenu(e, manga)"
+          @contextmenu.prevent.stop="e => openContextMenu(e, manga)"
         >
           <MangaCard :manga="manga" @click="goToDetail(manga.id)" />
         </div>
@@ -85,31 +107,35 @@
     />
 
     <Modal v-model="showEditModal" :title="$t('manga.editManga')">
-      <form @submit.prevent="saveEdit" class="edit-form">
+      <form class="edit-form" @submit.prevent="saveEdit">
         <div class="form-group">
           <label>{{ $t('manga.title') }} *</label>
-          <input type="text" v-model="editForm.title" required />
+          <input v-model="editForm.title" type="text" required />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.author') }}</label>
-          <input type="text" v-model="editForm.author" />
+          <input v-model="editForm.author" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.publisher') }}</label>
-          <input type="text" v-model="editForm.publisher" />
+          <input v-model="editForm.publisher" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.coverUrl') }}</label>
-          <input type="text" v-model="editForm.cover_url" />
+          <input v-model="editForm.cover_url" type="text" />
         </div>
         <div class="form-group">
           <label>{{ $t('manga.notes') }}</label>
-          <textarea v-model="editForm.notes" rows="3"></textarea>
+          <textarea v-model="editForm.notes" rows="3" />
         </div>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-ghost" @click="showEditModal = false">{{ $t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" @click="saveEdit">{{ $t('common.save') }}</button>
+        <button type="button" class="btn btn-ghost" @click="showEditModal = false">
+          {{ $t('common.cancel') }}
+        </button>
+        <button type="submit" class="btn btn-primary" @click="saveEdit">
+          {{ $t('common.save') }}
+        </button>
       </template>
     </Modal>
 
@@ -143,7 +169,7 @@ const store = useMangaStore()
 const contextMenu = ref(null)
 
 const filters = ref({
-  sort: 'title'
+  sort: 'title',
 })
 
 const searchQuery = ref(store.filters.q)
@@ -158,14 +184,14 @@ const editForm = ref({
   author: '',
   publisher: '',
   cover_url: '',
-  notes: ''
+  notes: '',
 })
 
 const showConfirm = ref(false)
 const confirmConfig = ref({
   title: '',
   message: '',
-  onConfirm: () => {}
+  onConfirm: () => {},
 })
 
 function toggleStatusFilter(status) {
@@ -181,9 +207,10 @@ const filteredMangas = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(m =>
-      m.title.toLowerCase().includes(query) ||
-      (m.author && m.author.toLowerCase().includes(query))
+    result = result.filter(
+      m =>
+        m.title.toLowerCase().includes(query) ||
+        (m.author && m.author.toLowerCase().includes(query))
     )
   }
 
@@ -228,16 +255,22 @@ function openConfirm(title, message, onConfirm) {
   showConfirm.value = true
 }
 
-const completedCount = computed(() => store.mangas.filter(m => {
-  const total = m.volumes_total || 0
-  const read = m.volumes_read || 0
-  return total > 0 && read === total
-}).length)
+const completedCount = computed(
+  () =>
+    store.mangas.filter(m => {
+      const total = m.volumes_total || 0
+      const read = m.volumes_read || 0
+      return total > 0 && read === total
+    }).length
+)
 
-const readingCount = computed(() => store.mangas.filter(m => {
-  const read = m.volumes_read || 0
-  return read > 0 && m.volumes_total > read
-}).length)
+const readingCount = computed(
+  () =>
+    store.mangas.filter(m => {
+      const read = m.volumes_read || 0
+      return read > 0 && m.volumes_total > read
+    }).length
+)
 
 function updateFilter(key, value) {
   filters.value[key] = value
@@ -256,7 +289,7 @@ function goToDetail(id) {
 
 function openContextMenu(event, manga) {
   selectedManga.value = manga
-  contextMenu.value?.show(event, manga)
+  contextMenu.value?.show(event)
 }
 
 function viewManga() {
@@ -273,7 +306,7 @@ function editManga() {
       author: selectedManga.value.author || '',
       publisher: selectedManga.value.publisher || '',
       notes: selectedManga.value.notes || '',
-      cover_url: selectedManga.value.cover_url || ''
+      cover_url: selectedManga.value.cover_url || '',
     }
     showEditModal.value = true
   }
@@ -462,11 +495,15 @@ onMounted(() => {
 }
 
 .manga-list-enter-active {
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
 }
 
 .manga-list-leave-active {
-  transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+  transition:
+    opacity 0.2s ease-in,
+    transform 0.2s ease-in;
   position: absolute;
 }
 

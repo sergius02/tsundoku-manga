@@ -3,22 +3,26 @@
     <div v-if="modelValue" class="confirm-overlay" @click.self="onCancel">
       <div class="confirm-modal">
         <div class="confirm-icon" :class="type">
-          <svg v-if="type === 'danger'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="15" y1="9" x2="9" y2="15"/>
-            <line x1="9" y1="9" x2="15" y2="15"/>
-          </svg>
-          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
+          <IconWarning v-if="type === 'danger'" />
+          <IconInfo v-else />
         </div>
-        <h3 class="confirm-title">{{ title }}</h3>
-        <p class="confirm-message">{{ message }}</p>
+        <h3 class="confirm-title">
+          {{ title }}
+        </h3>
+        <p class="confirm-message">
+          {{ message }}
+        </p>
         <div class="confirm-actions">
-          <button class="btn btn-ghost" @click="onCancel">{{ cancelText }}</button>
-          <button class="btn" :class="type === 'danger' ? 'btn-danger' : 'btn-primary'" @click="onConfirm">{{ confirmText }}</button>
+          <button class="btn btn-ghost" @click="onCancel">
+            {{ cancelText }}
+          </button>
+          <button
+            class="btn"
+            :class="type === 'danger' ? 'btn-danger' : 'btn-primary'"
+            @click="onConfirm"
+          >
+            {{ confirmText }}
+          </button>
         </div>
       </div>
     </div>
@@ -26,33 +30,34 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import IconWarning from './icons/IconWarning.vue'
+import IconInfo from './icons/IconInfo.vue'
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   title: {
     type: String,
-    default: ''
+    default: '',
   },
   message: {
     type: String,
-    default: ''
+    default: '',
   },
   confirmText: {
     type: String,
-    default: 'Confirm'
+    default: 'Confirm',
   },
   cancelText: {
     type: String,
-    default: 'Cancel'
+    default: 'Cancel',
   },
   type: {
     type: String,
-    default: 'danger'
-  }
+    default: 'danger',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
@@ -110,7 +115,7 @@ function onCancel() {
   color: #c77c02;
 }
 
-.confirm-icon svg {
+.confirm-icon :deep(svg) {
   width: 24px;
   height: 24px;
 }
@@ -152,12 +157,22 @@ function onCancel() {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

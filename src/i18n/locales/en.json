@@ -12,12 +12,20 @@
     "back": "Back",
     "view": "View",
     "retry": "Retry",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "next": "Next",
+    "select": "Select",
+    "selectAll": "Select all",
+    "clearSelection": "Clear selection"
   },
   "contextMenu": {
     "markAllRead": "Mark all as read",
     "markAllUnread": "Mark as unread",
-    "markAsRead": "Mark as read"
+    "markAsRead": "Mark as read",
+    "refreshMetadata": "Refresh metadata"
+  },
+  "cover": {
+    "changeCover": "Change cover"
   },
   "nav": {
     "library": "Library",
@@ -63,6 +71,10 @@
       "volumes": "volumes"
     }
   },
+  "view": {
+    "list": "List view",
+    "grid": "Grid view"
+  },
   "manga": {
     "title": "Title",
     "author": "Author",
@@ -81,14 +93,33 @@
   "volume": {
     "isbn": "ISBN",
     "volumeNumber": "Volume number",
+    "title": "Title",
+    "fallbackVolume": "Vol. {number}",
+    "titleTemplate": "Title template",
+    "titleTemplatePlaceholder": "Use $volumeNumber for the volume number",
+    "coverUrl": "Cover URL",
     "status": "Status",
     "acquired": "In my possession",
+    "inLibrary": "In library",
     "notAcquired": "Missing",
     "delete": "Delete volume",
     "deleteConfirm": "Delete this volume? This cannot be undone.",
     "addVolume": "Add volume",
     "editVolume": "Edit volume",
-    "addTo": "Add to"
+    "addTo": "Add to",
+    "notRegistered": "Not registered",
+    "addMissing": "Add missing",
+    "refreshMetadata": "Refresh metadata",
+    "refreshMetadataTitle": "Metadata found",
+    "refreshMetadataNoIsbn": "This volume has no ISBN. Searching by title instead.",
+    "refreshMetadataSearching": "Searching metadata...",
+    "refreshMetadataNotFound": "No data found for this ISBN.",
+    "refreshMetadataNotFoundHint": "Try editing the ISBN manually or add the volume manually.",
+    "refreshMetadataUpToDate": "Metadata is already up to date",
+    "refreshMetadataSource": "Source:",
+    "currentValue": "Current",
+    "newValue": "New",
+    "cover": "Cover"
   },
   "status": {
     "unread": "Unread",
@@ -120,7 +151,17 @@
     "addAnother": "Add another volume",
     "autoMatch": "Auto-match",
     "titleResults": "Search results",
-    "titlePlaceholder": "Search by title..."
+    "titlePlaceholder": "Search by title...",
+    "sourcePrefix": "Metadata from: ",
+    "sourceOpenLibrary": "OpenLibrary",
+    "sourceGoogle": "Google Books",
+    "openLibraryContributeSubtitle": "¿Do you want to contribute?",
+    "openLibraryMissingTitle": "This ISBN was not found in any configured API",
+    "openLibraryMissingText": "OpenLibrary is a project by Internet Archive that catalogs books worldwide. You can help by adding this book to their database.",
+    "openLibraryContributeWarning": "When adding new data to OpenLibrary, please be as precise as possible. Search for other volumes first to match the metadata correctly.",
+    "openLibraryContributeLink": "Add this book to OpenLibrary",
+    "openLibraryCredit": "OpenLibrary is a registered 501(c)(3) non-profit organization.",
+    "copyIsbn": "Copy ISBN"
   },
   "theme": {
     "light": "Light",
@@ -153,7 +194,32 @@
     "mandatory": "Mandatory",
     "enabled": "Enabled",
     "disabled": "Disabled",
-    "apiKeyNeeded": "Requires GOOGLE_BOOKS_API_KEY environment variable on server"
+    "apiKeyNeeded": "Requires GOOGLE_BOOKS_API_KEY environment variable on server",
+    "backup": "Backup",
+    "backupDescription": "Export or import your library data.",
+    "backupWarning": "⚠️ Experimental feature: Importing a backup will DELETE ALL current data and replace it with the backup. This action cannot be undone.",
+    "export": "Export",
+    "import": "Import",
+    "restoreConfirmTitle": "Confirm restore",
+    "restoreConfirmText": "This will DELETE ALL current data and replace it with the backup. This action cannot be undone.",
+    "restoreConfirmInput": "Type Tsundoku to confirm",
+    "restore": "Restore",
+    "restoreSuccess": "Backup restored successfully",
+    "restoreError": "Error restoring backup",
+    "backupFile": "Backup file",
+    "backupDate": "Exported on",
+    "backupMangas": "mangas",
+    "backupVolumes": "volumes",
+    "editMultiple": "Edit multiple",
+    "about": {
+      "title": "About Tsundoku",
+      "version": "Version",
+      "description": "Open source manga library manager that helps you catalog and organize your collection.",
+      "openSource": "This project is open source under the AGPL-3.0 license. You're free to use, study, modify, and distribute it.",
+      "collaborate": "Found a bug? Have a feature request? Contributions are welcome! Feel free to open issues or submit pull requests on GitHub.",
+      "github": "GitHub Repository",
+      "license": "License"
+    }
   },
   "auth": {
     "loginRequired": "Please login to continue",

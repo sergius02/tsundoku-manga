@@ -36,7 +36,7 @@
 | Base de datos| SQLite (vía `better-sqlite3`)               |
 | Empaquetado  | Multi-stage Docker                          |
 
-No hay TypeScript, no hay tests, no hay linter — es un proyecto pequeño y directo.
+No hay TypeScript — es un proyecto pequeño y directo. ESLint + Prettier para calidad de código. Tests: 126 passing.
 
 ---
 
@@ -57,10 +57,10 @@ npm run dev
 
 Esto levanta concurrentemente:
 
-- 🖥️ Cliente Vite en `http://localhost:5173`
-- 🛠️ Servidor Express en `http://localhost:3000`
+- 🖥️ Cliente Vite en `http://localhost:5173` (por defecto, configurable via `WEB_PORT`)
+- 🛠️ Servidor Express en `http://localhost:3000` (por defecto, configurable via `PORT`)
 
-Las llamadas a `/api/*` se redirigen automáticamente al backend gracias al proxy de Vite, así que en el código no hace falta prefijar la URL completa.
+Los puertos son configurables via `.env` (ver variables de entorno más abajo). El proxy de Vite redirige automáticamente las peticiones `/api/*` al servidor Express.
 
 ### Build de producción
 
@@ -95,6 +95,7 @@ Variables de entorno reconocidas:
 | Variable              | Por defecto    | Descripción                                      |
 |-----------------------|----------------|--------------------------------------------------|
 | `PORT`                | `3000`         | Puerto del servidor Express                      |
+| `WEB_PORT`            | `5173`         | Puerto del servidor de desarrollo Vite            |
 | `DATA_DIR`            | `/app/data`    | Directorio donde se almacena `tsundoku.db`       |
 | `NODE_ENV`            | `production`   | Modo de ejecución                                |
 | `AUTH_USERNAME`       | (requerido)    | Nombre de usuario para autenticación             |
@@ -164,6 +165,26 @@ PUT    /api/config/apis/:name       # Actualizar estado de una API
 
 ---
 
+## 🧪 Testing
+
+```bash
+npm test          # Ejecuta todos los tests (Vitest)
+npm test:watch    # Modo watch
+npm test -- --coverage  # Con reporte de cobertura
+```
+
+**Cobertura de tests:**
+
+| Capa | Framework | Tests |
+|------|-----------|-------|
+| Backend API | Vitest + Supertest | 54 |
+| Stores frontend | Vitest + Pinia | 31 |
+| Views frontend | Vitest (lógica) | 41 |
+
+Ver [vitest.config.js](vitest.config.js) para la configuración.
+
+---
+
 ## ⚠️ Sobre este proyecto y Vibe Coding
 
 Este proyecto ha sido desarrollado íntegramente mediante **Vibe Coding**: la práctica de construir software guiando a un modelo de lenguaje (LLM) a través de descripciones, iteraciones y refinamientos en lenguaje natural, en lugar de escribir cada línea de código a mano.
@@ -171,7 +192,7 @@ Este proyecto ha sido desarrollado íntegramente mediante **Vibe Coding**: la pr
 ¿Qué implica esto para ti?
 
 - 🤖 **El código puede contener errores, inconsistencias, decisiones de diseño cuestionables o "malas prácticas"** que pasaron los filtros del autor y del modelo. Si encuentras algo raro, es probable que sea *realmente* raro.
-- 🧪 **No hay suite de tests** (todavía). Si tocas algo crítico, prueba a fondo antes de hacer deploy.
+- 🧪 **Suite de tests incluida** (126 tests). Ejecuta con `npm test`.
 - 🧹 **Hay áreas que un desarrollador experimentado probablemente haría de otra forma**: nombres, estructura, validaciones, accesibilidad, etc. Se aceptan sugerencias educadas en forma de PR.
 - ❤️ **Pero funciona** — y se ha construido con cariño.
 
@@ -181,7 +202,7 @@ Este proyecto ha sido desarrollado íntegramente mediante **Vibe Coding**: la pr
 
 - Corregir un bug,
 - Refactorizar algo que te duela al mirarlo,
-- Añadir tests (que faltan),
+- Mejorar cobertura de tests,
 - Mejorar la accesibilidad, la i18n, el rendimiento, lo que sea,
 
 …abre un PR sin miedo. No hay guía de estilo estricta, así que sé razonable y explica brevemente el *porqué* de tu cambio.

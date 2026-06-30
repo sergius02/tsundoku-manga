@@ -1,4 +1,4 @@
-const FALLBACK_URL = 'https://www.googleapis.com/books/v1/volumes';
+const FALLBACK_URL = 'https://www.googleapis.com/books/v1/volumes'
 
 const VOLUME_PATTERNS = [
   /,?\s*vol\.?\s*(\d+)/i,
@@ -10,33 +10,37 @@ const VOLUME_PATTERNS = [
   /#(\d+)\s*$/,
   /第(\d+)卷/i,
   /(\d+)巻$/,
-];
+]
 
 function extractSeriesInfo(title) {
   for (const pattern of VOLUME_PATTERNS) {
-    const match = title.match(pattern);
+    const match = title.match(pattern)
     if (match) {
-      const volumeNumber = parseInt(match[1], 10);
-      const seriesName = title.replace(pattern, '').replace(/,?\s*$/, '').replace(/\s+/g, ' ').trim();
-      return { seriesName: seriesName || title, volumeNumber };
+      const volumeNumber = parseInt(match[1], 10)
+      const seriesName = title
+        .replace(pattern, '')
+        .replace(/,?\s*$/, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+      return { seriesName: seriesName || title, volumeNumber }
     }
   }
-  return { seriesName: title, volumeNumber: null };
+  return { seriesName: title, volumeNumber: null }
 }
 
 export async function fetchGoogleBooksISBN(isbn) {
-  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  const url = `${FALLBACK_URL}?q=isbn:${isbn}${apiKey ? `&key=${apiKey}` : ''}`;
-  const res = await fetch(url);
+  const apiKey = process.env.GOOGLE_BOOKS_API_KEY
+  const url = `${FALLBACK_URL}?q=isbn:${isbn}${apiKey ? `&key=${apiKey}` : ''}`
+  const res = await fetch(url)
 
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
-  const json = await res.json();
+  const json = await res.json()
 
-  if (!json.items || json.items.length === 0) return null;
+  if (!json.items || json.items.length === 0) return null
 
-  const book = json.items[0].volumeInfo;
-  const { seriesName, volumeNumber } = extractSeriesInfo(book.title);
+  const book = json.items[0].volumeInfo
+  const { seriesName, volumeNumber } = extractSeriesInfo(book.title)
 
   return {
     title: book.title,
@@ -46,26 +50,28 @@ export async function fetchGoogleBooksISBN(isbn) {
     publisher: book.publisher,
     isbn: isbn,
     cover_url: book.imageLinks?.extraLarge || book.imageLinks?.large || book.imageLinks?.medium,
-    pages: book.pageCount
-  };
+    pages: book.pageCount,
+  }
 }
 
 export async function searchGoogleBooksByTitle(title) {
-  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  const encodedTitle = encodeURIComponent(title);
-  const url = `${FALLBACK_URL}?q=intitle:${encodedTitle}&maxResults=10${apiKey ? `&key=${apiKey}` : ''}`;
-  const res = await fetch(url);
+  const apiKey = process.env.GOOGLE_BOOKS_API_KEY
+  const encodedTitle = encodeURIComponent(title)
+  const url = `${FALLBACK_URL}?q=intitle:${encodedTitle}&maxResults=10${apiKey ? `&key=${apiKey}` : ''}`
+  const res = await fetch(url)
 
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
-  const json = await res.json();
+  const json = await res.json()
 
-  if (!json.items || json.items.length === 0) return null;
+  if (!json.items || json.items.length === 0) return null
 
   const results = json.items.map(item => {
-    const info = item.volumeInfo;
-    const { seriesName, volumeNumber } = extractSeriesInfo(info.title);
-    const isbnObj = info.industryIdentifiers?.find(i => i.type === 'ISBN_13' || i.type === 'ISBN_10');
+    const info = item.volumeInfo
+    const { seriesName, volumeNumber } = extractSeriesInfo(info.title)
+    const isbnObj = info.industryIdentifiers?.find(
+      i => i.type === 'ISBN_13' || i.type === 'ISBN_10'
+    )
     return {
       title: info.title,
       seriesName,
@@ -74,9 +80,9 @@ export async function searchGoogleBooksByTitle(title) {
       publisher: info.publisher,
       isbn: isbnObj?.identifier || null,
       cover_url: info.imageLinks?.large || info.imageLinks?.medium,
-      pages: info.pageCount
-    };
-  });
+      pages: info.pageCount,
+    }
+  })
 
-  return results;
+  return results
 }

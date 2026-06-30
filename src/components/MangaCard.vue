@@ -2,7 +2,7 @@
   <div class="manga-card" @click="$emit('click')">
     <div class="cover-wrapper">
       <div v-if="loading" class="cover-loading">
-        <div class="spinner-sm"></div>
+        <LoadingSpinner size="md" />
       </div>
       <img
         v-else-if="coverUrl"
@@ -17,12 +17,20 @@
       <div v-else class="cover-placeholder">
         {{ initials }}
       </div>
+      <div class="indicators">
+        <VolumeStatusOverlay :status="overallStatus" :clickable="false" />
+      </div>
     </div>
     <div class="info">
-      <StatusBadge :status="overallStatus" class="card-status" />
-      <h3 class="title">{{ manga.title }}</h3>
-      <p v-if="manga.author" class="author">{{ manga.author }}</p>
-      <p v-if="progressText" class="progress">{{ progressText }}</p>
+      <h3 class="title">
+        {{ manga.title }}
+      </h3>
+      <p v-if="manga.author" class="author">
+        {{ manga.author }}
+      </p>
+      <p v-if="progressText" class="progress">
+        {{ progressText }}
+      </p>
     </div>
   </div>
 </template>
@@ -30,7 +38,8 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import StatusBadge from './StatusBadge.vue'
+import VolumeStatusOverlay from './VolumeStatusOverlay.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 import { getCoverByISBN } from '../api/covers.js'
 
 const { t } = useI18n()
@@ -38,8 +47,8 @@ const { t } = useI18n()
 const props = defineProps({
   manga: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 defineEmits(['click'])
@@ -114,7 +123,9 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: box-shadow 0.25s ease-out, border-color 0.25s ease-out;
+  transition:
+    box-shadow 0.25s ease-out,
+    border-color 0.25s ease-out;
   box-shadow: 0 1px 3px var(--shadow);
   border: 2px solid transparent;
   height: 100%;
@@ -122,7 +133,9 @@ onMounted(() => {
 
 .manga-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.15), 0 4px 12px var(--shadow);
+  box-shadow:
+    0 0 0 4px rgba(230, 57, 70, 0.15),
+    0 4px 12px var(--shadow);
 }
 
 .cover-wrapper {
@@ -130,6 +143,25 @@ onMounted(() => {
   aspect-ratio: 2/3;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.cover-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cover-wrapper .indicators {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
 }
 
 .cover {
@@ -168,11 +200,6 @@ onMounted(() => {
   min-height: 0;
 }
 
-.card-status {
-  margin-bottom: 12px;
-  flex-shrink: 0;
-}
-
 .title {
   font-size: 14px;
   font-weight: 600;
@@ -201,18 +228,5 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.spinner-sm {
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>

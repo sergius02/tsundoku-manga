@@ -6,47 +6,78 @@
       <div class="page-container header-inner">
         <router-link to="/" class="logo">
           <svg viewBox="0 0 32 32" class="logo-icon" aria-hidden="true">
-            <rect width="32" height="32" rx="4" fill="currentColor"/>
-            <rect x="4" y="20" width="24" height="8" rx="1" fill="var(--bg-primary)"/>
-            <rect x="6" y="22" width="20" height="1" fill="currentColor" opacity="0.2"/>
-            <rect x="6" y="6" width="20" height="12" rx="1" fill="var(--bg-primary)"/>
-            <rect x="8" y="8" width="16" height="1" fill="currentColor" opacity="0.2"/>
-            <rect x="8" y="10" width="16" height="1" fill="currentColor" opacity="0.2"/>
-            <rect x="8" y="12" width="16" height="1" fill="currentColor" opacity="0.2"/>
-            <rect x="8" y="14" width="16" height="1" fill="currentColor" opacity="0.2"/>
-            <rect x="8" y="16" width="16" height="1" fill="currentColor" opacity="0.2"/>
+            <rect width="32" height="32" rx="4" fill="currentColor" />
+            <rect x="4" y="20" width="24" height="8" rx="1" fill="var(--bg-primary)" />
+            <rect x="6" y="22" width="20" height="1" fill="currentColor" opacity="0.2" />
+            <rect x="6" y="6" width="20" height="12" rx="1" fill="var(--bg-primary)" />
+            <rect x="8" y="8" width="16" height="1" fill="currentColor" opacity="0.2" />
+            <rect x="8" y="10" width="16" height="1" fill="currentColor" opacity="0.2" />
+            <rect x="8" y="12" width="16" height="1" fill="currentColor" opacity="0.2" />
+            <rect x="8" y="14" width="16" height="1" fill="currentColor" opacity="0.2" />
+            <rect x="8" y="16" width="16" height="1" fill="currentColor" opacity="0.2" />
           </svg>
           <span>Tsundoku</span>
         </router-link>
 
         <button
           class="mobile-menu-toggle"
-          @click="toggleMobileMenu"
           :aria-expanded="showMobileMenu"
           aria-controls="mobile-menu"
           :aria-label="showMobileMenu ? $t('menu.close') : $t('menu.open')"
+          @click="toggleMobileMenu"
         >
-          <svg v-if="!showMobileMenu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
+          <svg
+            v-if="!showMobileMenu"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
-          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+          <svg
+            v-else
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
 
         <nav class="nav" aria-label="Main navigation">
-          <router-link to="/" class="nav-link">{{ $t('nav.library') }}</router-link>
-          <router-link to="/search" class="nav-link">{{ $t('search.title') }}</router-link>
-          <router-link to="/add" class="nav-link">{{ $t('nav.add') }}</router-link>
+          <router-link to="/" class="nav-link">
+            {{ $t('nav.library') }}
+          </router-link>
+          <router-link to="/search" class="nav-link">
+            {{ $t('search.title') }}
+          </router-link>
+          <router-link to="/add" class="nav-link">
+            {{ $t('nav.add') }}
+          </router-link>
 
           <div class="locale-select" @click.stop>
-            <button class="locale-toggle" @click="toggleLocaleMenu" :aria-label="$t('language.select')" aria-haspopup="listbox" :aria-expanded="showLocaleMenu">
+            <button
+              class="locale-toggle"
+              :aria-label="$t('language.select')"
+              aria-haspopup="listbox"
+              :aria-expanded="showLocaleMenu"
+              @click="toggleLocaleMenu"
+            >
               <span class="locale-flag" aria-hidden="true">{{ currentLocaleFlag }}</span>
             </button>
-            <div v-if="showLocaleMenu" class="locale-menu" role="listbox" :aria-label="$t('language.select')">
+            <div
+              v-if="showLocaleMenu"
+              class="locale-menu"
+              role="listbox"
+              :aria-label="$t('language.select')"
+            >
               <button
                 v-for="loc in availableLocales"
                 :key="loc.code"
@@ -60,54 +91,104 @@
                 <span>{{ loc.name }}</span>
               </button>
             </div>
-            <div v-if="showLocaleMenu" class="locale-backdrop" @click="closeLocaleMenu"></div>
+            <div v-if="showLocaleMenu" class="locale-backdrop" @click="closeLocaleMenu" />
           </div>
 
-          <button class="theme-toggle" @click="toggleTheme" :aria-label="$t('theme.toggle')">
-            <svg v-if="theme === 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          <button class="theme-toggle" :aria-label="$t('theme.toggle')" @click="toggleTheme">
+            <svg
+              v-if="theme === 'dark'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
 
           <router-link to="/settings" class="settings-btn" :aria-label="$t('settings.title')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
             </svg>
           </router-link>
         </nav>
 
-        <div v-if="showMobileMenu" id="mobile-menu" class="mobile-menu" role="navigation" aria-label="Mobile navigation">
-          <router-link to="/" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.library') }}</router-link>
-          <router-link to="/search" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('search.title') }}</router-link>
-          <router-link to="/add" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.add') }}</router-link>
-          <router-link to="/settings" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('settings.title') }}</router-link>
-          <div class="mobile-divider"></div>
+        <div
+          v-if="showMobileMenu"
+          id="mobile-menu"
+          class="mobile-menu"
+          role="navigation"
+          aria-label="Mobile navigation"
+        >
+          <router-link to="/" class="mobile-nav-link" @click="closeMobileMenu">
+            {{ $t('nav.library') }}
+          </router-link>
+          <router-link to="/search" class="mobile-nav-link" @click="closeMobileMenu">
+            {{ $t('search.title') }}
+          </router-link>
+          <router-link to="/add" class="mobile-nav-link" @click="closeMobileMenu">
+            $t('nav.add') }}
+          </router-link>
+          <router-link to="/settings" class="mobile-nav-link" @click="closeMobileMenu">
+            {{ $t('settings.title') }}
+          </router-link>
+          <div class="mobile-divider" />
           <button class="mobile-nav-btn" @click="toggleTheme">
-            <svg v-if="theme === 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            <svg
+              v-if="theme === 'dark'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
             <span>{{ theme === 'dark' ? $t('theme.light') : $t('theme.dark') }}</span>
           </button>
@@ -129,7 +210,7 @@
             </div>
           </div>
         </div>
-        <div v-if="showMobileMenu" class="mobile-backdrop" @click="closeMobileMenu"></div>
+        <div v-if="showMobileMenu" class="mobile-backdrop" @click="closeMobileMenu" />
       </div>
     </header>
     <main v-if="authStore.isAuthenticated" id="main-content" class="main" tabindex="-1">
@@ -174,7 +255,7 @@ import { availableLocales, setLocale } from './i18n/index.js'
 import { useAuthStore } from './stores/auth.js'
 import LoginModal from './components/LoginModal.vue'
 
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const authStore = useAuthStore()
 
 const theme = ref('light')
@@ -279,7 +360,9 @@ onUnmounted(() => {
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
 }
 
 .header-inner {
@@ -684,7 +767,9 @@ onUnmounted(() => {
   border-top: 1px solid var(--border);
   background-color: var(--bg-card);
   padding: 16px 0;
-  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
 }
 
 .footer-inner {
@@ -715,7 +800,9 @@ onUnmounted(() => {
   font-weight: 500;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: color 0.15s, background-color 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
 }
 
 .footer-link:hover {

@@ -12,12 +12,20 @@
     "back": "Volver",
     "view": "Ver",
     "retry": "Reintentar",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "next": "Siguiente",
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar todo",
+    "clearSelection": "Limpiar selección"
   },
   "contextMenu": {
     "markAllRead": "Marcar todos como leídos",
     "markAllUnread": "Marcar como no leídos",
-    "markAsRead": "Marcar como leído"
+    "markAsRead": "Marcar como leído",
+    "refreshMetadata": "Actualizar metadatos"
+  },
+  "cover": {
+    "changeCover": "Cambiar portada"
   },
   "nav": {
     "library": "Biblioteca",
@@ -63,6 +71,10 @@
       "volumes": "tomos"
     }
   },
+  "view": {
+    "list": "Vista de lista",
+    "grid": "Vista de cuadrícula"
+  },
   "manga": {
     "title": "Título",
     "author": "Autor",
@@ -81,14 +93,33 @@
   "volume": {
     "isbn": "ISBN",
     "volumeNumber": "Número de tomo",
+    "title": "Título",
+    "fallbackTomo": "Tomo {number}",
+    "titleTemplate": "Plantilla de título",
+    "titleTemplatePlaceholder": "Usa $volumeNumber para el número del tomo",
+    "coverUrl": "URL de portada",
     "status": "Estado",
     "acquired": "En mi posesión",
+    "inLibrary": "En biblioteca",
     "notAcquired": "Falta",
     "delete": "Eliminar tomo",
     "deleteConfirm": "¿Eliminar este tomo? Esta acción no se puede deshacer.",
     "addVolume": "Añadir tomo",
     "editVolume": "Editar tomo",
-    "addTo": "Añadir a"
+    "addTo": "Añadir a",
+    "notRegistered": "Sin registrar",
+    "addMissing": "Añadir faltante",
+    "refreshMetadata": "Actualizar metadatos",
+    "refreshMetadataTitle": "Metadatos encontrados",
+    "refreshMetadataNoIsbn": "Este tomo no tiene ISBN. Se buscará por título.",
+    "refreshMetadataSearching": "Buscando metadatos...",
+    "refreshMetadataNotFound": "No se encontraron datos para este ISBN.",
+    "refreshMetadataNotFoundHint": "Prueba editando el ISBN manualmente o añade el tomo manualmente.",
+    "refreshMetadataUpToDate": "Los metadatos ya están actualizados",
+    "refreshMetadataSource": "Fuente:",
+    "currentValue": "Actual",
+    "newValue": "Nuevo",
+    "cover": "Portada"
   },
   "status": {
     "unread": "Sin leer",
@@ -120,7 +151,17 @@
     "addAnother": "Añadir otro tomo",
     "autoMatch": "Coincidencia",
     "titleResults": "Resultados de búsqueda",
-    "titlePlaceholder": "Buscar por título..."
+    "titlePlaceholder": "Buscar por título...",
+    "sourcePrefix": "Metadatos extraídos de: ",
+    "sourceOpenLibrary": "OpenLibrary",
+    "sourceGoogle": "Google Books",
+    "openLibraryContributeSubtitle": "¿Quieres contribuir?",
+    "openLibraryMissingTitle": "Este ISBN no se ha encontrado en ninguna API configurada",
+    "openLibraryMissingText": "OpenLibrary es un proyecto de Internet Archive que cataloga libros en todo el mundo. Puedes ayudar añadiendo este libro a su base de datos.",
+    "openLibraryContributeWarning": "Al agregar datos nuevos a OpenLibrary, por favor sé lo más preciso posible. Busca otros volúmenes primero para hacer coincidir bien los metadatos.",
+    "openLibraryContributeLink": "Añadir este libro a OpenLibrary",
+    "openLibraryCredit": "OpenLibrary es una organización sin fines de lucro 501(c)(3).",
+    "copyIsbn": "Copiar ISBN"
   },
   "theme": {
     "light": "Claro",
@@ -153,7 +194,32 @@
     "mandatory": "Obligatoria",
     "enabled": "Activada",
     "disabled": "Desactivada",
-    "apiKeyNeeded": "Requiere configurar GOOGLE_BOOKS_API_KEY en el servidor"
+    "apiKeyNeeded": "Requiere configurar GOOGLE_BOOKS_API_KEY en el servidor",
+    "backup": "Backup",
+    "backupDescription": "Exporta o importa los datos de tu biblioteca.",
+    "backupWarning": "⚠️ Funcionalidad experimental: Importar un backup borrará TODOS los datos actuales y los reemplazará con los datos del backup. Esta acción no se puede deshacer.",
+    "export": "Exportar",
+    "import": "Importar",
+    "restoreConfirmTitle": "Confirmar restauración",
+    "restoreConfirmText": "Esto borrará TODOS los datos actuales y los reemplazará con los del backup. Esta acción no se puede deshacer.",
+    "restoreConfirmInput": "Escribe Tsundoku para confirmar",
+    "restore": "Restaurar",
+    "restoreSuccess": "Backup restaurado correctamente",
+    "restoreError": "Error al restaurar el backup",
+    "backupFile": "Archivo de backup",
+    "backupDate": "Exportado el",
+    "backupMangas": "mangas",
+    "backupVolumes": "volúmenes",
+    "editMultiple": "Editar múltiples",
+    "about": {
+      "title": "Acerca de Tsundoku",
+      "version": "Versión",
+      "description": "Gestor de biblioteca de manga de código abierto que te ayuda a catalogar y organizar tu colección.",
+      "openSource": "Este proyecto es de código abierto bajo la licencia AGPL-3.0. Eres libre de usarlo, estudiarlo, modificarlo y distribuirlo.",
+      "collaborate": "¿Encontraste un error? ¿Tienes una sugerencia? ¡Las contribuciones son bienvenidas! No dudes en abrir issues o enviar pull requests en GitHub.",
+      "github": "Repositorio GitHub",
+      "license": "Licencia"
+    }
   },
   "auth": {
     "loginRequired": "Inicia sesión para continuar",

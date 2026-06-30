@@ -4,7 +4,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
     loading: false,
-    error: null
+    error: null,
   }),
 
   actions: {
@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
       try {
         const res = await fetch('/api/auth/check', {
-          credentials: 'include'
+          credentials: 'include',
         })
         if (res.ok) {
           this.isAuthenticated = true
@@ -22,6 +22,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = false
         return false
       } catch (err) {
+        console.warn('Auth check error:', err)
         this.isAuthenticated = false
         return false
       } finally {
@@ -37,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password }),
         })
 
         if (!res.ok) {
@@ -60,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await fetch('/api/auth/logout', {
           method: 'POST',
-          credentials: 'include'
+          credentials: 'include',
         })
       } catch (err) {
         console.error('Logout error:', err)
@@ -68,6 +69,6 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = false
         this.loading = false
       }
-    }
-  }
+    },
+  },
 })

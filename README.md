@@ -36,7 +36,7 @@
 | Database     | SQLite (via `better-sqlite3`)                |
 | Packaging    | Multi-stage Docker                           |
 
-No TypeScript, no tests, no linter — it's a small, straightforward project.
+No TypeScript — it's a small, straightforward project. ESLint + Prettier for code quality. Tests: 126 passing.
 
 ---
 
@@ -57,10 +57,10 @@ npm run dev
 
 This runs concurrently:
 
-- 🖥️ Vite client at `http://localhost:5173`
-- 🛠️ Express server at `http://localhost:3000`
+- 🖥️ Vite client at `http://localhost:5173` (default, configurable via `WEB_PORT`)
+- 🛠️ Express server at `http://localhost:3000` (default, configurable via `PORT`)
 
-Calls to `/api/*` are automatically proxied to the backend by Vite, so you don't need to prefix the full URL in your code.
+Ports are configurable via `.env` (see environment variables below). The Vite proxy automatically routes `/api/*` requests to the Express server.
 
 ### Production build
 
@@ -95,6 +95,7 @@ Recognized environment variables:
 | Variable              | Default       | Description                                      |
 |-----------------------|---------------|--------------------------------------------------|
 | `PORT`                | `3000`        | Express server port                              |
+| `WEB_PORT`            | `5173`        | Vite dev server port                             |
 | `DATA_DIR`            | `/app/data`   | Directory where `tsundoku.db` is stored          |
 | `NODE_ENV`            | `production`  | Runtime mode                                     |
 | `AUTH_USERNAME`       | (required)    | Username for authentication                      |
@@ -103,29 +104,9 @@ Recognized environment variables:
 
 ---
 
-## 📡 REST API (summary)
+## 📡 REST API
 
-> 🔐 All API endpoints (except `/api/auth/login` and `/api/auth/check`) require authentication. Include the session cookie or `Authorization: Bearer <token>` header.
-
-```
-POST   /api/auth/login              # Login (username + password) → returns session token
-POST   /api/auth/logout             # Logout (invalidates session)
-GET    /api/auth/check              # Check if session is valid
-
-GET    /api/mangas                  # List (accepts ?status=&q=&sort=)
-GET    /api/mangas/:id              # Detail with volumes
-POST   /api/mangas                  # Create
-PUT    /api/mangas/:id              # Update
-DELETE /api/mangas/:id              # Delete
-POST   /api/mangas/:id/tomos        # Add volume
-PUT    /api/mangas/:id/tomos/:tomoId     # Change a volume's status
-DELETE /api/mangas/:id/tomos/:tomoId     # Delete a volume
-GET    /api/search?isbn=XXX         # Search OpenLibrary/Google Books
-GET    /api/search?title=XXX        # Search by title
-
-GET    /api/config/apis             # Get API configuration
-PUT    /api/config/apis/:name       # Update API enabled state
-```
+See [server/API.md](server/API.md) for the full API documentation.
 
 ---
 
@@ -137,6 +118,7 @@ PUT    /api/config/apis/:name       # Update API enabled state
 │   ├── index.js
 │   ├── db.js
 │   ├── auth.js
+│   ├── API.md        # REST API documentation
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── routes/
@@ -164,6 +146,26 @@ PUT    /api/config/apis/:name       # Update API enabled state
 
 ---
 
+## 🧪 Testing
+
+```bash
+npm test          # Run all tests (Vitest)
+npm test:watch    # Watch mode
+npm test -- --coverage  # With coverage report
+```
+
+**Test coverage:**
+
+| Layer | Framework | Tests |
+|-------|-----------|-------|
+| Backend API | Vitest + Supertest | 54 |
+| Frontend stores | Vitest + Pinia | 31 |
+| Frontend views | Vitest (logic) | 41 |
+
+See [vitest.config.js](vitest.config.js) for configuration.
+
+---
+
 ## ⚠️ About this project and Vibe Coding
 
 This project has been built entirely through **Vibe Coding**: the practice of building software by guiding a large language model (LLM) through descriptions, iterations, and refinements in natural language, rather than writing every line of code by hand.
@@ -171,7 +173,7 @@ This project has been built entirely through **Vibe Coding**: the practice of bu
 What does this mean for you?
 
 - 🤖 **The code may contain bugs, inconsistencies, questionable design decisions, or "bad practices"** that slipped past both the author and the model. If something looks weird, it probably *is* weird.
-- 🧪 **There is no test suite** (yet). If you touch something critical, test thoroughly before deploying.
+- 🧪 **Test suite included** (126 tests). Run with `npm test`.
 - 🧹 **There are areas an experienced developer would probably do differently**: naming, structure, validation, accessibility, etc. Polite suggestions are welcome in the form of a PR.
 - ❤️ **But it works** — and it was built with care.
 
@@ -181,7 +183,7 @@ What does this mean for you?
 
 - Fix a bug,
 - Refactor something that hurts to look at,
-- Add tests (they're missing),
+- Improve test coverage,
 - Improve accessibility, i18n, performance, anything,
 
 …open a PR without fear. There's no strict style guide, so just be reasonable and briefly explain the *why* behind your change.
